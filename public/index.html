@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Grittybot for Discord</title>
+    <meta name="description" content="A Discord Bot made with Glitch" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://glitch.com/edit/favicon-app.ico"
+      type="image/x-icon"
+    />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- import the webpage's stylesheet -->
+    <link
+      href="https://unpkg.com/nes.css@2.2.0/css/nes.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's client-side javascript file -->
+    <script src="/client.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Grittybot for Discord</h1>
+    </header>
+
+    <main>
+      
+      <section>
+       <div class="nes-container with-title is-left">
+          <h2 class="title">Prereqs</h2>
+          <p>This bot was remixed from <a href="https://starter-botkit-discord.glitch.me">Discord Botkit Starter</a>. Follow those instructions to ensure you have the following:</p>
+         
+         <label>
+            <input type="checkbox" class="nes-checkbox" />
+            <span>A Discord token</span>
+          </label>
+         
+         <label>
+            <input type="checkbox" class="nes-checkbox" />
+            <span>Server access to the Discord instance you're adding Gritty to.</span>
+          </label>
+          
+           <label>
+            <input type="checkbox" class="nes-checkbox" />
+            <span>An Uptime Robot Key.</span>
+          </label>
+         <br>
+          <br>
+         <p>To use the gif functionality, you'll also need:</p>
+         
+         <label>
+            <input type="checkbox" class="nes-checkbox" />
+            <span>A <a href="https://giphy-starter-app.glitch.me/">GIPHY API</a> key.</span>
+          </label>
+         
+        </div>
+      </section>
+      
+      <section>
+       <div class="nes-container with-title is-left">
+          <h2 class="title">Configure</h2>
+         
+          <label>
+            <input type="checkbox" class="nes-checkbox" />
+            <span>Remix this app</span>
+          </label>
+         
+           <p id="remix-me">
+            <a href="https://glitch.com/edit/#!/remix/starter-botkit-discord"
+              ><img
+                src="https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg"
+                alt="Remix on Glitch"
+            /></a>
+          </p>
+         
+          <label>
+            <input type="checkbox" class="nes-checkbox" />
+            <span>Open the source code, and find the .env file</span>
+          </label>         
+         <label>
+            <input type="checkbox" class="nes-checkbox" />
+            <span>Paste your Discord, Uptime Robot, and Giphy keys in the appropiate place</span>
+          </label>
+          <label>
+            <input type="checkbox" class="nes-checkbox" />
+            <span>Go to skills/hears.js and start adding your own functionality!</span>
+          </label>
+        </div>
+      </section>
+      
+      
+        <section>
+          <div class="nes-container is-light with-title">           
+            <h2 class="title">Commands</h2>
+             <div class="message-list">
+
+              <section class="message -right">
+                <!-- Balloon -->
+                <div class="nes-balloon from-right">
+                  <p>@grittybot funfact</p>
+                </div>
+                <i class="nes-bcrikko"></i>
+              </section>
+              <p>Tells you something interesting about Gritty's interests or life</p>
+
+               <section class="message -left">
+                <i class="nes-bcrikko"></i>
+                <!-- Balloon -->
+                <div class="nes-balloon from-left">
+                  <p>@grittybot selfie</p>
+                </div>
+              </section>
+               <p>Shows you a fierce Gritty gif <br><span class="nes-text is-warning">* Requries GIPHY API key</span></p>
+
+              <section class="message -right">
+                <!-- Balloon -->
+                <div class="nes-balloon from-right">
+                  <p>@grittybot thank @USERNAME</p>
+                </div>
+                <i class="nes-bcrikko"></i>
+              </section>
+              <p>Gritty will give kudos to another Discord member</p>
+
+               <section class="message -left">
+                <i class="nes-bcrikko"></i>
+                <!-- Balloon -->
+                <div class="nes-balloon from-left">
+                  <p>@grittybot find-gif SEARCHTERM</p>
+                </div>
+              </section>
+              <p>Gritty will find an awesome gif for you based on a search term<br><span class="nes-text is-warning">* Requries GIPHY API key</span></p>
+
+              <section class="message -right">
+                <!-- Balloon -->
+                <div class="nes-balloon from-right">
+                  <p>@grittybot funfact</p>
+                </div>
+                <i class="nes-bcrikko"></i>
+              </section>
+              <p>Tells you something interesting about Gritty's hobbies or life.</p>
+
+                <section class="message -left">
+                <i class="nes-bcrikko"></i>
+                <!-- Balloon -->
+                <div class="nes-balloon from-left">
+                  <p>@grittybot roster</p>
+                </div>
+              </section>
+              <p>Tells you this years Flyers roster</p>
+
+              <section class="message -right">
+                <!-- Balloon -->
+                <div class="nes-balloon from-right">
+                  <p>@grittybot stat</p>
+                </div>
+                <i class="nes-bcrikko"></i>
+              </section>
+              <p>Tells you the Flyers current stats</p>
+
+                <section class="message -left">
+                <i class="nes-bcrikko"></i>
+                <!-- Balloon -->
+                <div class="nes-balloon from-left">
+                  <p>@grittybot help</p>
+                </div>
+              </section>
+              <p>Shows you all of Gritty's available commands </p>         
+           </div>
+          </div>
+      </section>
+
+      <section>
+       <div class="nes-container with-title is-left">
+          <h2 class="title">Relevant Links</h2>
+           <div class="lists">
+            <ul class="nes-list is-disc">
+              <li><a href="https://discord-tutorials.glitch.me/">Discord Tutorials on Glitch</a></li>
+              <li><a href="https://starter-botkit-discord.glitch.me/">Discord Botkit Starter</a></li>
+              <li><a href="https://giphy-starter-app.glitch.me">GIPHY Starter App</a></li>
+              <li><a href="https://discordjs.guide/creating-your-bot/">DiscordJS Docs</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      
+    </main>
+
+    <footer>Made with <a href="https://glitch.com">Glitch</a>!</footer>
+
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>

@@ -53,19 +53,27 @@ let wrapperPromise = dbWrapper
 
 
 
-/*---------------*\
-  UTILITIES, MORE
-\*---------------*/
+/*------------------*\
+  DB REPRESENTATIONS
+\*-----------------*/
 class PermittedAuthor extends Object {
   constructor(options={}) {
     let author = super();
     author.permit(options)
   }
+  
+  /* AUTHOR
+  Safely pass in new properties.
+  */
   permit(options) {
     if (options.discordId) {this.discordId = options.discordId;}
     if (options.name)      {this.name      = options.name;}
     if (options.nick)      {this.nick      = options.nick;}
   }
+  
+  /* AUTHOR
+  Safely fetch data associated with this object.
+  */
   fetch() {
     try {
       // build a query to find this object in the db, using the highest certainty column
@@ -80,14 +88,19 @@ class PermittedAuthor extends Object {
       return db.get(query.join(" "))
     } catch (DatabaseError) {console.error(DatabaseError)}
   }
+  
+  /* AUTHOR
+  Update this object from the database. Requires a record to exist.
+  Slently fails if one doesn't. Returns changed attributes if one does.
+  */
   async pull() {
     try {
       // find the current data record, returning null if not found
       let data = await this.fetch();
-      if (!data) {return null;}
+      if (!data) {return {success: false};}
 
       // check for differences between this and the database record
-      let changed = new Object();
+      let changed = {success: true};
       if (this.discordId !== data.discordId) {changed.discordId = data.discordId}
       if (this.name      !== data.name)      {changed.name      = data.name}
       if (this.nick      !== data.nick)      {changed.nick      = data.nick}
@@ -99,6 +112,11 @@ class PermittedAuthor extends Object {
       console.error(DatabaseError)
     }
   }
+  
+  /* AUTHOR
+  Update the database from this object. Creates a new record if need be.
+  Throws an error if there's not enough data to create or find a record.
+  */
   async push() {
     try {
       // Make sure there's a record to update, and that we know which one it is
@@ -127,7 +145,7 @@ class PermittedAuthor extends Object {
         throw new Error("push called on empty PermittedAuthor!")
       }
       query.push(toUpdate.join(", "))
-      query.push(`WHERE author_id = ${this.recordId};`)
+      query.push(` WHERE author_id = ${this.recordId};`)
       
       // Run query
       await db.run(query.join(" "))
@@ -137,21 +155,33 @@ class PermittedAuthor extends Object {
   }
 }
 
+
+
+
+
 class PermittedEpisode extends Object {
   constructor(options={}) {
     let episode = super();
     episode.permit(options)
   }
+  
+  /* EPISODE
+  Safely pass in new properties.
+  */
   permit(options) {
     if (options.epNum) {this.epNum = options.epNum;}
   }
+  
+  /* EPISODE
+  Safely fetch data associated with this object.
+  */
   fetch() {
     try {
       // build a query to find this object in the db, using the highest certainty column
       let query = [`SELECT * FROM Episodes WHERE`];
       if (this.recordId) {
         query.push(`episode_id = ${this.recordId},`)
-      } else if (this.discordId) {
+      } else if (this.epNum) {
         query.push(`ep_num = ${this.epNum}`)
       } else {
         throw new Error("PermittedEpisode.fetch needs a record ID or an episode number!")
@@ -161,6 +191,11 @@ class PermittedEpisode extends Object {
       console.error(DatabaseError)
     }
   }
+  
+  /* EPISODE
+  Update this object from the database. Requires a record to exist.
+  Slently fails if one doesn't. Returns changed attributes if one does.
+  */
   async pull() {
     try {
       // find the current data record, returning null if not found
@@ -178,6 +213,11 @@ class PermittedEpisode extends Object {
       console.error(DatabaseError)
     }
   }
+  
+  /* EPISODE
+  Update the database from this object. Creates a new record if need be.
+  Throws an error if there's not enough data to create or find a record.
+  */
   async push() {
     try {
       // Make sure there's a record to update, and that we know which one it is
@@ -187,7 +227,7 @@ class PermittedEpisode extends Object {
         this.recordId = fetchData.episode_id;
       } else {
         // there's no record
-        if (!this.discordId) {throw new Error("PermittedEpisode.push requires an epNum!")}
+        if (!this.epNum) {throw new Error("PermittedEpisode.push requires an epNum!")}
         await db.run(`INSERT INTO Episodes (ep_num) VALUES (${this.epNum})`);
         fetchData = await this.fetch();
         this.recordId = fetchData.episode_id;
@@ -204,36 +244,144 @@ class PermittedEpisode extends Object {
   }
 }
 
+
+
+
+
+
 class PermittedSuggestion extends Object {
   constructor(options={}) {
     let suggestion = super();
     suggestion.permit(options);
   }
+  
+  /* SUGGESTION
+  Safely pass in new properties.
+  */
   permit(options) {
     if (options.recordId)   {this.recordId   = options.recordId;}
-    if (options.suggestion) {this.suggestion = options.suggestion;}
+    if (options.authorId)   {this.authorId   = options.authorId;}
+    if (options.episodeId)  {this.episodeId  = options.episodeId;}
     if (options.messageId)  {this.messageId  = options.messageId;}
+    if (options.suggestion) {this.suggestion = options.suggestion;}
     if (options.jumpUrl)    {this.jumpUrl    = options.jumpUrl;}
   }
+  
+  /* SUGGESTION
+  Safely add episodeId and authorId.
+  */
+  associateEpisode(episode) {
+    if (!episode instanceof PermittedEpisode) {throw new Error("associate episode got unpermitted")}
+    this.episodeId = episode.recordId;
+  }
+  associateAuthor(author) {
+    if (!author instanceof PermittedAuthor) {throw new Error("associate author got unpermitted")}
+    this.authorId = author.recordId;
+  }
+  
+  /* SUGGESTION
+  Safely fetch data associated with this object.
+  */
   fetch() {
     try {
       // build a query to find this object in the db, using the highest certainty column
       let query = [`SELECT * FROM Suggestions WHERE`];
       if (this.recordId) {
         query.push(`suggestion_id = ${this.recordId},`)
-      } else if (this.discordId) {
-        query.push(`message_id = ${this.message_id}`)
-      } else if (this.discordId) {
-        query.push(`url = ${this.jumpUrl}`)
+      } else if (this.messageId) {
+        query.push(`message_id = ${this.messageId}`)
       } else {
         throw new Error("PermittedEpisode.fetch needs a recordId or a messageId!")
       }
       return db.get(query.join(" "))
-    } catch (DatabaseError) {console.error(DatabaseError)}
+    } catch (DatabaseError) {
+      console.error(DatabaseError)
+    }
   }
   
+  /* SUGGESTION
+  Update this object from the database. Requires a record to exist.
+  Slently fails if one doesn't. Returns changed attributes if one does.
+  */
+  async pull() {
+    try {
+      // find the current data record, returning null if not found
+      let data = await this.fetch();
+      if (!data) {return null;}
+
+      // check for differences between this and the database record
+      let changed = new Object();
+      ["recordId","suggestion","messageId","jumpUrl"].forEach(prop=>{
+        if (this[prop] !== data[prop]) {changed[prop] = data[prop]}
+      })
+
+      // update this, return any changes
+      Object.assign(this, data)
+      return changed;
+    } catch (DatabaseError) {
+      console.error(DatabaseError)
+    }
+  }
+  
+  /* SUGGESTION
+  Update the database from this object. Creates a new record if need be.
+  Throws an error if there's not enough data to create or find a record.
+  */
+  async push() {
+    try {
+      // Make sure there's a record to update, and that we know which one it is
+      let fetchData = await this.fetch();
+      if (fetchData) {
+        // grab recordId just in case
+        this.recordId = fetchData.suggestion_id;
+      } else {
+        // there's no record
+        // TODO: we're running an INSERT then an UPDATE. Should we instead just do one or the other?
+        // TODO: this is complicated by whether values should be required in the DB or not.
+        if (!this.messageId) {throw new Error("PermittedSuggestion.push requires a messageId!")}
+        let insertStatement = await db.run(
+          `INSERT INTO Suggestions (message_id, episode_id, author_id) VALUES (?,?,?)`,
+          [this.messageId, this.episodeId, this.authorId]
+        ).then(statement=>statement);
+        this.recordId = insertStatement.lastID;
+      }
+      
+      // Build UPDATE query
+      let query = ["UPDATE Suggestions SET"]
+      let toUpdate = [];
+      let params = [];
+      if (this.suggestion) {
+        toUpdate.push("suggestion = ?")
+        params.push(this.suggestion)
+      } else if (this.messageId) {
+        toUpdate.push("message_id = ?")
+        params.push(this.messageId)
+      } else if (this.authorId) {
+        toUpdate.push("author_id = ?")
+        params.push(this.authorId)
+      } else if (this.jumpUrl) {
+        toUpdate.push("jump_url = ?")
+        params.push(this.jumpUrl)
+      } else {
+        throw new Error("push called on empty PermittedSuggestion!")
+      }
+      query.push(toUpdate.join(", "))
+      
+      query.push("WHERE suggestion_id = ?")
+      params.push(this.recordId)
+      
+      // Run query
+      await db.run(query.join(" "), params)
+    } catch (DatabaseError) {
+      console.error(DatabaseError)
+    }
+  }
 }
 
+
+
+
+/*
 // build statments from permitted parameter objects
 let wherever = (permitted)=>{
   let equalities = Object.keys(permitted)
@@ -245,14 +393,19 @@ let valueable = (permitted)=>{
   let columns = params.map(k=>k.slice(1));
   return ` (${columns.join(", ")}) VALUES (${params.join(", ")}) `
 }
+*/
+
+
 
 
 /*-------*\
   EXPORTS
 \*-------*/
 module.exports = {
-  PermittedAuthor: PermittedAuthor,
-  getCurrentEpNum: async() => { await assureLoaded();
+  PermittedEpisode, PermittedAuthor, PermittedSuggestion,
+  getCurrentEpNum: async() => {
+    await assureLoaded();
+
     console.log("getCurrentEpNum")
     try {
       console.log("try")
@@ -263,15 +416,43 @@ module.exports = {
       console.error(Error)
     }
   },
-  addNewSuggestion: async({author, episode, suggestion})=>{ await assureLoaded();
-    // let permittedEpisode = permitEpisode(episode);
-    // let permittedSuggestion = permitSuggestion(suggestion);
-    // console.log(`New suggestion: ${permittedSuggestion}`)
-    // let episodeId = await db.get(
-    //   `SELECT episode_id FROM Episodes ${wherever(permittedEpisode)}`,
-    //   permittedEpisode
-    // )
-    // permittedSuggestion.$episode_id = episodeId;
-    // await db.run("INSERT INTO Suggestions" + valueable(permittedSuggestion))
+  addNewSuggestion: async(episode, author, suggestion)=>{
+    await assureLoaded();
+    
+    let permittedEpisode = new PermittedEpisode(episode);
+    await permittedEpisode.push()
+
+    let permittedAuthor = new PermittedAuthor(author);
+    await permittedAuthor.push()
+
+    let permittedSuggestion = new PermittedSuggestion(suggestion);
+    permittedSuggestion.permit({
+      episodeId: permittedEpisode.recordId,
+      authorId: permittedAuthor.recordId
+    })
+    await permittedSuggestion.push();                        
+  },
+  mock: {
+    author:     {discordId:18695631,
+                 name:"Ben",
+                 nick:"bennie"},
+    episode:    {epNum:999},
+    suggestion: {messageId: 82340,
+                 suggestion: "Test title test",
+                 jumpUrl: "http://.com"},
   }
 };
+
+/*
+basic functionality test:
+
+node> let pa, pe, ps, db;
+node> db = require("./src/sqlite.js");
+node> pa = new db.PermittedAuthor(db.mock.author); pa.push();
+node> pe = ...; pe.push();
+node> ps = ...;
+node> ps.associateAuthor(pa);
+node> ps.associateEpisode(pe);
+node> ps.push();
+*/
+

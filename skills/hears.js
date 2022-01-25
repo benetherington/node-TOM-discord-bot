@@ -48,6 +48,9 @@ module.exports = function (controller) {
     let messsageId = message.id;
     let suggestion = message.match.groups.suggestion;
     require("db")({authorNick, authorName, authorId, jumpUrl, messsageId, suggestion})
+    // shouldn't it be something like
+    // db.addNewSuggestion(episode, authorNick, suggestion);
+    // I don't know how to identify the episode ID though. Maybe addNewSuggestion should always use the latest.
   })
   
   

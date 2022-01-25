@@ -15,9 +15,9 @@ CREATE TABLE Suggestions (
   episode_id       INTEGER NOT NULL,
   author_id        INTEGER NOT NULL,
 
-  suggestion       TEXT    NOT NULL,
-  message_id       INTEGER NOT NULL,
-  jump_url         INTEGER NOT NULL,
+  suggestion       TEXT,
+  message_id       INTEGER,
+  jump_url         INTEGER,
 
   created_at       TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
   updated_at       TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),

@@ -238,8 +238,10 @@ class PermittedEpisode extends Object {
 
       // Run query
       await db.run(query)
+      return true
     } catch (DatabaseError) {
       console.error(DatabaseError)
+      return false
     }
   }
 }
@@ -415,6 +417,10 @@ module.exports = {
       console.log("caught")
       console.error(Error)
     }
+  },
+  addNewEpisode: async(epNum)=>{
+    let permittedEpisode = new PermittedEpisode({epNum});
+    return await permittedEpisode.push()
   },
   addNewSuggestion: async(episode, author, suggestion)=>{
     await assureLoaded();

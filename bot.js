@@ -1,5 +1,6 @@
 const { Client, Intents, Collection } = require('discord.js');
 const { emoji, responses } = require("./src/interaction-config.json")
+const fs = require("fs");
 
 /*
 CONFIGURE
@@ -21,12 +22,14 @@ for (const fileName of interactionFileNames) {
 
 
 /*
-INIT
+EVENTS
 */
-client.once('ready', () => {
+client.once('ready', ()=>{
     console.log('Ready!');
 });
-client.login(process.env.DISCORD_TOKEN)
+client.on('invalidated', ()=>{
+    console.log("Session invalidated.")
+})
 
 /*
 INTERACTIONS
@@ -43,6 +46,13 @@ client.on("interactionCreate", async interaction=>{
         await slash.execute(interaction)
     } catch (error) {
         console.error(error)
-        return interaction.reply(responses.failure)
+        interaction.reply(responses.failure)
     }
 })
+
+client.login(process.env.DISCORD_TOKEN)
+
+setInterval(
+    ()=>{console.log(client.isReady())},
+    5000
+)

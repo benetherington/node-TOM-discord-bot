@@ -18,28 +18,3 @@ module.exports = {
         })
     }
 }
-
-
-
-
-//   controller.hears(["help", "hi", "hello", "halp"], ["direct_mention", "mention"], helpHandler)
-//   controller.hears(['/help', '/jukebox', '/bot', '/helpme', '/help_me', '/halp'], "ambient", helpHandler)
-
-  
-  // SUGGESTIONS
-//   controller.hears(new RegExp(/\/title (?<suggestion>.*)/), "ambient", (bot, message)=>{
-//     let authorNick = message.author.nick;
-//     let authorName = message.author.name;
-//     let authorId   = message.author.id;
-//     let jumpUrl    = message.url;
-//     let messsageId = message.id;
-//     let suggestion = message.match.groups.suggestion;
-//     require("db")({authorNick, authorName, authorId, jumpUrl, messsageId, suggestion})
-    // shouldn't it be something like
-    // db.addNewSuggestion(episode, authorNick, suggestion);
-    // I don't know how to identify the episode ID though. Maybe addNewSuggestion should always use the latest.
-//   })
-  
-  
-  // end module.exports
-// };

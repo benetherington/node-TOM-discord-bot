@@ -20,7 +20,7 @@
             "content": "Oh, dang, I broke.",
             "ephemeral": true
         },
-        "acknoledge": {
+        "acknowledge": {
             "content": "You got it, boss.",
             "ephemeral": true
         }

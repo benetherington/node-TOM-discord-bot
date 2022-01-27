@@ -25,7 +25,7 @@ let printDbSummary = async ()=>{
     try {
         // TODO: running this SELECT query works from the command line tool, but
         // generates a "no table" error inside node.
-        let selectTables = await db.all("SELECT name FROM sqlite_schema WHERE type='table'");
+        let selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
         let exists = selectTables.map(row=>row.name);
         console.log(`Waking up SQLite. Tables: ${exists}`)
 

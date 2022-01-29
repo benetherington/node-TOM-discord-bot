@@ -7,6 +7,15 @@
         {
             "type": "pwa-node",
             "request": "launch",
+            "name": "Current file",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${file}"
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
             "name": "SQLite",
             "skipFiles": [
                 "<node_internals>/**"

@@ -12,8 +12,8 @@ const ID = require("./src/id.json");
 
 // Gather all slash files to register
 const slashFiles = fs.readdirSync("./slash").filter(f=>f.endsWith(".js"));
-let slashes = new Array();
-let permissions = new Object();
+const slashes = new Array();
+const permissions = new Object();
 
 // Require registration info
 for (let fileName of slashFiles) {

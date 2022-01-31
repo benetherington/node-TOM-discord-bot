@@ -396,51 +396,57 @@ let valueable = (permitted)=>{
 */
 
 
+async function getCurrentEpNum() {
+    await assureLoaded();
+
+    try {
+        let result = await db.get("SELECT ep_num FROM Episodes ORDER BY ep_num DESC");
+        return result.ep_num || null;
+    } catch (Error) {
+        // TODO: how should we handle being unable to find an episode number?
+        console.error(Error)
+    }
+}
+
+
 
 
 /*-------*\
   EXPORTS
 \*-------*/
 module.exports = {
-  PermittedEpisode, PermittedAuthor, PermittedSuggestion,
-  getCurrentEpNum: async() => {
-    await assureLoaded();
+    PermittedEpisode, PermittedAuthor, PermittedSuggestion,
+    addNewSuggestion: async(author, suggestion, episode)=>{
+        await assureLoaded();
+        
+        let permittedEpisode;
+        if (episode) {
+            permittedEpisode = new PermittedEpisode(episode);
+        } else {
+            let epNum = await getCurrentEpNum();
+            permittedEpisode = new PermittedEpisode({epNum});
+        }
+        await permittedEpisode.push()
 
-    console.log("getCurrentEpNum")
-    try {
-      console.log("try")
-      let result = await db.get("SELECT ep_num FROM Episodes ORDER BY ep_num DESC");
-      return result.ep_num || null;
-    } catch (Error) {
-      console.log("caught")
-      console.error(Error)
+        let permittedAuthor = new PermittedAuthor(author);
+        await permittedAuthor.push()
+
+        let permittedSuggestion = new PermittedSuggestion(suggestion);
+        permittedSuggestion.permit({
+            episodeId: permittedEpisode.recordId,
+            authorId: permittedAuthor.recordId
+        })
+        return await permittedSuggestion.push();
+    },
+    mock: {
+        author:     {discordId:18695631,
+                                 name:"Ben",
+                                 nick:"bennie"},
+        episode:    {epNum:999},
+        suggestion: {messageId: 82340,
+                                 suggestion: "Test title test",
+                                 jumpUrl: "http://.com"},
     }
-  },
-  addNewSuggestion: async(episode, author, suggestion)=>{
-    await assureLoaded();
-    
-    let permittedEpisode = new PermittedEpisode(episode);
-    await permittedEpisode.push()
-
-    let permittedAuthor = new PermittedAuthor(author);
-    await permittedAuthor.push()
-
-    let permittedSuggestion = new PermittedSuggestion(suggestion);
-    permittedSuggestion.permit({
-      episodeId: permittedEpisode.recordId,
-      authorId: permittedAuthor.recordId
-    })
-    await permittedSuggestion.push();                        
-  },
-  mock: {
-    author:     {discordId:18695631,
-                 name:"Ben",
-                 nick:"bennie"},
-    episode:    {epNum:999},
-    suggestion: {messageId: 82340,
-                 suggestion: "Test title test",
-                 jumpUrl: "http://.com"},
-  }
 };
 
 /*

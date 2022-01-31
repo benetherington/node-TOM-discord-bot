@@ -22,6 +22,19 @@ for (let fileName of slashFiles) {
     slashes.push(jsn)
     permissions[jsn.name] = permission;
 }
+const getSlashIdWithPermissions = registeredSlash=>{
+    // Retrieves a permission object from the data returned from a slash command
+    // registration call.
+    
+    // find permissions object
+    let permission = permissions[registeredSlash.name];
+    if (!permission) return;
+    // make it an array if needed
+    let permissionArray = permission instanceof Array ? permission : [permission];
+    // hand back the ID and permissions array
+    return {id: registeredSlash.id,
+            permissions: permissionArray}
+}
 // slashes is now an array full of JSON-ized SlashCommandBuilders.
 // permissions is now a name-keyed array of ApplicationCommandPermission-like objects
 
@@ -33,18 +46,7 @@ rest.put(Routes.applicationGuildCommands(ID.user.bot, ID.guild.tomCast),{body: s
     .then(registeredSlashes=>{
         console.log("Guild command registration successful.")
         // Gather permissions with the IDs assigned
-        return registeredSlashes
-            .map(rSlash=>{
-                // fetch permissions object
-                let permission = permissions[rSlash.name];
-                if (!permission) return;
-                // make it an array if needed
-                let permissionArray = permission instanceof Array ? permission : [permission];
-                // hand back the ID and permissions array
-                return {id: rSlash.id,
-                        permissions: permissionArray}
-            })
-            .filter(p=>p);
+        return registeredSlashes.map(getSlashIdWithPermissions).filter(p=>p);
     })
     .then(fullPermissions=>{
         // Register our new permissions
@@ -52,3 +54,4 @@ rest.put(Routes.applicationGuildCommands(ID.user.bot, ID.guild.tomCast),{body: s
     })
     .then(()=>console.log("Application command permissions edit successful"))
     .catch(console.error)
+

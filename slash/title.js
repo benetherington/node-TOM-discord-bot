@@ -20,26 +20,25 @@ const formatTitleReply = (userId, suggestionString, votes=1)=>{
 
 const execute = async (interaction)=>{
     // log early, log often
-    let suggestionText = interaction.options.getString("suggestion");
-    let user = interaction.user;
-    console.log(`New suggstion from ${user.nick || user.name}: ${suggestionText}`)
+    const suggestionString = interaction.options.getString("suggestion");
+    const user = interaction.user;
+    const member = interaction.member || {};
+    console.log(`New suggstion from ${member.displayName || user.username}: ${suggestionString}`)
 
     // DATA
     let author = {
         discordId: user.id,
-        name: user.name,
-        nick: user.nick
+        name: user.username,
+        nick: member.displayName
     };
     let suggestion = {
-        messageId: "998",
-        suggestion: suggestionText,
-        jumpUrl: "http://998.com"
+        suggestion: suggestionString,
+        messageId: interaction.token
     };
 
     // RESPOND
     try {
-        let success = await addNewSuggestion(author, suggestion)
-        if (success) {
+            const content = formatTitleReply(user.id, suggestionString);
             const row = new MessageActionRow()
                 .addComponents(
                     new MessageButton()
@@ -47,8 +46,7 @@ const execute = async (interaction)=>{
                         .setStyle("SUCCESS")
                         .setCustomId()
                 )
-            interaction.reply({content: suggestionText,
-                               components: [row]})
+            interaction.reply({content, components: [row]})
         } else {
             interaction.reply(responses.error)
         }

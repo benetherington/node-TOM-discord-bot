@@ -380,6 +380,7 @@ class PermittedSuggestion extends Object {
       
       // Run query
       await db.run(query.join(" "), params)
+      return this.recordId;
     } catch (DatabaseError) {
       console.error(DatabaseError)
     }

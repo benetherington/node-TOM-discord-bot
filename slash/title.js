@@ -38,13 +38,15 @@ const execute = async (interaction)=>{
 
     // RESPOND
     try {
+        const suggestionId = await addNewSuggestion(author, suggestion)
+        if (suggestionId) {
             const content = formatTitleReply(user.id, suggestionString);
             const row = new MessageActionRow()
                 .addComponents(
                     new MessageButton()
                         .setLabel("VOTE")
                         .setStyle("SUCCESS")
-                        .setCustomId()
+                        .setCustomId(suggestionId.toString())
                 )
             interaction.reply({content, components: [row]})
         } else {

@@ -11,7 +11,7 @@ let data = new SlashCommandBuilder()
         o.setName("suggestion")
          .setDescription("Your suggestion")
          .setRequired(true)
-    );
+    ).toJSON();
 
 let execute = async (interaction)=>{
     // log early, log often

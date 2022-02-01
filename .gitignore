@@ -1,2 +1,6 @@
 node_modules/
 .env
+.data/*
+.vscode/*
+*.code-workspace
+

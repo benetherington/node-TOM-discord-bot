@@ -2,6 +2,7 @@ const {MessageActionRow, MessageButton} = require('discord.js');
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {responses} = require("../src/interaction-config.json");
 const {addNewSuggestion} = require("../src/sqlite.js");
+const { format } = require('express/lib/response');
 
 
 let data = new SlashCommandBuilder()
@@ -14,8 +15,16 @@ let data = new SlashCommandBuilder()
     ).toJSON();
 
 
-const formatTitleReply = (userId, suggestionString, votes=1)=>{
-    return `(${votes}) <@${userId}>: \`${suggestionString}\``
+const formatTitleReply = (user, interaction, suggestionId)=>{
+    const content = `(1) <@${user.id}>: \`${interaction.options.getString("suggestion")}\``;
+    const row = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setLabel("VOTE")
+                .setStyle("SUCCESS")
+                .setCustomId(suggestionId.toString())
+        )
+    return {content, row}
 }
 
 const execute = async (interaction)=>{
@@ -40,15 +49,7 @@ const execute = async (interaction)=>{
     try {
         const suggestionId = await addNewSuggestion(author, suggestion)
         if (suggestionId) {
-            const content = formatTitleReply(user.id, suggestionString);
-            const row = new MessageActionRow()
-                .addComponents(
-                    new MessageButton()
-                        .setLabel("VOTE")
-                        .setStyle("SUCCESS")
-                        .setCustomId(suggestionId.toString())
-                )
-            interaction.reply({content, components: [row]})
+            interaction.reply(formatTitleReply(user, interaction, suggestionId))
         } else {
             interaction.reply(responses.error)
         }

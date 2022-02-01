@@ -13,7 +13,12 @@ let data = new SlashCommandBuilder()
          .setRequired(true)
     ).toJSON();
 
-let execute = async (interaction)=>{
+
+const formatTitleReply = (userId, suggestionString, votes=1)=>{
+    return `(${votes}) <@${userId}>: \`${suggestionString}\``
+}
+
+const execute = async (interaction)=>{
     // log early, log often
     let suggestionText = interaction.options.getString("suggestion");
     let user = interaction.user;

@@ -13,12 +13,13 @@ let data = new SlashCommandBuilder()
         o.setName("ep_num")
          .setDescription("Episode number")
          .setRequired(true)
-    );
-let permission = {
+    )
+    .toJSON();
+data.permissions = [{
     "id": role.tomCrew,
     "type": ApplicationCommandPermissionType.Role,
     permission: true
-}
+}]
 
 let execute = async (interaction)=>{
     let epNum = interaction.options.getInteger("ep_num");
@@ -39,4 +40,4 @@ let execute = async (interaction)=>{
     }
 };
 
-module.exports = { data, permission, execute }
+module.exports = { data, execute }

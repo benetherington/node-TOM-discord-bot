@@ -24,31 +24,25 @@ const rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN);
 
 // Register our list of slashes
 const provisionSlashes = async slashes=>{
-    // batch overwrite application commands
-    let registeredSlashes;
     try {
-        registeredSlashes = await rest.put(
+        // batch overwrite application commands
+        const registeredSlashes = await rest.put(
             Routes.applicationGuildCommands(ID.user.bot, ID.guild.tomCast),
             {body: slashes}
-        )
-    } catch (error) {
-        console.error("Something went wrong with PUT applications/guilds/commands")
-        console.error(error)
-    }
-    console.log("Guild command registration successful.")
+        );
+        console.log("Guild command registration successful.")
     
-    // batch edit command permissions
-    const fullPermissions = registeredSlashes.map(getSlashIdWithPermissions).filter(slash=>slash.permissions);
-    try {
+        // batch edit command permissions
+        const fullPermissions = registeredSlashes.map(getSlashIdWithPermissions).filter(slash=>slash.permissions);
         await rest.put(
             Routes.guildApplicationCommandsPermissions(ID.user.bot, ID.guild.tomCast),
             {body:fullPermissions}
         )
+        console.log("Application command permissions edit successful")
     } catch (error) {
-        console.error("Something went wrong with PUT applications/guilds/commands/permissions")
+        console.error("Something went wrong in provisionSlashes")
         console.error(error)
     }
-    console.log("Application command permissions edit successful")
 }
 
 provisionSlashes(slashes)

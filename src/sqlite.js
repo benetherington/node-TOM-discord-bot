@@ -424,6 +424,10 @@ async function getCurrentEpNum() {
 \*-------*/
 module.exports = {
     PermittedEpisode, PermittedAuthor, PermittedSuggestion,
+    addNewEpisode: async(epNum)=>{
+        let permittedEpisode = new PermittedEpisode({epNum});
+        return await permittedEpisode.push()
+    },
     addNewSuggestion: async(author, suggestion, episode)=>{
         await assureLoaded();
         
@@ -448,12 +452,12 @@ module.exports = {
     },
     mock: {
         author:     {discordId:18695631,
-                                 name:"Ben",
-                                 nick:"bennie"},
+                     name:"Ben",
+                     nick:"bennie"},
         episode:    {epNum:999},
         suggestion: {messageId: 82340,
-                                 suggestion: "Test title test",
-                                 jumpUrl: "http://.com"},
+                     suggestion: "Test title test",
+                     jumpUrl: "http://.com"},
     }
 };
 

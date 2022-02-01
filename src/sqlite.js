@@ -412,7 +412,6 @@ async function getCurrentEpNum() {
         let result = await db.get("SELECT ep_num FROM Episodes ORDER BY ep_num DESC");
         return result.ep_num || null;
     } catch (Error) {
-        // TODO: how should we handle being unable to find an episode number?
         console.error(Error)
     }
 }

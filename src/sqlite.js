@@ -295,11 +295,11 @@ class PermittedSuggestion extends Object {
       // build a query to find this object in the db, using the highest certainty column
       let query = [`SELECT * FROM Suggestions WHERE`];
       if (this.recordId) {
-        query.push(`suggestion_id = ${this.recordId},`)
+        query.push(`suggestion_id = "${this.recordId}",`)
       } else if (this.messageId) {
-        query.push(`message_id = ${this.messageId}`)
+        query.push(`message_id = "${this.messageId}"`)
       } else {
-        throw new Error("PermittedEpisode.fetch needs a recordId or a messageId!")
+        throw new Error("PermittedSuggestion.fetch needs a recordId or a messageId!")
       }
       return db.get(query.join(" "))
     } catch (DatabaseError) {
@@ -440,7 +440,7 @@ module.exports = {
             permittedEpisode = new PermittedEpisode({epNum});
         }
         await permittedEpisode.push()
-
+        
         let permittedAuthor = new PermittedAuthor(author);
         await permittedAuthor.push()
 

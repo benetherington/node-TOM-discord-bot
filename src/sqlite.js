@@ -117,51 +117,53 @@ let wrapperPromise = dbWrapper
 /*-------*\
   EXPORTS
 \*-------*/
-module.exports = {
-  PermittedEpisode, PermittedAuthor, PermittedSuggestion,
-  getCurrentEpNum: async() => {
+const getCurrentEpNum = async() => {
     await assureLoaded();
 
-    console.log("getCurrentEpNum")
     try {
-      console.log("try")
-      let result = await db.get("SELECT ep_num FROM Episodes ORDER BY ep_num DESC");
-      return result.ep_num || null;
+        let result = await db.get("SELECT ep_num FROM Episodes ORDER BY ep_num DESC");
+        return result.ep_num || null;
     } catch (Error) {
-      console.log("caught")
-      console.error(Error)
+        console.error(Error)
     }
-  },
-  addNewEpisode: async(epNum)=>{
-    let permittedEpisode = new PermittedEpisode({epNum});
-    return await permittedEpisode.push()
-  },
-  addNewSuggestion: async(episode, author, suggestion)=>{
+}
+
+const addNewEpisode = async(epNum)=>{
+    const existingRecord = await db.get(
+        "SELECT episode_id FROM Episodes WHERE epNum = ?",
+        epNum
+    )
+    if (existingRecord) return existingRecord.episode_id;
+    const newRecord = await db.run(
+        "INSERT INTO Episodes (epNum) VALUES (?)",
+        epNum
+    )
+    return newRecord.lastID;
+}
+
+const addNewSuggestion = async(episode, author, suggestion)=>{
     await assureLoaded();
     
-    let permittedEpisode = new PermittedEpisode(episode);
-    await permittedEpisode.push()
+    const episode = await db.run(
+        "SELECT episode_id FROM Episodes WHERE epNum = ?",
+        await getCurrentEpNum()
+    )
 
     let permittedAuthor = new PermittedAuthor(author);
-    await permittedAuthor.push()
+    const author = await db.run(
+        "SELECT author_id FROM Authors WHERE id = ?",
+        permittedAuthor.id
+    )
 
     let permittedSuggestion = new PermittedSuggestion(suggestion);
     permittedSuggestion.permit({
-      episodeId: permittedEpisode.recordId,
-      authorId: permittedAuthor.recordId
+        episodeId: permittedEpisode.recordId,
+        authorId: permittedAuthor.recordId
     })
-    await permittedSuggestion.push();                        
-  },
-  mock: {
-    author:     {discordId:18695631,
-                 name:"Ben",
-                 nick:"bennie"},
-    episode:    {epNum:999},
-    suggestion: {messageId: 82340,
-                 suggestion: "Test title test",
-                 jumpUrl: "http://.com"},
-  }
-};
+    await permittedSuggestion.push();
+}
+
+module.exports = {getCurrentEpNum, addNewEpisode, addNewSuggestion};
 
 /*
 basic functionality test:

@@ -117,53 +117,50 @@ let wrapperPromise = dbWrapper
 /*-------*\
   EXPORTS
 \*-------*/
-const getCurrentEpNum = async() => {
-    await assureLoaded();
+const getCurrentEpisode = ()=>db.get("SELECT * FROM Episodes ORDER BY epNum DESC;");
 
-    try {
-        let result = await db.get("SELECT ep_num FROM Episodes ORDER BY ep_num DESC");
-        return result.ep_num || null;
-    } catch (Error) {
-        console.error(Error)
-    }
+const getCurrentEpNum = async()=>{
+    await assureLoaded();
+    const currentEp = await getCurrentEpisode();
+    return currentEp.epNum;
 }
 
 const addNewEpisode = async(epNum)=>{
-    const existingRecord = await db.get(
-        "SELECT episode_id FROM Episodes WHERE epNum = ?",
+    await db.run("INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);", epNum)
+    const episode = await db.get(
+        "SELECT * FROM Episodes WHERE epNum = ?;",
         epNum
     )
-    if (existingRecord) return existingRecord.episode_id;
-    const newRecord = await db.run(
-        "INSERT INTO Episodes (epNum) VALUES (?)",
-        epNum
-    )
-    return newRecord.lastID;
+    return episode;
 }
 
-const addNewSuggestion = async(episode, author, suggestion)=>{
+const addNewSuggestion = async(epNum, author, suggestion)=>{
     await assureLoaded();
     
-    const episode = await db.run(
-        "SELECT episode_id FROM Episodes WHERE epNum = ?",
-        await getCurrentEpNum()
-    )
+    // SELECT episode
+    const episode = await getCurrentEpisode()
 
-    let permittedAuthor = new PermittedAuthor(author);
-    const author = await db.run(
-        "SELECT author_id FROM Authors WHERE id = ?",
-        permittedAuthor.id
+    // INSECT author
+    await db.run(
+        "INSERT OR IGNORE INTO Authors (id, username, displayName) VALUES (?);",
+        author.id, author.username, author.displayName
     )
-
-    let permittedSuggestion = new PermittedSuggestion(suggestion);
-    permittedSuggestion.permit({
-        episodeId: permittedEpisode.recordId,
-        authorId: permittedAuthor.recordId
-    })
-    await permittedSuggestion.push();
+    let author = db.get(
+        "SELECT * FROM Authors WHERE discord_id = ?;",
+        author.discord_id
+    )
+    
+    // INSERT suggestion
+    const insertResults = await db.run(
+        "INSERT INTO Suggestions (episodeId, authorId, token, text) "+
+        "VALUES (?, ?, ?, ?);",
+        episode.episodeId, author.authorId, suggestion.token, suggestion.text
+    );
+    
+    return insertResults.lastID;
 }
 
-module.exports = {getCurrentEpNum, addNewEpisode, addNewSuggestion};
+module.exports = {getCurrentEpisode, addNewEpisode, addNewSuggestion};
 
 /*
 basic functionality test:

@@ -19,7 +19,7 @@ for (const fileName of interactionFileNames) {
     let slash = require("./slash/"+fileName);
     client.slashes.set(slash.data.name, slash)
 }
-const {recieveButton} = require("./buttons/buttons.js");
+const {receiveButton} = require("./buttons/buttons.js");
 
 /*
 EVENTS
@@ -48,7 +48,7 @@ client.on("interactionCreate", async interaction=>{
             interaction.reply(responses.failure)
         }
     } else if (interaction.isButton()) {
-        recieveButton(interaction)
+        receiveButton(interaction)
     }
 })
 

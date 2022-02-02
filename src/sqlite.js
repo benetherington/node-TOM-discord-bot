@@ -22,19 +22,19 @@ let db;
 // await assureLoaded before interacting with the database
 let assureLoaded = async()=>{await wrapperPromise;}
 let printDbSummary = async ()=>{
-    try {
-        // TODO: running this SELECT query works from the command line tool, but
-        // generates a "no table" error inside node.
-        let selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
-        let exists = selectTables.map(row=>row.name);
-        console.log(`Waking up SQLite. Tables: ${exists}`)
+        try {
+                // TODO: running this SELECT query works from the command line tool, but
+                // generates a "no table" error inside node.
+                let selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
+                let exists = selectTables.map(row=>row.name);
+                console.log(`Waking up SQLite. Tables: ${exists}`)
 
-        let firstSuggestions = await db.all("SELECT suggestion from Suggestions ORDER BY suggestion_id LIMIT 10");
-        firstSuggestions = firstSuggestions.map(r=>r.suggestion).join(", ");
-        console.log(`Most recent suggestions: ${firstSuggestions}`)
-    } catch {
-        console.error("There was an issue printing the db summary.")
-    }
+                let firstSuggestions = await db.all("SELECT suggestion from Suggestions ORDER BY suggestion_id LIMIT 10");
+                firstSuggestions = firstSuggestions.map(r=>r.suggestion).join(", ");
+                console.log(`Most recent suggestions: ${firstSuggestions}`)
+        } catch {
+                console.error("There was an issue printing the db summary.")
+        }
 }
 
 
@@ -42,20 +42,20 @@ let printDbSummary = async ()=>{
   DB INIT
 \*-------*/
 let wrapperPromise = dbWrapper
-  .open({
-    filename: dbFile,
-    driver: sqlite3.cached.Database
-  })
-  .then(async dBase => {
-    db = dBase;
-    try {
-      await db.migrate() // defaults to no force, table migrations, path ./migrations
-      await printDbSummary()
-    } catch (dbError) {
-      console.error(dbError);
-    }
-  })
-  .catch(e=>console.error(e))
+    .open({
+        filename: dbFile,
+        driver: sqlite3.cached.Database
+    })
+    .then(async dBase => {
+        db = dBase;
+        try {
+            await db.migrate() // defaults to no force, table migrations, path ./migrations
+            await printDbSummary()
+        } catch (dbError) {
+            console.error(dbError);
+        }
+    })
+    .catch(e=>console.error(e))
 
 
 

@@ -263,6 +263,17 @@ class PermittedSuggestion extends Object {
     suggestion.permit(options);
   }
   
+    toJson() {
+        return {
+            recordId: this.recordId,
+            authorId: this.authorId,
+            episodeId: this.episodeId,
+            messageId: this.messageId,
+            suggestion: this.suggestion,
+            jumpUrl: this.jumpUrl
+        }
+    }
+  
   /* SUGGESTION
   Safely pass in new properties.
   */
@@ -449,6 +460,12 @@ module.exports = {
             authorId: permittedAuthor.recordId
         })
         return await permittedSuggestion.push();
+    },
+    addVoter: async(suggestion, voter)=>{
+        const permittedVoter = new PermittedAuthor(voter);
+        const permittedSuggestion = new PermittedSuggestion(suggestion);
+        await permittedSuggestion.associateVoter(permittedVoter);
+        return permittedSuggestion.votes.length;
     },
     mock: {
         author:     {discordId:18695631,

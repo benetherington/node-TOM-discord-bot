@@ -19,7 +19,7 @@ for (const fileName of interactionFileNames) {
     let slash = require("./slash/"+fileName);
     client.slashes.set(slash.data.name, slash)
 }
-
+const {recieveButton} = require("./buttons/buttons.js");
 
 /*
 EVENTS
@@ -37,16 +37,18 @@ These are registered in ./register-commands.js, which needs to be run once
 as a provisioning step.
 */
 client.on("interactionCreate", async interaction=>{
-    if (!interaction.isCommand()) {return;}
-    
-    let slash = client.slashes.get(interaction.commandName);
-    if (!slash) {return;}
-    
-    try {
-        await slash.execute(interaction)
-    } catch (error) {
-        console.error(error)
-        interaction.reply(responses.failure)
+    if (interaction.isCommand()) {
+        let slash = client.slashes.get(interaction.commandName);
+        if (!slash) {return;}
+        
+        try {
+            await slash.execute(interaction)
+        } catch (error) {
+            console.error(error)
+            interaction.reply(responses.failure)
+        }
+    } else if (interaction.isButton()) {
+        recieveButton(interaction)
     }
 })
 

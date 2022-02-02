@@ -120,7 +120,7 @@ let wrapperPromise = dbWrapper
 
 
 /*-------*\
-  EXPORTS
+  EPISODE
 \*-------*/
 const getCurrentEpisode = ()=>db.get("SELECT * FROM Episodes ORDER BY epNum DESC;");
 
@@ -137,6 +137,17 @@ const addNewEpisode = async(epNum)=>{
         epNum
     )
     return episode;
+}
+
+
+/*-----------*\
+  SUGGESTIONS
+\*-----------*/
+const getSuggestion = (suggestion)=>{
+    return db.get(
+        "SELECT * FROM Suggestions WHERE suggestionId = ?",
+        suggestion.suggestionId
+    )
 }
 
 const addNewSuggestion = async(author, suggestion)=>{
@@ -175,4 +186,36 @@ const addNewSuggestion = async(author, suggestion)=>{
     return newSuggestion;
 }
 
-module.exports = {getCurrentEpNum, addNewEpisode, addNewSuggestion};
+/*------*\
+  VOTING
+\*------*/
+
+const countVotesOnSuggestion = async (suggestion)=>{
+    const voteCount = await db.get(
+        "SELECT COUNT(*) FROM Suggestion_Voters WHERE suggestionId = ?;",
+        suggestion.suggestionId
+    );
+    return voteCount["COUNT(*)"]
+}
+
+const addVoterToSuggestion = (voter, suggestion)=>{
+    db.run(
+       `INSERT INTO Suggestion_Voters (suggestionId, authorId)
+        VALUES (
+            (?),
+            (SELECT authorId FROM Authors WHERE discordId = ?)
+        );`,
+        suggestion.suggestionId, voter.discordId
+    );
+}
+
+module.exports = {
+    // Episodes
+    getCurrentEpNum, addNewEpisode,
+
+    // Suggestions
+    getSuggestion, addNewSuggestion,
+
+    // Voting
+    countVotesOnSuggestion, addVoterToSuggestion
+};

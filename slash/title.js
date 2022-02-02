@@ -14,42 +14,46 @@ let data = new SlashCommandBuilder()
          .setRequired(true)
     ).toJSON();
 
+const createAuthorFromInteraction = (interaction)=>{
+    const discordId = interaction.user.id;
+    const username = interaction.user.username;
+    const member = interaction.member || {};
+    const displayName = member.displayName || {};
+    return {discordId, username, displayName}
+}
 
-const formatTitleReply = (user, interaction, suggestionId)=>{
-    const content = `(1) <@${user.id}>: \`${interaction.options.getString("suggestion")}\``;
+const createSuggestionFromInteraction = (interaction)=>{
+    const text = interaction.options.getString("suggestion");
+    const token = interaction.token;
+    return {text, token}
+}
+
+const formatTitleReply = (author, suggestion)=>{
+    const content = `(1) <@${author.discordId}>: \`${suggestion.text}\``;
     const row = new MessageActionRow()
         .addComponents(
             new MessageButton()
                 .setLabel("VOTE")
                 .setStyle("SUCCESS")
-                .setCustomId(suggestionId.toString())
+                .setCustomId(suggestion.suggestionId.toString())
         )
     return {content, row}
 }
 
 const execute = async (interaction)=>{
+    const author = createAuthorFromInteraction(interaction);
+    const suggestion = createSuggestionFromInteraction(interaction);
+    
     // log early, log often
-    const suggestionString = interaction.options.getString("suggestion");
-    const user = interaction.user;
-    const member = interaction.member || {};
-    console.log(`New suggstion from ${member.displayName || user.username}: ${suggestionString}`)
-
-    // DATA
-    let author = {
-        discordId: user.id,
-        name: user.username,
-        nick: member.displayName
-    };
-    let suggestion = {
-        suggestion: suggestionString,
-        messageId: interaction.token
-    };
+    console.log(`New suggstion from ${author.displayName || author.username}: ${suggestion.text}`)
 
     // RESPOND
     try {
-        const suggestionId = await addNewSuggestion(author, suggestion)
-        if (suggestionId) {
-            interaction.reply(formatTitleReply(user, interaction, suggestionId))
+        const storedSuggestion = await addNewSuggestion(author, suggestion)
+        if (storedSuggestion) {
+            interaction.reply(
+                formatTitleReply(author, storedSuggestion)
+            )
         } else {
             interaction.reply(responses.error)
         }

@@ -199,8 +199,10 @@ const countVotesOnSuggestion = async (suggestion)=>{
 }
 
 const addVoterToSuggestion = (voter, suggestion)=>{
+    // Due to unique restraint on the combination of suggestionId and authorId,
+    // calling this function may or may not affect the database. It fails silently!
     db.run(
-       `INSERT INTO Suggestion_Voters (suggestionId, authorId)
+       `INSERT OR IGNORE INTO Suggestion_Voters (suggestionId, authorId)
         VALUES (
             (?),
             (SELECT authorId FROM Authors WHERE discordId = ?)

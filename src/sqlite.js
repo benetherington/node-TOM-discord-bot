@@ -26,14 +26,19 @@ let printDbSummary = async ()=>{
                 // TODO: running this SELECT query works from the command line tool, but
                 // generates a "no table" error inside node.
                 let selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
-                let exists = selectTables.map(row=>row.name);
+                let exists = selectTables.map(row=>row.name).join(", ");
                 console.log(`Waking up SQLite. Tables: ${exists}`)
 
-                let firstSuggestions = await db.all("SELECT suggestion from Suggestions ORDER BY suggestion_id LIMIT 10");
-                firstSuggestions = firstSuggestions.map(r=>r.suggestion).join(", ");
-                console.log(`Most recent suggestions: ${firstSuggestions}`)
-        } catch {
+                let selectSuggestions = await db.all("SELECT text from Suggestions ORDER BY suggestionId LIMIT 10");
+                if (selectSuggestions.length) {
+                    firstSuggestions = selectSuggestions.map(r=>r.suggestion).join(", ");
+                    console.log(`Most recent suggestions: ${firstSuggestions}`)
+                } else {
+                    console.log("No suggestions have been made yet.")
+                }
+        } catch (error) {
                 console.error("There was an issue printing the db summary.")
+                console.error(error)
         }
 }
 
@@ -134,7 +139,7 @@ const addNewEpisode = async(epNum)=>{
     return episode;
 }
 
-const addNewSuggestion = async(epNum, author, suggestion)=>{
+const addNewSuggestion = async(author, suggestion)=>{
     await assureLoaded();
     
     // SELECT episode
@@ -142,36 +147,32 @@ const addNewSuggestion = async(epNum, author, suggestion)=>{
 
     // INSECT author
     await db.run(
-        "INSERT OR IGNORE INTO Authors (id, username, displayName) VALUES (?);",
-        author.id, author.username, author.displayName
+        "INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);",
+        author.discordId, author.username, author.displayName
     )
-    let author = db.get(
-        "SELECT * FROM Authors WHERE discord_id = ?;",
-        author.discord_id
+    const selectedAuthor = db.get(
+        "SELECT * FROM Authors WHERE discordId = ?;",
+        author.discordId
     )
     
     // INSERT suggestion
-    const insertResults = await db.run(
+    const suggestionsInsert = await db.run(
         "INSERT INTO Suggestions (episodeId, authorId, token, text) "+
         "VALUES (?, ?, ?, ?);",
-        episode.episodeId, author.authorId, suggestion.token, suggestion.text
+        episode.episodeId, selectedAuthor.authorId,
+        suggestion.token, suggestion.text
     );
+    await db.run(
+        "INSERT INTO Suggestion_Voters (suggestionId, authorId) VALUES (?, ?);",
+        suggestionsInsert.lastID, selectedAuthor.authorId
+    )
     
-    return insertResults.lastID;
+    // SELECT suggestion
+    const newSuggestion = await db.get(
+        "SELECT * FROM Suggestions WHERE suggestionId = ?;",
+        suggestionsInsert.lastID
+    )
+    return newSuggestion;
 }
 
-module.exports = {getCurrentEpisode, addNewEpisode, addNewSuggestion};
-
-/*
-basic functionality test:
-
-node> let pa, pe, ps, db;
-node> db = require("./src/sqlite.js");
-node> pa = new db.PermittedAuthor(db.mock.author); pa.push();
-node> pe = ...; pe.push();
-node> ps = ...;
-node> ps.associateAuthor(pa);
-node> ps.associateEpisode(pe);
-node> ps.push();
-*/
-
+module.exports = {getCurrentEpNum, addNewEpisode, addNewSuggestion};

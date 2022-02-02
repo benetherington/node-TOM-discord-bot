@@ -44,30 +44,23 @@ initDB();
 /*-------*\
   EXPORTS
 \*-------*/
-const getCurrentEpisode = ()=>db.get("SELECT * FROM Episodes ORDER BY epNum DESC;");
+const getCurrentEpisode = ()=>db.get("SELECT * FROM Episodes ORDER BY updated_at DESC;");
 
 const getCurrentEpNum = async()=>{
-    await assureLoaded();
-    const currentEp = await getCurrentEpisode();
-    return currentEp.epNum;
+    const episode = await getCurrentEpisode();
+    return episode.epNum;
 }
 
 const addNewEpisode = async(epNum)=>{
-    await db.run("INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);", epNum)
-    const episode = await db.get(
-        "SELECT * FROM Episodes WHERE epNum = ?;",
-        epNum
-    )
-    return episode;
+    const inserted = await db.run("INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);", epNum)
+    return inserted.lastID;
 }
 
 const addNewSuggestion = async(author, suggestion)=>{
-    await assureLoaded();
-    
-    // SELECT episode
+    // SELECT Episode
     const episode = await getCurrentEpisode()
 
-    // INSECT author
+    // INSECT Author
     await db.run(
         "INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);",
         author.discordId, author.username, author.displayName
@@ -77,7 +70,7 @@ const addNewSuggestion = async(author, suggestion)=>{
         author.discordId
     )
     
-    // INSERT suggestion
+    // INSERT Suggestion, associate with Author
     const suggestionsInsert = await db.run(
         "INSERT INTO Suggestions (episodeId, authorId, token, text) "+
         "VALUES (?, ?, ?, ?);",
@@ -89,7 +82,7 @@ const addNewSuggestion = async(author, suggestion)=>{
         suggestionsInsert.lastID, selectedAuthor.authorId
     )
     
-    // SELECT suggestion
+    // SELECT Suggestion
     const newSuggestion = await db.get(
         "SELECT * FROM Suggestions WHERE suggestionId = ?;",
         suggestionsInsert.lastID

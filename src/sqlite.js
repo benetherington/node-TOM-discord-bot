@@ -295,11 +295,11 @@ class PermittedSuggestion extends Object {
       // build a query to find this object in the db, using the highest certainty column
       let query = [`SELECT * FROM Suggestions WHERE`];
       if (this.recordId) {
-        query.push(`suggestion_id = ${this.recordId},`)
+        query.push(`suggestion_id = "${this.recordId}",`)
       } else if (this.messageId) {
-        query.push(`message_id = ${this.messageId}`)
+        query.push(`message_id = "${this.messageId}"`)
       } else {
-        throw new Error("PermittedEpisode.fetch needs a recordId or a messageId!")
+        throw new Error("PermittedSuggestion.fetch needs a recordId or a messageId!")
       }
       return db.get(query.join(" "))
     } catch (DatabaseError) {
@@ -380,6 +380,7 @@ class PermittedSuggestion extends Object {
       
       // Run query
       await db.run(query.join(" "), params)
+      return this.recordId;
     } catch (DatabaseError) {
       console.error(DatabaseError)
     }
@@ -404,55 +405,60 @@ let valueable = (permitted)=>{
 */
 
 
+async function getCurrentEpNum() {
+    await assureLoaded();
+
+    try {
+        let result = await db.get("SELECT ep_num FROM Episodes ORDER BY ep_num DESC");
+        return result.ep_num || null;
+    } catch (Error) {
+        console.error(Error)
+    }
+}
+
+
 
 
 /*-------*\
   EXPORTS
 \*-------*/
 module.exports = {
-  PermittedEpisode, PermittedAuthor, PermittedSuggestion,
-  getCurrentEpNum: async() => {
-    await assureLoaded();
+    PermittedEpisode, PermittedAuthor, PermittedSuggestion,
+    addNewEpisode: async(epNum)=>{
+        let permittedEpisode = new PermittedEpisode({epNum});
+        return await permittedEpisode.push()
+    },
+    addNewSuggestion: async(author, suggestion, episode)=>{
+        await assureLoaded();
+        
+        let permittedEpisode;
+        if (episode) {
+            permittedEpisode = new PermittedEpisode(episode);
+        } else {
+            let epNum = await getCurrentEpNum();
+            permittedEpisode = new PermittedEpisode({epNum});
+        }
+        await permittedEpisode.push()
+        
+        let permittedAuthor = new PermittedAuthor(author);
+        await permittedAuthor.push()
 
-    console.log("getCurrentEpNum")
-    try {
-      console.log("try")
-      let result = await db.get("SELECT ep_num FROM Episodes ORDER BY ep_num DESC");
-      return result.ep_num || null;
-    } catch (Error) {
-      console.log("caught")
-      console.error(Error)
+        let permittedSuggestion = new PermittedSuggestion(suggestion);
+        permittedSuggestion.permit({
+            episodeId: permittedEpisode.recordId,
+            authorId: permittedAuthor.recordId
+        })
+        return await permittedSuggestion.push();
+    },
+    mock: {
+        author:     {discordId:18695631,
+                     name:"Ben",
+                     nick:"bennie"},
+        episode:    {epNum:999},
+        suggestion: {messageId: 82340,
+                     suggestion: "Test title test",
+                     jumpUrl: "http://.com"},
     }
-  },
-  addNewEpisode: async(epNum)=>{
-    let permittedEpisode = new PermittedEpisode({epNum});
-    return await permittedEpisode.push()
-  },
-  addNewSuggestion: async(episode, author, suggestion)=>{
-    await assureLoaded();
-    
-    let permittedEpisode = new PermittedEpisode(episode);
-    await permittedEpisode.push()
-
-    let permittedAuthor = new PermittedAuthor(author);
-    await permittedAuthor.push()
-
-    let permittedSuggestion = new PermittedSuggestion(suggestion);
-    permittedSuggestion.permit({
-      episodeId: permittedEpisode.recordId,
-      authorId: permittedAuthor.recordId
-    })
-    await permittedSuggestion.push();                        
-  },
-  mock: {
-    author:     {discordId:18695631,
-                 name:"Ben",
-                 nick:"bennie"},
-    episode:    {epNum:999},
-    suggestion: {messageId: 82340,
-                 suggestion: "Test title test",
-                 jumpUrl: "http://.com"},
-  }
 };
 
 /*

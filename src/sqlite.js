@@ -150,7 +150,7 @@ const addNewSuggestion = async(author, suggestion)=>{
         "INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);",
         author.discordId, author.username, author.displayName
     )
-    const selectedAuthor = db.get(
+    const selectedAuthor = await db.get(
         "SELECT * FROM Authors WHERE discordId = ?;",
         author.discordId
     )

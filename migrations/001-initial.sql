@@ -4,43 +4,61 @@
 
 
 CREATE TABLE Episodes (
-  episode_id       INTEGER          PRIMARY KEY,
-  ep_num           INTEGER NOT NULL,
-  created_at       TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
-  updated_at       TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime'))
+    episodeId   INTEGER NOT NULL PRIMARY KEY,
+    
+    epNum       INTEGER NOT NULL UNIQUE,
+    
+    created_at  TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
+    updated_at  TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
 
 CREATE TABLE Suggestions (
-  suggestion_id    INTEGER          PRIMARY KEY,
-  episode_id       INTEGER NOT NULL,
-  author_id        INTEGER NOT NULL,
+    suggestionId    INTEGER          PRIMARY KEY,
+    episodeId       INTEGER NOT NULL,
+    authorId        INTEGER NOT NULL,
+    
+    text          TEXT,
+    token         INTEGER,
+    
+    created_at      TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
+    updated_at      TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
 
-  suggestion       TEXT,
-  message_id       INTEGER,
-  jump_url         INTEGER,
-
-  created_at       TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
-  updated_at       TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
-
-  FOREIGN KEY (episode_id)
-    REFERENCES Episodes (episode_id)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-  FOREIGN KEY (author_id)
-    REFERENCES Authors (author_id)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
+    FOREIGN KEY (episodeId)
+        REFERENCES Episodes (episodeId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+    FOREIGN KEY (authorId)
+        REFERENCES Authors (authorId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 CREATE TABLE Authors (
-  author_id        INTEGER          PRIMARY KEY,
-  discord_id       INTEGER NOT NULL,
-  name             TEXT,
-  nick             TEXT,
-  created_at       TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
-  updated_at       TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime'))
+    authorId        INTEGER PRIMARY KEY,
+    discordId       INTEGER NOT NULL UNIQUE,
+    
+    username        TEXT,
+    displayName     TEXT,
+    
+    created_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime')),
+    updated_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime'))
 );
 
+CREATE TABLE Suggestion_Voters (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    
+    suggestionId    INTEGER NOT NULL,
+    authorId        INTEGER NOT NULL,
+    
+    FOREIGN KEY (suggestionId)
+        REFERENCES Suggestions (suggestionId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+    FOREIGN KEY (authorId)
+        REFERENCES Authors (authorId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
 
 --------------------------------------------------------------------------
 -- Down
@@ -49,3 +67,4 @@ CREATE TABLE Authors (
 DROP TABLE Episodes;
 DROP TABLE Suggestions;
 DROP TABLE Authors;
+DROP Table Suggestion_Voters;

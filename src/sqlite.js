@@ -43,10 +43,9 @@ initDB();
 /*-------*\
   EPISODE
 \*-------*/
-const getCurrentEpisode = ()=>db.get("SELECT * FROM Episodes ORDER BY epNum DESC;");
+const getCurrentEpisode = ()=>db.get("SELECT * FROM Episodes ORDER BY created_at DESC;");
 
 const getCurrentEpNum = async()=>{
-    await assureLoaded();
     const currentEp = await getCurrentEpisode();
     return currentEp.epNum;
 }

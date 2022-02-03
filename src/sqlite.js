@@ -70,19 +70,34 @@ const getSuggestion = (suggestion)=>{
     )
 }
 
-const getSuggestions = async (episode={})=>{
+const getSuggestionsWithCountedVotes = async (episode={})=>{
     // default to current episode
     if (!episode.epNum) {
         episode = await getCurrentEpisode();
     }
     
-    // SELECT Suggestions that match SELECTed Episode
-    return await db.all(
-       `SELECT * FROM Suggestions WHERE episodeId = (
-            SELECT episodeId FROM Episodes WHERE epNum = ?
-        );`,
+    // SELECT votes count, Suggestion text and Author discordId for all votes on
+    // Suggestions associated with epNum
+    const countedSuggestions = await db.all(
+        `SELECT
+            COUNT(Suggestion_Voters.suggestionId),
+            text,
+            discordId
+        FROM Suggestion_Voters
+            INNER JOIN Suggestions
+                ON suggestions.SuggestionId = Suggestion_Voters.suggestionId
+            INNER JOIN Authors
+                ON Authors.authorId = Suggestions.authorId
+        WHERE Suggestions.episodeId = (SELECT episodeId FROM Episodes WHERE epNum = ?)
+        GROUP BY
+            Suggestion_Voters.suggestionId;`,
         episode.epNum
     )
+    const renamedCountedSuggestions = countedSuggestions.map(suggestion=>{
+        const {text, discordId, "COUNT(Suggestion_Voters.suggestionId)": voteCount} = suggestion;
+        return {text, discordId, voteCount};
+    });
+    return renamedCountedSuggestions;
 }
 
 const addNewSuggestion = async(author, suggestion)=>{
@@ -146,7 +161,7 @@ module.exports = {
     getCurrentEpNum, addNewEpisode,
 
     // Suggestions
-    getSuggestion, getSuggestions, addNewSuggestion,
+    getSuggestion, getSuggestionsWithCountedVotes, addNewSuggestion,
 
     // Voting
     countVotesOnSuggestion, addVoterToSuggestion

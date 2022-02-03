@@ -1,7 +1,7 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {responses} = require("../src/interaction-config.json");
-const {getCurrentEpNum, getSuggestions} = require("./src/sqlite.js")
+const {getCurrentEpNum, getSuggestionsWithCountedVotes} = require("./src/sqlite.js")
 
 let data = new SlashCommandBuilder()
     .setName("vote")
@@ -27,7 +27,7 @@ const execute = async (interaction)=>{
     }
     
     // RETRIEVE Suggestions
-    const suggestions = getSuggestions(episode);
+    const suggestions = getSuggestionsWithCountedVotes(episode);
     
     // Delete the most recent vote message.
     // Build a new vote message with the Author's name and the suggestion text.

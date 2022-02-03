@@ -29,8 +29,7 @@ const receiveSlash = async interaction=>{
     let slash = client.slashes.get(interaction.commandName);
     if (!slash) {return;}
     
-    try {await slash.execute(interaction)}
-    catch (error) {
+    slash.execute(interaction).catch(error) {
         console.error(error)
         interaction.reply(responses.failure)
     }

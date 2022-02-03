@@ -51,7 +51,6 @@ CREATE TABLE Suggestion_Voters (
     authorId        INTEGER NOT NULL,
     
     UNIQUE(suggestionId, authorId)
-    
     FOREIGN KEY (suggestionId)
         REFERENCES Suggestions (suggestionId)
         ON UPDATE CASCADE

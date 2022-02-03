@@ -2,7 +2,6 @@ const {MessageActionRow, MessageButton} = require('discord.js');
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {responses} = require("../src/interaction-config.json");
 const {addNewSuggestion} = require("../src/sqlite.js");
-const { format } = require('express/lib/response');
 
 
 let data = new SlashCommandBuilder()

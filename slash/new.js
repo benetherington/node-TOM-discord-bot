@@ -10,7 +10,7 @@ let data = new SlashCommandBuilder()
     .setDescription('Starts a new episode recording')
     .setDefaultPermission(false)
     .addIntegerOption(o=>
-        o.setName("ep_num")
+        o.setName("epNum")
          .setDescription("Episode number")
          .setRequired(true)
     )
@@ -22,7 +22,7 @@ data.permissions = [{
 }]
 
 let execute = async (interaction)=>{
-    let epNum = interaction.options.getInteger("ep_num");
+    let epNum = interaction.options.getInteger("epNum");
     console.log(`Starting new episode ${epNum}.`)
     try {
         let success = await addNewEpisode(epNum)

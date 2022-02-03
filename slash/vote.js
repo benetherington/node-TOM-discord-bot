@@ -16,8 +16,8 @@ let data = new SlashCommandBuilder()
                     .setDescription("Episode Number (defaults to previous)")
                     .setRequired(false)
             )
-    ).toJSON();
-    
+    ).toJSON()
+;
 
 const execute = async (interaction)=>{
     // PICK epNum

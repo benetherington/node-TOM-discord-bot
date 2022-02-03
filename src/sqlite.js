@@ -71,9 +71,22 @@ const getSuggestion = (suggestion)=>{
     )
 }
 
-const addNewSuggestion = async(author, suggestion)=>{
-    await assureLoaded();
+const getSuggestions = async (episode={})=>{
+    // default to current episode
+    if (!episode.epNum) {
+        episode = await getCurrentEpisode();
+    }
     
+    // SELECT Suggestions that match SELECTed Episode
+    return await db.all(
+       `SELECT * FROM Suggestions WHERE episodeId = (
+            SELECT episodeId FROM Episodes WHERE epNum = ?
+        );`,
+        episode.epNum
+    )
+}
+
+const addNewSuggestion = async(author, suggestion)=>{
     // SELECT episode
     const episode = await getCurrentEpisode()
 
@@ -110,7 +123,6 @@ const addNewSuggestion = async(author, suggestion)=>{
 /*------*\
   VOTING
 \*------*/
-
 const countVotesOnSuggestion = async (suggestion)=>{
     const voteCount = await db.get(
         "SELECT COUNT(*) FROM Suggestion_Voters WHERE suggestionId = ?;",
@@ -135,7 +147,7 @@ module.exports = {
     getCurrentEpNum, addNewEpisode,
 
     // Suggestions
-    getSuggestion, addNewSuggestion,
+    getSuggestion, getSuggestions, addNewSuggestion,
 
     // Voting
     countVotesOnSuggestion, addVoterToSuggestion

@@ -1,7 +1,6 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
 const {SlashCommandBuilder} = require('@discordjs/builders');
-const {responses} = require("../src/interaction-config.json");
-const {getCurrentEpNum, getSuggestionsWithCountedVotes} = require("./src/sqlite.js")
+const {getSuggestionsWithCountedVotes} = require("./src/sqlite.js")
 
 let data = new SlashCommandBuilder()
     .setName("vote")
@@ -19,6 +18,40 @@ let data = new SlashCommandBuilder()
     ).toJSON()
 ;
 
+
+
+
+
+const formatVoteButton = (author, suggestion, voteCount=1)=>{
+    // Turn votes into MessageButtons
+    const label = `(${voteCount}) <@${author.discordId}>: \`${suggestion.text}\``;
+    return new MessageButton()
+        .setLabel(label)
+        .setStyle("PRIMARY")
+        .setCustomId(suggestion.suggestionId.toString())
+}
+
+const formatVoteRow = (votes)=>{
+    // Turn votes into MessageButtons, put them in a MessageActionRow.
+    const voteComponents = votes.map(formatVoteButton);
+    return new MessageActionRow().setComponents(voteComponents);
+}
+// PICKUP: this is all untested
+
+const formatVoteReplies = (votes)=>{
+    // Messages can only contain five MessageActionRows.
+    // Break [votes] into arrays of 5 votes each.
+    let suggestionChunks = [];
+    while (votes.length) {
+        suggestionChunks.append(votes.splice(0,5))
+    }
+    const components = suggestionChunks.map(formatVoteRow);
+    return {content:"", components}
+}
+
+
+
+
 const execute = async (interaction)=>{
     // PICK epNum
     const episode = {epNum};
@@ -27,10 +60,12 @@ const execute = async (interaction)=>{
     }
     
     // RETRIEVE Suggestions
-    const suggestions = getSuggestionsWithCountedVotes(episode);
+    const votes = getSuggestionsWithCountedVotes(episode);
+    
+    // BUILD response/s
+    const responses = formatVoteReplies(votes);
     
     // Delete the most recent vote message.
-    // Build a new vote message with the Author's name and the suggestion text.
     // Add a button for each suggestion, depending on API attach a vote event to it?
 };
 

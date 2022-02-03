@@ -81,6 +81,7 @@ const getSuggestionsWithCountedVotes = async (episode={})=>{
     const countedSuggestions = await db.all(
         `SELECT
             COUNT(Suggestion_Voters.suggestionId),
+            Suggestions.suggestionId,
             text,
             discordId
         FROM Suggestion_Voters
@@ -93,11 +94,24 @@ const getSuggestionsWithCountedVotes = async (episode={})=>{
             Suggestion_Voters.suggestionId;`,
         episode.epNum
     )
-    const renamedCountedSuggestions = countedSuggestions.map(suggestion=>{
-        const {text, discordId, "COUNT(Suggestion_Voters.suggestionId)": voteCount} = suggestion;
-        return {text, discordId, voteCount};
+    // REVIEW: is it worth pulling this out into its own named function? It
+    // seems to me that it should be inline because it's unique.
+    const formattedCountedSuggestions = countedSuggestions.map(suggestion=>{
+        // RENAME
+        const {
+            "COUNT(Suggestion_Voters.suggestionId)": voteCount,
+            "Suggestions.suggestionId": suggestionId,
+            text,
+            discordId
+        } = suggestion;
+        // PACKAGE
+        return {
+            suggestion: {suggestionId, text},
+            author: {discordId},
+            voteCount
+        };
     });
-    return renamedCountedSuggestions;
+    return formattedCountedSuggestions;
 }
 
 const addNewSuggestion = async(author, suggestion)=>{

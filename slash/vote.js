@@ -22,51 +22,61 @@ let data = new SlashCommandBuilder()
 
 
 
-const formatVoteButton = (author, suggestion, voteCount=1)=>{
-    // Turn votes into MessageButtons
+const formatVoteRow = ({author, suggestion, voteCount=1})=>{
+    // Turn votes into MessageButtons inside a MessageActionRow
     const label = `(${voteCount}) <@${author.discordId}>: \`${suggestion.text}\``;
-    return new MessageButton()
+    const button = new MessageButton()
         .setLabel(label)
         .setStyle("PRIMARY")
         .setCustomId(suggestion.suggestionId.toString())
+    return new MessageActionRow().setComponents(button)
 }
 
-const formatVoteRow = (votes)=>{
-    // Turn votes into MessageButtons, put them in a MessageActionRow.
-    const voteComponents = votes.map(formatVoteButton);
-    return new MessageActionRow().setComponents(voteComponents);
+const formatVoteReply = (countedSuggestionChunk)=>{
+    const voteRows = countedSuggestionChunk.map(formatVoteRow);
+    return {content:"VOTE:", components: voteRows}
 }
-// PICKUP: this is all untested
+// PICKUP: this is ugly, and the mention is not resolved.
 
-const formatVoteReplies = (votes)=>{
-    // Messages can only contain five MessageActionRows.
-    // Break [votes] into arrays of 5 votes each.
-    let suggestionChunks = [];
-    while (votes.length) {
-        suggestionChunks.append(votes.splice(0,5))
+const chunkArray = (toChunk, chunkSize)=>{
+    let chunked = [];
+    while (toChunk.length) {
+        chunked.push(toChunk.splice(0,chunkSize));
     }
-    const components = suggestionChunks.map(formatVoteRow);
-    return {content:"", components}
+    return chunked;
+}
+
+const formatVoteReplies = (allCountedSuggestions)=>{
+    // Messages can only contain five MessageActionRows.
+    // Break [allCountedSuggestions] into arrays of 5 suggestions each, then turn
+    // each chunk into a reply with five rows of one button each.
+    const countedSuggestionChunks = chunkArray(allCountedSuggestions, 5);
+    return countedSuggestionChunks.map(formatVoteReply)
 }
 
 
 
 
 const execute = async (interaction)=>{
+    console.log("New vote request from "+interaction.user.username)
     // PICK epNum
-    const episode = {epNum};
+    const episode = {epNum:null};
     if (interaction.options.getSubcommand()==="for_episode") {
         episode.epNum = interaction.options.getInteger("ep_num");
     }
     
     // RETRIEVE Suggestions
-    const votes = getSuggestionsWithCountedVotes(episode);
+    const allCountedSuggestions = await getSuggestionsWithCountedVotes(episode);
+    console.log(`Found ${allCountedSuggestions.length} suggestions to vote on`)
     
     // BUILD response/s
-    const responses = formatVoteReplies(votes);
-    
-    // Delete the most recent vote message.
-    // Add a button for each suggestion, depending on API attach a vote event to it?
+    const responses = formatVoteReplies(allCountedSuggestions);
+    // TODO:Delete the most recent vote message.
+    // SEND responses
+    await interaction.reply(responses.pop())
+    while (responses.length) {
+        await interaction.followUp(responses.pop())
+    }
 };
 
 module.exports = {data, execute}

@@ -1,6 +1,6 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
 const {SlashCommandBuilder} = require('@discordjs/builders');
-const {getSuggestionsWithCountedVotes} = require("./src/sqlite.js")
+const {getSuggestionsWithCountedVotes} = require("../src/sqlite.js");
 
 let data = new SlashCommandBuilder()
     .setName("vote")

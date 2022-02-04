@@ -12,7 +12,7 @@ const ID = require("../src/id.json");
 
 // Gather all slash files to register
 const slashFiles = fs.readdirSync("./slash").filter(f=>f.endsWith(".js"));
-const slashes = slashFiles.map(fileName=>require("./slash/"+fileName).data);
+const slashes = slashFiles.map(fileName=>require("../slash/"+fileName).data);
 const getSlashIdWithPermissions = registeredSlash=>{
     const permissions = slashes.find(s=>s.name===registeredSlash.name).permissions;
     const id = registeredSlash.id;

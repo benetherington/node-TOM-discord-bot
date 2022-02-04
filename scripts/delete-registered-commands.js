@@ -5,7 +5,7 @@ try {require('dotenv').config()}
 catch (ReferenceError) {console.log("oh hey we must be running on Glitch")}
 const {REST} = require("@discordjs/rest");
 const {Routes} = require("discord-api-types/v9");
-const ID = require("./src/id.json");
+const ID = require("../src/id.json");
 
 const rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN);
 

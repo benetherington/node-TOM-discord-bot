@@ -79,7 +79,7 @@ const getSuggestionsWithCountedVotes = async (episode={})=>{
     // SELECT votes count, Suggestion text and Author discordId for all votes on
     // Suggestions associated with epNum
     const countedSuggestions = await db.all(
-        `SELECT
+       `SELECT
             COUNT(Suggestion_Voters.suggestionId),
             Suggestions.suggestionId,
             text,

@@ -80,7 +80,7 @@ const getSuggestionsWithCountedVotes = async (episode={})=>{
     // Suggestions associated with epNum
     const countedSuggestions = await db.all(
        `SELECT
-            COUNT(Suggestion_Voters.suggestionId),
+            COUNT(*),
             Suggestions.suggestionId,
             text,
             discordId
@@ -99,8 +99,8 @@ const getSuggestionsWithCountedVotes = async (episode={})=>{
     const formattedCountedSuggestions = countedSuggestions.map(suggestion=>{
         // RENAME
         const {
-            "COUNT(Suggestion_Voters.suggestionId)": voteCount,
-            "Suggestions.suggestionId": suggestionId,
+            "COUNT(*)": voteCount,
+            suggestionId,
             text,
             discordId
         } = suggestion;

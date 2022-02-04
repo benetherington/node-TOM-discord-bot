@@ -28,16 +28,16 @@ const createSuggestionFromInteraction = (interaction)=>{
     return {text, token}
 }
 
-const formatTitleReply = (author, suggestion)=>{
-    const content = `(1) <@${author.discordId}>: \`${suggestion.text}\``;
+const formatTitleReply = (author, suggestion, voteCount=1)=>{
+    const content = `<@${author.discordId}>: \`${suggestion.text}\``;
     const row = new MessageActionRow()
         .addComponents(
             new MessageButton()
-                .setLabel("VOTE")
+                .setLabel(`(${voteCount}) VOTE`)
                 .setStyle("SUCCESS")
                 .setCustomId(suggestion.suggestionId.toString())
         )
-    return {content, row}
+    return {content, components: [row]}
 }
 
 const execute = async (interaction)=>{
@@ -64,4 +64,4 @@ const execute = async (interaction)=>{
     }
 };
 
-module.exports = {data, execute}
+module.exports = {data, execute, formatTitleReply}

@@ -7,11 +7,11 @@ let data = new SlashCommandBuilder()
     .setDescription("Begin a new voting round")
     .addSubcommand(subcommand=>
         subcommand
-            .setName("forEpisode")
+            .setName("for_episode")
             .setDescription("Summarize suggestions for a past episode")
             .addIntegerOption(option=>
                 option
-                    .setName("epNum")
+                    .setName("ep_num")
                     .setDescription("Episode Number (defaults to previous)")
                     .setRequired(false)
             )
@@ -55,8 +55,8 @@ const formatVoteReplies = (votes)=>{
 const execute = async (interaction)=>{
     // PICK epNum
     const episode = {epNum};
-    if (interaction.options.getSubcommand()==="forEpisode") {
-        episode.epNum = interaction.options.getInteger("epNum");
+    if (interaction.options.getSubcommand()==="for_episode") {
+        episode.epNum = interaction.options.getInteger("ep_num");
     }
     
     // RETRIEVE Suggestions

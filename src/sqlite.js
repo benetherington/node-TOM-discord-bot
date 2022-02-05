@@ -59,6 +59,15 @@ const addNewEpisode = async(epNum)=>{
     return episode;
 }
 
+/*-------*\
+  Authors
+\*-------*/
+const getAuthorFromSuggestion = (suggestion)=>{
+    return db.get(
+        "SELECT * FROM Authors WHERE authorId = ?",
+        suggestion.authorId
+    )
+}
 
 /*-----------*\
   SUGGESTIONS
@@ -161,7 +170,11 @@ const countVotesOnSuggestion = async (suggestion)=>{
     return voteCount["COUNT(*)"]
 }
 
-const addVoterToSuggestion = (voter, suggestion)=>{
+const addVoterToSuggestion = async (voter, suggestion)=>{
+    await db.run(
+        "INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);",
+        voter.discordId, voter.username, voter.displayName
+    );
     db.run(
        `INSERT INTO Suggestion_Voters (suggestionId, authorId)
         VALUES (
@@ -175,6 +188,9 @@ const addVoterToSuggestion = (voter, suggestion)=>{
 module.exports = {
     // Episodes
     getCurrentEpNum, addNewEpisode,
+
+    // Authors
+    getAuthorFromSuggestion,
 
     // Suggestions
     getSuggestion, getSuggestionsWithCountedVotes, addNewSuggestion,

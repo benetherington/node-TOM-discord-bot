@@ -83,7 +83,8 @@ const getSuggestionsWithCountedVotes = async (episode={})=>{
             COUNT(*),
             Suggestions.suggestionId,
             text,
-            discordId
+            userName,
+            displayname
         FROM Suggestion_Voters
             INNER JOIN Suggestions
                 ON suggestions.SuggestionId = Suggestion_Voters.suggestionId
@@ -102,12 +103,13 @@ const getSuggestionsWithCountedVotes = async (episode={})=>{
             "COUNT(*)": voteCount,
             suggestionId,
             text,
-            discordId
+            username,
+            displayName
         } = suggestion;
         // PACKAGE
         return {
             suggestion: {suggestionId, text},
-            author: {discordId},
+            author: {username, displayName},
             voteCount
         };
     });

@@ -175,14 +175,29 @@ const addVoterToSuggestion = async (voter, suggestion)=>{
         "INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);",
         voter.discordId, voter.username, voter.displayName
     );
-    db.run(
-       `INSERT INTO Suggestion_Voters (suggestionId, authorId)
-        VALUES (
-            (?),
-            (SELECT authorId FROM Authors WHERE discordId = ?)
-        );`,
+    const voterToRemove = await db.get(
+       `SELECT authorId FROM Suggestion_Voters
+        WHERE suggestionId = ?
+            AND authorId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
         suggestion.suggestionId, voter.discordId
-    );
+    )
+    if (voterToRemove) {
+        console.log("Deleting for " + voterToRemove.username)
+        return db.run(
+           `DELETE FROM Suggestion_Voters WHERE authorId = ?;`,
+            voterToRemove.authorId
+        );
+    } else {
+        console.log("Inserting for " + voter.discordId)
+        return db.run(
+           `INSERT INTO Suggestion_Voters (suggestionId, authorId)
+            VALUES (
+                (?),
+                (SELECT authorId FROM Authors WHERE discordId = ?)
+            );`,
+            suggestion.suggestionId, voter.discordId,
+        );
+    }
 }
 
 module.exports = {

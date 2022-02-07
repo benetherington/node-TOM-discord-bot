@@ -29,13 +29,12 @@ const createSuggestionFromInteraction = (interaction)=>{
 
 const formatTitleReply = (author, suggestion, voteCount=1)=>{
     const content = `<@${author.discordId}>: \`${suggestion.text}\``;
-    const customId = JSON.stringify(["title", suggestion.suggestionId]);
     const row = new MessageActionRow()
         .addComponents(
             new MessageButton()
                 .setLabel(`(${voteCount}) VOTE`)
                 .setStyle("SUCCESS")
-                .setCustomId(customId)
+                .setCustomId(suggestion.suggestionId.toString())
         )
     return {content, components: [row]}
 }

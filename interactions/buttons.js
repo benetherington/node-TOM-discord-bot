@@ -1,31 +1,36 @@
+const { MessageActionRow, MessageButton } = require("discord.js");
 const {countVotesOnSuggestion, hasVotedForSuggestion,
        addVoterToSuggestion, removeVoterFromSuggestion} = require("../src/sqlite.js");
 
 
 
-const updateButtonText = (messageComponents, suggestionId, voteCount)=>{
-    return messageComponents.map(row=>{
-        const components = row.components.map(button=>{
-            const [_, buttonId] = JSON.parse(button.custom_id);
-            if (buttonId===suggestionId) {
-                button.label = button.label.replace(/\(\d*\)/, `(${voteCount})`);
-            }
-            return button;
-        });
-        return {components, type:row.type}
-    })
+const replicateOrUpdateButton = (button, searchId, newCount)=>{
+    let newLabel = button.label;
+    if (button.custom_id===searchId) {
+        newLabel = button.label.replace(/\(\d*\)/, `(${newCount})`);
+    }
+    return new MessageButton()
+        .setLabel(newLabel)
+        .setCustomId(button.custom_id)
+        .setStyle(button.style);
+}
+const updateButtonInMesssage = (originalMessage, searchId, newCount)=>{
+    const buttonProcessor = (button)=>replicateOrUpdateButton(button, searchId, newCount);
+    return originalMessage.components.map(row=>
+        new MessageActionRow().addComponents(row.components.map(buttonProcessor))
+    );
 }
 
 const receiveButton = async buttonInteraction=>{
-    // BUILD an "Author"
+    // BUILD a Voter (ie an Author) and Suggestion
     const voter = {
         discordId: buttonInteraction.user.id,
         username: buttonInteraction.user.username,
         displayName: buttonInteraction.member.displayName
     };
-    // BUILD a Suggestion
-    const [_, suggestionId] = JSON.parse(buttonInteraction.customId);
-    const suggestion = {suggestionId};
+    const suggestion = {
+        suggestionId: buttonInteraction.customId
+    };
     
     // ASSOCIATE voter and suggestion in the DB
     if (await hasVotedForSuggestion(voter, suggestion)){
@@ -38,10 +43,9 @@ const receiveButton = async buttonInteraction=>{
     
     // DECIDE how to update the button's message
     const voteCount = await countVotesOnSuggestion(suggestion);
-    const messageComponents = buttonInteraction.message.components;
-    const updateOptions = updateButtonText(messageComponents, suggestionId, voteCount);
+    const updatedComponents = updateButtonInMesssage(buttonInteraction.message, suggestion.suggestionId, voteCount);
     // UPDATE the button's message
-    buttonInteraction.update(updateOptions)
+    buttonInteraction.update({components: updatedComponents})
 };
 
 module.exports = {receiveButton}

@@ -17,11 +17,10 @@ const chunkArray = (toChunk, chunkSize)=>{
 }
 const formatVoteButton = ({author, suggestion, voteCount=1})=>{
     // Turns a countedSuggestion into a button.
-    const customId = JSON.stringify(["vote", suggestion.suggestionId]);
     return new MessageButton()
         .setLabel(`(${voteCount}) ${author.displayName||author.username}: ${suggestion.text}`)
         .setStyle("SECONDARY")
-        .setCustomId(customId);
+        .setCustomId(suggestion.suggestionId.toString());
 };
 const formatVoteRow = (countedSuggestionRowChunk)=>{
     // Turns an array of countedSuggestions into a MessageActionRow

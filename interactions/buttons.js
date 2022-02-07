@@ -5,25 +5,18 @@ const { MessageActionRow } = require("discord.js");
 
 
 
-const rebuildVoteComponents = (componentsToCopy, {author, suggestion, voteCount})=>{
-    return componentsToCopy.map(row=>{
-        const newButtons = row.components.map(button=>{
-            const [_, buttonSugId] = JSON.parse(button.custom_id);
-            if (buttonSugId===suggestion.suggestionId) {
-                // We need to update this button
-                return formatVoteButton({author, suggestion, voteCount});
-            } else {
-                // We need to replicate this button
-                return button;
+const updateButtonText = (messageComponents, suggestionId, voteCount)=>{
+    return messageComponents.map(row=>{
+        const components = row.components.map(button=>{
+            const [_, buttonId] = JSON.parse(button.custom_id);
+            if (buttonId===suggestionId) {
+                button.label = button.label.replace(/\(\d*\)/, `(${voteCount})`);
             }
+            return button;
         });
-        return new MessageActionRow().setComponents(newButtons);
+        return {components, type:row.type}
     })
 }
-const formatVoteUpdate = (componentsToCopy, countedSuggestion)=>{
-    const components = rebuildVoteComponents(componentsToCopy, countedSuggestion)
-    return {content:"Title suggestions so far:", components}
-};
 
 const receiveButton = async buttonInteraction=>{
     // BUILD an "Author"
@@ -42,15 +35,8 @@ const receiveButton = async buttonInteraction=>{
     
     // DECIDE how to update the button's message
     const voteCount = await countVotesOnSuggestion(suggestion);
-    const author = await getAuthorFromSuggestion(suggestion);
-    const countedSuggestion = {author, suggestion, voteCount};
-    let updateOptions;
-    if (createdBySlash==="title") {
-        updateOptions = formatTitleReply(countedSuggestion);
-    } else if (createdBySlash==="vote") {
-        const componentsToCopy = buttonInteraction.message.components;
-        updateOptions = formatVoteUpdate(componentsToCopy, countedSuggestion);
-    }
+    const messageComponents = buttonInteraction.message.components;
+    const updateOptions = updateButtonText(messageComponents, suggestionId, voteCount)
     // UPDATE the button's message
     buttonInteraction.update(updateOptions)
 };

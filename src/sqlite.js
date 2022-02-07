@@ -11,12 +11,18 @@ const printDbSummary = async ()=>{
     try {
         const selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
         const exists = selectTables.map(row=>row.name).join(", ");
-        console.log(`Waking up SQLite. Tables: ${exists}`)
+        console.log(`Tables: ${exists}`)
 
-        const suggestions = await db.all("SELECT text from Suggestions ORDER BY suggestionId LIMIT 10");
+        const suggestions = await db.all(
+           `SELECT username, text
+            FROM Suggestions
+            LEFT JOIN Authors ON Authors.authorId = Suggestions.authorId
+            ORDER BY suggestionId
+            LIMIT 10`
+        );
         if (suggestions.length) {
-            const suggestionsString = suggestions.map(r=>r.suggestion).join(", ");
-            console.log(`Most recent suggestions: ${suggestionsString}`)
+            console.log("Most recent suggestions:")
+            console.table(suggestions)
         } else {
             console.log("No suggestions have been made yet.")
         }
@@ -31,12 +37,14 @@ const printDbSummary = async ()=>{
   DB INIT
 \*-------*/
 const initDB = async ()=>{
+    console.log("SQLite")
     db = await dbWrapper.open({
         filename: dbFile,
         driver: sqlite3.cached.Database
     });
+    console.log("Migrating...")
     await db.migrate()
-    printDbSummary()
+    await printDbSummary()
 }
 initDB();
 
@@ -45,12 +53,12 @@ initDB();
 \*-------*/
 const getCurrentEpisode = ()=>db.get("SELECT * FROM Episodes ORDER BY created_at DESC;");
 
-const getCurrentEpNum = async()=>{
+module.exports.getCurrentEpNum = async()=>{
     const currentEp = await getCurrentEpisode();
     return currentEp.epNum;
 }
 
-const addNewEpisode = async(epNum)=>{
+module.exports.addNewEpisode = async(epNum)=>{
     await db.run("INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);", epNum)
     const episode = await db.get(
         "SELECT * FROM Episodes WHERE epNum = ?;",
@@ -59,27 +67,17 @@ const addNewEpisode = async(epNum)=>{
     return episode;
 }
 
-/*-------*\
-  Authors
-\*-------*/
-const getAuthorFromSuggestion = (suggestion)=>{
-    return db.get(
-        "SELECT * FROM Authors WHERE authorId = ?",
-        suggestion.authorId
-    )
-}
-
 /*-----------*\
   SUGGESTIONS
 \*-----------*/
-const getSuggestion = (suggestion)=>{
+module.exports.getSuggestion = (suggestion)=>{
     return db.get(
         "SELECT * FROM Suggestions WHERE suggestionId = ?",
         suggestion.suggestionId
     )
 }
 
-const getSuggestionsWithCountedVotes = async (episode={})=>{
+module.exports.getSuggestionsWithCountedVotes = async (episode={})=>{
     // default to current episode
     if (!episode.epNum) {
         episode = await getCurrentEpisode();
@@ -125,7 +123,7 @@ const getSuggestionsWithCountedVotes = async (episode={})=>{
     return formattedCountedSuggestions;
 }
 
-const addNewSuggestion = async(author, suggestion)=>{
+module.exports.addNewSuggestion = async(author, suggestion)=>{
     // SELECT episode
     const episode = await getCurrentEpisode()
 
@@ -162,7 +160,7 @@ const addNewSuggestion = async(author, suggestion)=>{
 /*------*\
   VOTING
 \*------*/
-const countVotesOnSuggestion = async (suggestion)=>{
+module.exports.countVotesOnSuggestion = async (suggestion)=>{
     const voteCount = await db.get(
         "SELECT COUNT(*) FROM Suggestion_Voters WHERE suggestionId = ?;",
         suggestion.suggestionId
@@ -170,7 +168,7 @@ const countVotesOnSuggestion = async (suggestion)=>{
     return voteCount["COUNT(*)"]
 }
 
-const hasVotedForSuggestion = (voter, suggestion)=>{
+module.exports.hasVotedForSuggestion = (voter, suggestion)=>{
     return db.get(
         `SELECT authorId FROM Suggestion_Voters
          WHERE suggestionId = ?
@@ -179,7 +177,7 @@ const hasVotedForSuggestion = (voter, suggestion)=>{
      )
 }
 
-const addVoterToSuggestion = async (voter, suggestion)=>{
+module.exports.addVoterToSuggestion = async (voter, suggestion)=>{
     await db.run(
         "INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);",
         voter.discordId, voter.username, voter.displayName
@@ -194,7 +192,7 @@ const addVoterToSuggestion = async (voter, suggestion)=>{
     );
 }
 
-const removeVoterFromSuggestion = (voter, suggestion)=>{
+module.exports.removeVoterFromSuggestion = (voter, suggestion)=>{
     return db.run(
        `DELETE FROM Suggestion_Voters
         WHERE suggestionId = (?)
@@ -202,17 +200,3 @@ const removeVoterFromSuggestion = (voter, suggestion)=>{
          suggestion.suggestionId, voter.discordId
     );
 }
-
-module.exports = {
-    // Episodes
-    getCurrentEpNum, addNewEpisode,
-
-    // Authors
-    getAuthorFromSuggestion,
-
-    // Suggestions
-    getSuggestion, getSuggestionsWithCountedVotes, addNewSuggestion,
-
-    // Voting
-    countVotesOnSuggestion, hasVotedForSuggestion, addVoterToSuggestion, removeVoterFromSuggestion
-};

@@ -170,34 +170,37 @@ const countVotesOnSuggestion = async (suggestion)=>{
     return voteCount["COUNT(*)"]
 }
 
+const hasVotedForSuggestion = (voter, suggestion)=>{
+    return db.get(
+        `SELECT authorId FROM Suggestion_Voters
+         WHERE suggestionId = ?
+             AND authorId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
+         suggestion.suggestionId, voter.discordId
+     )
+}
+
 const addVoterToSuggestion = async (voter, suggestion)=>{
     await db.run(
         "INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);",
         voter.discordId, voter.username, voter.displayName
-    );
-    const voterToRemove = await db.get(
-       `SELECT authorId FROM Suggestion_Voters
-        WHERE suggestionId = ?
-            AND authorId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
-        suggestion.suggestionId, voter.discordId
     )
-    if (voterToRemove) {
-        console.log("Deleting for " + voterToRemove.username)
-        return db.run(
-           `DELETE FROM Suggestion_Voters WHERE authorId = ?;`,
-            voterToRemove.authorId
-        );
-    } else {
-        console.log("Inserting for " + voter.discordId)
-        return db.run(
-           `INSERT INTO Suggestion_Voters (suggestionId, authorId)
-            VALUES (
-                (?),
-                (SELECT authorId FROM Authors WHERE discordId = ?)
-            );`,
-            suggestion.suggestionId, voter.discordId,
-        );
-    }
+    return db.run(
+        `INSERT INTO Suggestion_Voters (suggestionId, authorId)
+        VALUES (
+            (?),
+            (SELECT authorId FROM Authors WHERE discordId = ?)
+        );`,
+        suggestion.suggestionId, voter.discordId,
+    );
+}
+
+const removeVoterFromSuggestion = (voter, suggestion)=>{
+    return db.run(
+       `DELETE FROM Suggestion_Voters
+        WHERE suggestionId = (?)
+        AND authorId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
+         suggestion.suggestionId, voter.discordId
+    );
 }
 
 module.exports = {
@@ -211,5 +214,5 @@ module.exports = {
     getSuggestion, getSuggestionsWithCountedVotes, addNewSuggestion,
 
     // Voting
-    countVotesOnSuggestion, addVoterToSuggestion
+    countVotesOnSuggestion, hasVotedForSuggestion, addVoterToSuggestion, removeVoterFromSuggestion
 };

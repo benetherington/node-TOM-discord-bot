@@ -1,6 +1,5 @@
-const {getAuthorFromSuggestion, getSuggestion, countVotesOnSuggestion,
-       hasVotedForSuggestion, addVoterToSuggestion, removeVoterFromSuggestion} = require("../src/sqlite.js");
-const { MessageActionRow } = require("discord.js");
+const {countVotesOnSuggestion, hasVotedForSuggestion,
+       addVoterToSuggestion, removeVoterFromSuggestion} = require("../src/sqlite.js");
 
 
 
@@ -25,7 +24,7 @@ const receiveButton = async buttonInteraction=>{
         displayName: buttonInteraction.member.displayName
     };
     // BUILD a Suggestion
-    const [createdBySlash, suggestionId] = JSON.parse(buttonInteraction.customId);
+    const [_, suggestionId] = JSON.parse(buttonInteraction.customId);
     const suggestion = {suggestionId};
     
     // ASSOCIATE voter and suggestion in the DB
@@ -40,7 +39,7 @@ const receiveButton = async buttonInteraction=>{
     // DECIDE how to update the button's message
     const voteCount = await countVotesOnSuggestion(suggestion);
     const messageComponents = buttonInteraction.message.components;
-    const updateOptions = updateButtonText(messageComponents, suggestionId, voteCount)
+    const updateOptions = updateButtonText(messageComponents, suggestionId, voteCount);
     // UPDATE the button's message
     buttonInteraction.update(updateOptions)
 };

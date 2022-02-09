@@ -1,47 +1,62 @@
+/*-----------*\
+  GUI cration
+\*-----------*/
+const createAuthorGridItem = (suggestion, author)=>{
+    const authorElement = document.createElement("p");
+    authorElement.id = `author-${suggestion.suggestionId}`
+    authorElement.classList.add("author")
+    authorElement.textContent = author.displayName || author.username;
+    return authorElement
+}
+const createSuggestionGridItem = (suggestion)=>{
+    const suggestionElement = document.createElement("p");
+    suggestionElement.id = `suggestion-${suggestion.suggestionId}`
+    suggestionElement.classList.add("suggestion")
+    suggestionElement.textContent = suggestion.text;
+    return suggestionElement
+}
+const createVoteCountGridItem = (suggestion, voteCount)=>{
+    const votesElement = document.createElement("p");
+    votesElement.id = `votes-${suggestion.suggestionId}`
+    votesElement.classList.add("votes")
+    votesElement.textContent = voteCount;
+    return votesElement
+}
+const createDeleteGridItem = (suggestion)=>{
+    const deleteElement = document.createElement("button");
+    deleteElement.id = `delete-${suggestion.suggestionId}`
+    deleteElement.classList.add("suggestion-delete")
 //
 // GUI creation/updation
 //
+    return deleteElement
+}
 
 const createRow = ({suggestion, author, voteCount})=>{
-    const row = document.createElement("tr")
-    row.id = "s" + suggestion.suggestionId;
-
-    const authorTd = document.createElement("td");
-    authorTd.classList.add("author")
-    authorTd.textContent = author.displayName || author.username;
-    row.append(authorTd)
+    const row = document.createElement("div");
+    row.classList.add("row-container")
+    row.append(createAuthorGridItem(suggestion, author))
+    row.append(createSuggestionGridItem(suggestion))
+    row.append(createVoteCountGridItem(suggestion, voteCount))
+    row.append(createDeleteGridItem(suggestion))
     
-    const textTd = document.createElement("td");
-    textTd.classList.add("suggestion")
-    textTd.textContent = suggestion.text;
-    row.append(textTd)
-    
-    const votesTd = document.createElement("td");
-    votesTd.classList.add("votes")
-    votesTd.textContent = voteCount;
-    row.append(votesTd)
-    
-    const deleteButton = document.createElement("button");
-    deleteButton.classList.add("suggestion-delete")
-    row.append(deleteButton)
-    
-    return row;
+    document.querySelector("#suggestions").append(row)
 };
 
-const updateRowVoteCount = (row, {voteCount})=>{
-    row.querySelector(`td.votes`).textContent = voteCount;
+/*------------*\
+  GUI updation
+\*------------*/
+const updateRowVoteCount = ({suggestion, voteCount})=>{
+    document.querySelector(`#votes-${suggestion.suggestionId}`)
+            .textContent = voteCount;
 };
-
 const createOrUpdateRow = (countedSuggestion)=>{
-    const row = document.querySelector(
-        "tr#s" + countedSuggestion.suggestion.suggestionId
+    const displayed = document.querySelector(
+        `*[id$='-${countedSuggestion.suggestion.suggestionId}']`
     )
     
-    if (row) updateRowVoteCount(row, countedSuggestion)
-    else { document.querySelector("#suggestions").append(
-            createRow(countedSuggestion)
-        )
-    }
+    if (displayed) updateRowVoteCount(countedSuggestion)
+    else createRow(countedSuggestion)
 };
 
 
@@ -49,8 +64,10 @@ const createOrUpdateRow = (countedSuggestion)=>{
 // API
 //
 
+/*---*\
+  API
+\*---*/
 const fetchSuggestions = ()=>fetch("/api/titles/").then(r=>r.json());
-
 const updateSuggestions = async()=>{
     const suggestions = await fetchSuggestions();
     suggestions.forEach(createOrUpdateRow);
@@ -60,15 +77,18 @@ const updateSuggestions = async()=>{
 // GUI events
 //
 
+/*----------*\
+  GUI events
+\*----------*/
 var updateIntervalId;
-const autoUpdate = (e)=>{
-    const autoButton = document.querySelector("button#autoUpdate")
+const autoButton = document.querySelector("button#autoUpdate")
+const autoUpdate = ()=>{
     if (autoButton.classList.toggle("depressed")) {
         updateSuggestions()
-        updateIntervalId = setInterval(updateSuggestions, 1000)
+        updateIntervalId = setInterval(updateSuggestions, 1000);
     } else {
         clearInterval(updateIntervalId)
     }
 };
 
-// document.addEventListener("DOMContentLoaded", startRegularUpdates)
+document.addEventListener("DOMContentLoaded", updateSuggestions)

@@ -6,13 +6,19 @@ html
             include monitor.css
     body
         h2 Current Suggestions
-        table#suggestions
-            tr
-                th Author
-                th Suggestion
-                th Votes
+        div.suggestions
+            div#headers
+                h3.author Author
+                h3.suggestion Suggestion
+                h3.votes Votes
+            div#suggestions
+                //- div.row-container
+                    //- p.author
+                    //- p.suggestion
+                    //- p.votes
+                    //- button.suggestion-delete
         div.controls
-            button(onclick="autoUpdate()")#autoUpdate Auto-update
+            button#autoUpdate(onclick="autoUpdate()") Auto-update
             button(onclick="addSuggestion()") Add Suggestion
             button(onclick="callVote()") Call Vote
         script

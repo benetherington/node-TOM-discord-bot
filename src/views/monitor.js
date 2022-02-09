@@ -26,9 +26,7 @@ const createDeleteGridItem = (suggestion)=>{
     const deleteElement = document.createElement("button");
     deleteElement.id = `delete-${suggestion.suggestionId}`
     deleteElement.classList.add("suggestion-delete")
-//
-// GUI creation/updation
-//
+    deleteElement.onclick = deleteSuggestion;
     return deleteElement
 }
 
@@ -58,11 +56,15 @@ const createOrUpdateRow = (countedSuggestion)=>{
     if (displayed) updateRowVoteCount(countedSuggestion)
     else createRow(countedSuggestion)
 };
+const removeRow = (element)=>{
+    const rowContainer = element.closest(".row-container");
+    rowContainer.addEventListener(
+        "transitionend",
+        rowContainer.remove
+    );
+    rowContainer.classList.add("deleted")
+}
 
-
-//
-// API
-//
 
 /*---*\
   API
@@ -72,10 +74,13 @@ const updateSuggestions = async()=>{
     const suggestions = await fetchSuggestions();
     suggestions.forEach(createOrUpdateRow);
 };
-
-//
-// GUI events
-//
+async function deleteSuggestion(e) {
+    const id = e.target.id.match(/\d+/)[0];
+    if (!id) console.error(e);
+    await fetch(`/api/titles/${id}`, {method:"DELETE"})
+        .catch(console.error);
+    removeRow(e.target);
+}
 
 /*----------*\
   GUI events

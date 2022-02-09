@@ -1,4 +1,8 @@
-const addSuggestionToView = ({suggestion, author, voteCount})=>{
+//
+// GUI creation/updation
+//
+
+const createRow = ({suggestion, author, voteCount})=>{
     const row = document.createElement("tr")
     row.id = "s" + suggestion.suggestionId;
 
@@ -17,29 +21,54 @@ const addSuggestionToView = ({suggestion, author, voteCount})=>{
     votesTd.textContent = voteCount;
     row.append(votesTd)
     
-    document.querySelector("#suggestions").append(row)
-}
-
-const updateVoteCount = ({suggestion, author, voteCount})=>{
-    document
-        .querySelector(`tr#s${suggestion.suggestionId} > td.votes`)
-        .textContent = voteCount;
-}
-
-const fetchSuggestions = async()=>{
-    const countedSuggestions = await fetch("/api/titles/").then(r=>r.json());
-    countedSuggestions.forEach(countedSuggestion=>{
-        if (document.querySelector("tr#s"+countedSuggestion.suggestion.suggestionId)) {
-            updateVoteCount(countedSuggestion)
-        } else {
-            addSuggestionToView(countedSuggestion)
-        }
-    })
-}
-
-const startRegularUpdates = ()=>{
-    fetchSuggestions()
-    setInterval(fetchSuggestions, 1000)
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("suggestion-delete")
+    row.append(deleteButton)
+    
+    return row;
 };
 
-document.addEventListener("DOMContentLoaded", startRegularUpdates)
+const updateRowVoteCount = (row, {voteCount})=>{
+    row.querySelector(`td.votes`).textContent = voteCount;
+};
+
+const createOrUpdateRow = (countedSuggestion)=>{
+    const row = document.querySelector(
+        "tr#s" + countedSuggestion.suggestion.suggestionId
+    )
+    
+    if (row) updateRowVoteCount(row, countedSuggestion)
+    else { document.querySelector("#suggestions").append(
+            createRow(countedSuggestion)
+        )
+    }
+};
+
+
+//
+// API
+//
+
+const fetchSuggestions = ()=>fetch("/api/titles/").then(r=>r.json());
+
+const updateSuggestions = async()=>{
+    const suggestions = await fetchSuggestions();
+    suggestions.forEach(createOrUpdateRow);
+};
+
+//
+// GUI events
+//
+
+var updateIntervalId;
+const autoUpdate = (e)=>{
+    const autoButton = document.querySelector("button#autoUpdate")
+    if (autoButton.classList.toggle("depressed")) {
+        updateSuggestions()
+        updateIntervalId = setInterval(updateSuggestions, 1000)
+    } else {
+        clearInterval(updateIntervalId)
+    }
+};
+
+// document.addEventListener("DOMContentLoaded", startRegularUpdates)

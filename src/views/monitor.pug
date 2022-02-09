@@ -2,12 +2,18 @@ doctype html
 html
     head
         title TOMbot
+        style
+            include monitor.css
     body
-        p Hello monitor!
+        h2 Current Suggestions
         table#suggestions
             tr
                 th Author
                 th Suggestion
                 th Votes
+        div.controls
+            button(onclick="autoUpdate()")#autoUpdate Auto-update
+            button(onclick="addSuggestion()") Add Suggestion
+            button(onclick="callVote()") Call Vote
         script
             include monitor.js

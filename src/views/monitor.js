@@ -26,7 +26,7 @@ const createDeleteGridItem = (suggestion)=>{
     const deleteElement = document.createElement("button");
     deleteElement.id = `delete-${suggestion.suggestionId}`
     deleteElement.classList.add("suggestion-delete")
-    deleteElement.onclick = deleteSuggestion;
+    deleteElement.onclick = removeSuggestion;
     return deleteElement
 }
 
@@ -69,22 +69,20 @@ const removeRow = (element)=>{
 /*---*\
   API
 \*---*/
-const fetchSuggestions = ()=>fetch("/api/titles/").then(r=>r.json());
-const updateSuggestions = async()=>{
-    const suggestions = await fetchSuggestions();
-    suggestions.forEach(createOrUpdateRow);
-};
-async function deleteSuggestion(e) {
-    const id = e.target.id.match(/\d+/)[0];
-    if (!id) console.error(e);
-    await fetch(`/api/titles/${id}`, {method:"DELETE"})
-        .catch(console.error);
-    removeRow(e.target);
-}
+const getSuggestions   = (  )=>fetch("/api/titles/").then(r=>r.json());
+const deleteSuggestion = (id)=>fetch(`/api/titles/${id}`, {method:"DELETE"});
+const postVoteRequest  = (  )=>fetch("/api/vote", {method: "POST"});
 
 /*----------*\
   GUI events
 \*----------*/
+// suggestion rows
+async function deleteSuggestion(e) {
+    const id = e.target.id.match(/\d+/)[0];
+    if (!id) console.error(e);
+    removeRow(e.target);
+}
+// bottom toolbar
 var updateIntervalId;
 const autoButton = document.querySelector("button#autoUpdate")
 const autoUpdate = ()=>{
@@ -95,5 +93,12 @@ const autoUpdate = ()=>{
         clearInterval(updateIntervalId)
     }
 };
+const updateSuggestions = async()=>{
+    getSuggestions()
+        .catch(console.error)
+        .then(suggestions=>suggestions.forEach(createOrUpdateRow));
+};
+const addSuggestion = ()=>{};
+const callVote = ()=>postVoteRequest().catch(console.error);
 
 document.addEventListener("DOMContentLoaded", updateSuggestions)

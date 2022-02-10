@@ -38,11 +38,3 @@ const getVoteMessages = async ()=>{
 };
 
 module.exports = {getVoteMessages};
-
-// const {client} = require("../bot.js");
-// const ID = require("../src/id.json");
-// const createVoteMessage = async=>{
-//     const groundControl = client.channels.cache.get(ID.channel.groundControl);
-//     console.log(groundControl)
-// }
-

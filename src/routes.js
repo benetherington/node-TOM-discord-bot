@@ -1,6 +1,6 @@
 const path = require("path")
 const {getSuggestionsWithCountedVotes} = require("./sqlite.js");
-
+const {startNewVote} = require("../interface/bot-monitor-interface.js");
 
 
 async function doRoutes (fastify, app) {
@@ -24,6 +24,9 @@ async function doRoutes (fastify, app) {
         const countedSuggestions = await getSuggestionsWithCountedVotes({epNum});
         if (!countedSuggestions) throw new Error("invalid");
         return countedSuggestions;
+    })
+    fastify.post("/api/vote", (request, reply)=>{
+        startNewVote();
     })
 }
 

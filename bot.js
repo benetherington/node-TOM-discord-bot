@@ -1,5 +1,7 @@
-const { Client, Intents, Collection } = require('discord.js');
-const { emoji, responses } = require("./src/interaction-config.json")
+try {require('dotenv').config()}
+catch (ReferenceError) {console.log("oh hey we must be running on Glitch")}
+
+const {Client, Intents, Collection} = require('discord.js');
 const fs = require("fs");
 const {receiveButton} = require("./interactions/buttons.js");
 
@@ -53,3 +55,5 @@ client.on("interactionCreate", interaction=>{
 })
 
 client.login(process.env.DISCORD_TOKEN)
+
+module.exports = {client}

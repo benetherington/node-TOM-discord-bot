@@ -77,7 +77,7 @@ const postVoteRequest  = (  )=>fetch("/api/vote", {method: "POST"});
   GUI events
 \*----------*/
 // suggestion rows
-async function deleteSuggestion(e) {
+async function removeSuggestion(e) {
     const id = e.target.id.match(/\d+/)[0];
     if (!id) console.error(e);
     removeRow(e.target);

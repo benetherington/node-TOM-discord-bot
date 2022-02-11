@@ -2,9 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 * {font-family: "Roboto", sans-serif;}
 
-/*-----------*\
-  SUGGESTIONS
-\*-----------*/
+/*---------------*\
+  SUGGESTION GRID
+\*---------------*/
 /* grid container */
 .suggestions {
     margin: 4px;
@@ -86,4 +86,14 @@
 button.depressed {
     border-style: ridge;
     background-color: #80808099;
+}
+
+/*----------------*\
+  SUGGESTION MODAL
+\*----------------*/
+#add-suggestion-modal {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    box-shadow: 0 0 60px 30px #7a9995;
 }

@@ -1,6 +1,6 @@
-/*-----------*\
-  GUI cration
-\*-----------*/
+/*----------------------*\
+  Suggestion row cration
+\*----------------------*/
 const createAuthorGridItem = (suggestion, author)=>{
     const authorElement = document.createElement("p");
     authorElement.id = `author-${suggestion.suggestionId}`
@@ -41,9 +41,9 @@ const createRow = ({suggestion, author, voteCount})=>{
     document.querySelector("#suggestions").append(row)
 };
 
-/*------------*\
-  GUI updation
-\*------------*/
+/*-----------------------*\
+  Suggestion row updation
+\*-----------------------*/
 const updateRowVoteCount = ({suggestion, voteCount})=>{
     document.querySelector(`#votes-${suggestion.suggestionId}`)
             .textContent = voteCount;
@@ -65,13 +65,31 @@ const removeRow = (element)=>{
     rowContainer.classList.add("deleted")
 }
 
-
 /*---*\
   API
 \*---*/
 const getSuggestions   = (  )=>fetch("/api/titles/").then(r=>r.json());
 const deleteSuggestion = (id)=>fetch(`/api/titles/${id}`, {method:"DELETE"});
 const postVoteRequest  = (  )=>fetch("/api/vote", {method: "POST"});
+const postSuggestion   = (id)=>fetch(`/api/title/${id}`, {method: "POST"});
+
+/*----------------*\
+  Suggestion input
+\*----------------*/
+const suggestionAdded = (e)=>{
+    const text = e.target.value;
+    const match = text.match(/\d{18}/g);
+    if (!match) return;
+    const suggestionId = match[0];
+    postSuggestion(suggestionId);
+    suggestionEscape();
+};
+const suggestionEscape = (e)=>{
+    if (e instanceof KeyboardEvent && e.key!=="Escape") return;
+    document.getElementById("add-suggestion-modal").remove();
+    document.removeEventListener("keydown", suggestionEscape);
+    document.removeEventListener("mousedown", suggestionEscape);
+}
 
 /*----------*\
   GUI events
@@ -98,7 +116,15 @@ const updateSuggestions = async()=>{
         .catch(console.error)
         .then(suggestions=>suggestions.forEach(createOrUpdateRow));
 };
-const addSuggestion = ()=>{};
+const addSuggestion = ()=>{
+    input = document.createElement("input");
+    input.id = "add-suggestion-modal"
+    input.oninput = suggestionAdded;
+    document.addEventListener("keydown", suggestionEscape);
+    document.addEventListener("mousedown", suggestionEscape);
+    document.body.append(input)
+    input.focus()
+};
 const callVote = ()=>postVoteRequest().catch(console.error);
 
 document.addEventListener("DOMContentLoaded", updateSuggestions)

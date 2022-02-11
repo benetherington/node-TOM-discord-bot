@@ -4,6 +4,7 @@ catch (ReferenceError) {console.log("oh hey we must be running on Glitch")}
 const {Client, Intents, Collection} = require('discord.js');
 const fs = require("fs");
 const {receiveButton} = require("./interactions/buttons.js");
+const ID = require("./src/id.json");
 
 /*----*\
   INIT
@@ -15,6 +16,13 @@ intents.add(
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS
 )
 const client = new Client({intents});
+
+/*-----*\
+  CACHE
+\*-----*/
+// ensure our channels are in the cache
+client.channels.fetch(ID.channel.botTest)
+client.channels.fetch(ID.channel.groundControl)
 
 /*-------*\
   SLASHES

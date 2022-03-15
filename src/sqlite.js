@@ -162,9 +162,9 @@ module.exports.countVotesOnSuggestion = async (suggestion)=>{
 
 module.exports.hasVotedForSuggestion = (voter, suggestion)=>{
     return db.get(
-        `SELECT authorId FROM Suggestion_Voters
-         WHERE suggestionId = ?
-             AND authorId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
+       `SELECT authorId FROM Suggestion_Voters
+        INNER JOIN Authors USING(authorId)
+        WHERE suggestionId = ? AND discordId = ?;`,
          suggestion.suggestionId, voter.discordId
      )
 }

@@ -5,14 +5,18 @@ const {countVotesOnSuggestion, hasVotedForSuggestion,
 
 // DISCORD COMPONENTS
 const replicateOrUpdateButton = (button, searchId, newCount)=>{
-    let newLabel = button.label;
+    // EXTRACT values
+    let label = button.label;
+    const customId = button.custom_id;
+    const style = button.style;
+    
+    // UPDATE label
     if (button.custom_id===searchId) {
-        newLabel = button.label.replace(/\(\d*\)/, `(${newCount})`);
+        label = button.label.replace(/\(\d*\)/, `(${newCount})`);
     }
-    return new MessageButton()
-        .setLabel(newLabel)
-        .setCustomId(button.custom_id)
-        .setStyle(button.style);
+    
+    // CREATE new button
+    return new MessageButton({label, customId, style})
 }
 const updateButtonInMesssage = (originalMessage, searchId, newCount)=>{
     const buttonProcessor = (button)=>replicateOrUpdateButton(button, searchId, newCount);

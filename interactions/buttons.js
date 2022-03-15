@@ -3,7 +3,7 @@ const {countVotesOnSuggestion, hasVotedForSuggestion,
        addVoterToSuggestion, removeVoterFromSuggestion} = require("../src/sqlite.js");
 
 
-
+// DISCORD COMPONENTS
 const replicateOrUpdateButton = (button, searchId, newCount)=>{
     let newLabel = button.label;
     if (button.custom_id===searchId) {
@@ -21,6 +21,19 @@ const updateButtonInMesssage = (originalMessage, searchId, newCount)=>{
     );
 }
 
+// DATABASE
+const toggleVote = async (voter, suggestion)=>{
+    if (await hasVotedForSuggestion(voter, suggestion)){
+        console.log(`Remove vote from ${voter.username} for <${suggestion.suggestionId}>.`)
+        await removeVoterFromSuggestion(voter, suggestion);
+    } else {
+        console.log(`Add vote from ${voter.username} for <${suggestion.suggestionId}>.`)
+        await addVoterToSuggestion(voter, suggestion);
+    }
+}
+
+
+// EVENT CALLBACK
 const receiveButton = async buttonInteraction=>{
     // BUILD a Voter (ie an Author) and Suggestion
     const voter = {
@@ -33,13 +46,7 @@ const receiveButton = async buttonInteraction=>{
     };
     
     // ASSOCIATE voter and suggestion in the DB
-    if (await hasVotedForSuggestion(voter, suggestion)){
-        console.log(`Remove vote from ${voter.username} for <${suggestion.suggestionId}>.`)
-        await removeVoterFromSuggestion(voter, suggestion);
-    } else {
-        console.log(`Add vote from ${voter.username} for <${suggestion.suggestionId}>.`)
-        await addVoterToSuggestion(voter, suggestion);
-    }
+    await toggleVote(voter, suggestion);
     
     // DECIDE how to update the button's message
     const voteCount = await countVotesOnSuggestion(suggestion);

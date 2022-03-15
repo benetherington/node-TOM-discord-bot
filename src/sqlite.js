@@ -87,7 +87,7 @@ module.exports.getSuggestionsWithCountedVotes = async (episode={})=>{
     // Suggestions associated with epNum
     const countedSuggestions = await db.all(
        `SELECT
-            COUNT(*),
+            COUNT(*) as voteCount,
             Suggestions.suggestionId,
             text,
             userName,
@@ -102,17 +102,9 @@ module.exports.getSuggestionsWithCountedVotes = async (episode={})=>{
             Suggestion_Voters.suggestionId;`,
         episode.epNum
     )
-    // REVIEW: is it worth pulling this out into its own named function? It
-    // seems to me that it should be inline because it's unique.
     const formattedCountedSuggestions = countedSuggestions.map(suggestion=>{
-        // RENAME
-        const {
-            "COUNT(*)": voteCount,
-            suggestionId,
-            text,
-            username,
-            displayName
-        } = suggestion;
+        // EXTRACT
+        const {voteCount, suggestionId, text, username, displayName} = suggestion;
         // PACKAGE
         return {
             suggestion: {suggestionId, text},

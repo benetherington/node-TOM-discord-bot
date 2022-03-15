@@ -93,10 +93,8 @@ module.exports.getSuggestionsWithCountedVotes = async (episode={})=>{
             userName,
             displayname
         FROM Suggestion_Voters
-            INNER JOIN Suggestions
-                ON suggestions.SuggestionId = Suggestion_Voters.suggestionId
-            INNER JOIN Authors
-                ON Authors.authorId = Suggestions.authorId
+            INNER JOIN Suggestions USING(suggestionId)
+            INNER JOIN Authors USING(authorId)
         WHERE Suggestions.episodeId = (SELECT episodeId FROM Episodes WHERE epNum = ?)
         GROUP BY
             Suggestion_Voters.suggestionId;`,

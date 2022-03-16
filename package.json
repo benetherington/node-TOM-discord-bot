@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "author": "",
@@ -15,6 +14,10 @@
     "discord.js": "^13.6.0",
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
+    "fastify": "^3.27.1",
+    "fastify-static": "^4.5.0",
+    "point-of-view": "^5.1.0",
+    "pug": "^3.0.2",
     "sqlite": "^4.0.23",
     "sqlite3": "^4.2.0"
   },

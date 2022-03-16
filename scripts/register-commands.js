@@ -8,11 +8,11 @@ catch (ReferenceError) {console.log("oh hey we must be running on Glitch")}
 const fs = require("fs");
 const {REST} = require("@discordjs/rest");
 const {Routes} = require("discord-api-types/v9");
-const ID = require("./src/id.json");
+const ID = require("../src/id.json");
 
 // Gather all slash files to register
 const slashFiles = fs.readdirSync("./slash").filter(f=>f.endsWith(".js"));
-const slashes = slashFiles.map(fileName=>require("./slash/"+fileName).data);
+const slashes = slashFiles.map(fileName=>require("../slash/"+fileName).data);
 const getSlashIdWithPermissions = registeredSlash=>{
     const permissions = slashes.find(s=>s.name===registeredSlash.name).permissions;
     const id = registeredSlash.id;

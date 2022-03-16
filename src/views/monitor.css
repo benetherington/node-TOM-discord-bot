@@ -1,0 +1,99 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+* {font-family: "Roboto", sans-serif;}
+
+/*---------------*\
+  SUGGESTION GRID
+\*---------------*/
+/* grid container */
+.suggestions {
+    margin: 4px;
+    padding-bottom: 4px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12),
+                0 1px 2px rgba(0,0,0,0.24);
+}
+/* grid rows */
+#headers, .row-container {
+    display: grid;
+    grid-column: 1/12;
+    column-count: 4;
+    grid-template-columns: repeat(11, minmax(0,1fr));
+}
+.row-container:hover {
+    background-color: aliceblue;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12),
+                0 1px 2px rgba(0,0,0,0.24);
+}
+/* row deletion */
+.row-container {
+    max-height: 100px;
+    transition: max-height .5s, transform .75s;
+}
+.row-container.deleted {
+    transform: rotatex(90deg);
+    max-height: 0px;
+}
+/* all columns */
+#headers > h3, .row-container > * {
+    height: 100%;
+    margin: 0;
+    align-content: center;
+    padding: 3px 10px;
+}
+/* individual columns */
+.author {
+    grid-column: 1/4;
+    justify-self: right;
+}
+.suggestion {
+    grid-column: 4/10;
+    position: relative;
+}
+.suggestion:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    box-shadow: -4px 0 1px -3px rgba(0,0,0,0.12),
+                 4px 0 2px -3px rgba(0,0,0,0.12),
+                 4px 0 1px -3px rgba(0,0,0,0.24);
+}
+.votes {
+    grid-column: 10/11;
+    justify-self: center;
+}
+.suggestion-delete {
+    grid-column: 11/12;
+    border: none;
+    border-radius: 100%;
+    height: 80%;
+    aspect-ratio: 1/1;
+    background-image: url("/icons/x-circle.svg");
+    background-size: contain;
+}
+.suggestion-delete:hover {
+    background-color: #d9d9d9;
+    box-shadow: 0.5px 1px;
+}
+
+
+/*--------*\
+  CONTROLS
+\*--------*/
+button.depressed {
+    border-style: ridge;
+    background-color: #80808099;
+}
+
+/*----------------*\
+  SUGGESTION MODAL
+\*----------------*/
+#add-suggestion-modal {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    box-shadow: 0 0 60px 30px #7a9995;
+}

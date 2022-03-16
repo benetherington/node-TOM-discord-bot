@@ -1,7 +1,10 @@
-const { Client, Intents, Collection } = require('discord.js');
-const { emoji, responses } = require("./src/interaction-config.json")
+try {require('dotenv').config()}
+catch (ReferenceError) {console.log("oh hey we must be running on Glitch")}
+
+const {Client, Intents, Collection} = require('discord.js');
 const fs = require("fs");
 const {receiveButton} = require("./interactions/buttons.js");
+const ID = require("./src/id.json");
 
 /*----*\
   INIT
@@ -13,6 +16,13 @@ intents.add(
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS
 )
 const client = new Client({intents});
+
+/*-----*\
+  CACHE
+\*-----*/
+// ensure our channels are in the cache
+client.channels.fetch(ID.channel.botTest)
+client.channels.fetch(ID.channel.groundControl)
 
 /*-------*\
   SLASHES
@@ -29,10 +39,10 @@ const receiveSlash = async interaction=>{
     let slash = client.slashes.get(interaction.commandName);
     if (!slash) {return;}
     
-    slash.execute(interaction).catch(error) {
+    slash.execute(interaction).catch(error=>{
         console.error(error)
         interaction.reply(responses.failure)
-    }
+    })
 }
 
 /*---------------*\
@@ -53,3 +63,5 @@ client.on("interactionCreate", interaction=>{
 })
 
 client.login(process.env.DISCORD_TOKEN)
+
+module.exports = {client}

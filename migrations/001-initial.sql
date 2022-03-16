@@ -35,8 +35,8 @@ CREATE TABLE Suggestions (
 
 CREATE TABLE Authors (
     authorId        INTEGER PRIMARY KEY,
-    discordId       INTEGER NOT NULL UNIQUE,
     
+    discordId       INTEGER NOT NULL UNIQUE,
     username        TEXT,
     displayName     TEXT,
     

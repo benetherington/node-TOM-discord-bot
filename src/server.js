@@ -1,20 +1,25 @@
-// Glitch handles its own env
-try {require('dotenv').config()}
-catch (ReferenceError) {console.log("oh hey we must be running on Glitch")}
 const path = require("path");
 
-// init bot
+/*---*\
+  BOT
+\*---*/
 require("../bot.js")
 
-// web server
+
+/*------*\
+  SERVER
+\*------*/
+// IMPORT fastify
 const fastify = require("fastify")({
     logger: true
 });
 // const fastifyStatic = require("fastify-static");
+
+// INIT fastify
 const {doRoutes} = require("./routes.js")
 doRoutes(fastify);
 
-
+// START server
 fastify.listen(3000, (err, address)=>{
     if (err) {
         console.error(err)

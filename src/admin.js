@@ -10,13 +10,14 @@ const jwt = require("jsonwebtoken");
 const dbFile = require('path').resolve("./.data/admin.db");
 const sqlite3 = require("sqlite3").verbose();
 const dbWrapper = require("sqlite");
+const { decode } = require('punycode');
 let db;
 
 
 
-/*---------*\
-  UTILITIES
-\*---------*/
+/*-------*\
+  DB INIT
+\*-------*/
 const printDbSummary = async ()=>{
     try {
         const selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
@@ -38,10 +39,6 @@ const printDbSummary = async ()=>{
     }
 }
 
-
-/*-------*\
-  DB INIT
-\*-------*/
 const migrationsPath = "../migrations/admin";
 const initDB = async ()=>{
     console.log("SQLite")
@@ -60,6 +57,8 @@ initDB();
   AUTH UTILITIES
 \*--------------*/
 const hashPassword = (admin)=>{
+    // Takes an admin object, removes the password property, and adds/updates
+    // the hashed password property.
     const hashedPassword = await bcrypt.hash(
         admin.password,
         config.admin.bcryptSaltRounds
@@ -69,15 +68,20 @@ const hashPassword = (admin)=>{
     return hashedPassword;
 };
 const verifyPassword = (admin, attemptedPassword)=>{
+    // Takes an admin object and a password attempt. If the password is valid,
+    // returns true. If the password is invalid, throws an error.
     const passwordValid = await bcrypt.compare(
         attemptedPassword, admin.hashedPassword
     );
     if (!passwordValid) {
         console.log(`Failed authentication for ${username}`)
         throw new Error("password invalid");
+    } else {
+        return true;
     }
 };
 const generateToken = (admin)=>{
+    // Takes an admin object and returns a signed JSON Web Token.
     const token = jwt.sign(
         {id: admin.administratorId.toString()},
         process.env.JWT_SECRET,
@@ -85,6 +89,14 @@ const generateToken = (admin)=>{
     );
     return token;
 };
+const verifyToken = (token)=>{
+    // Takes a JSON Web Token. If the token is valid, returns the decoded data.
+    // If the token is invalid, throws an error.
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decodedToken) throw new Error("token invalid");
+    return decodedToken;
+};
+
 
 
 
@@ -92,6 +104,8 @@ const generateToken = (admin)=>{
   AUTHENTICATION
 \*--------------*/
 const preSave = (admin)=>{
+    // Takes an admin object and prepares it to be saved to the database.
+    // RUN THIS BEFORE PUTTING ANYTHING IN ADMINISTRATORS TABLE!
     if (admin.password) hashPassword(admin);
     return admin;
 };
@@ -102,13 +116,15 @@ const preSave = (admin)=>{
 \*-------*/
 // GETTERS
 module.exports.findAdminByToken = (token)=>{
-    const decodedAdmin = jwt.verify(token, process.env.JWT_SECRET);
+    // Takes a token. If the token is valid, returns the associated
+    // Administrator. If the token is invalid, throws an error.
+    const {administratorId} = verifyToken(token);
     return db.get(
        `SELECT * FROM Administrators
         LEFT JOIN Administrators_Tokens USING(administratorId)
         WHERE token = ?
         AND administratorId = ?`,
-        token, decodedAdmin.administratorId
+        token, administratorId
     )
 }
 module.exports.findAdminByCredentials = async (username, password)=>{
@@ -123,7 +139,7 @@ module.exports.findAdminByCredentials = async (username, password)=>{
 }
 
 //SETTERS
-const createToken = (admin)=>{
+module.exports.createToken = (admin)=>{
     const token = generateToken(admin);
     return db.run(
        `INSERT INTO Administrators_Tokens

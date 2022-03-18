@@ -55,3 +55,91 @@ const initDB = async ()=>{
 }
 initDB();
 
+
+/*--------------*\
+  AUTH UTILITIES
+\*--------------*/
+const hashPassword = (admin)=>{
+    const hashedPassword = await bcrypt.hash(
+        admin.password,
+        config.admin.bcryptSaltRounds
+    );
+    delete admin.password;
+    admin.hashedPassword = hashedPassword;
+    return hashedPassword;
+};
+const verifyPassword = (admin, attemptedPassword)=>{
+    const passwordValid = await bcrypt.compare(
+        attemptedPassword, admin.hashedPassword
+    );
+    if (!passwordValid) {
+        console.log(`Failed authentication for ${username}`)
+        throw new Error("password invalid");
+    }
+};
+const generateToken = (admin)=>{
+    const token = jwt.sign(
+        {id: admin.administratorId.toString()},
+        process.env.JWT_SECRET,
+        {expiresIn: config.admin.tokenExpiration}
+    );
+    return token;
+};
+
+
+
+/*--------------*\
+  AUTHENTICATION
+\*--------------*/
+const preSave = (admin)=>{
+    if (admin.password) hashPassword(admin);
+    return admin;
+};
+
+
+/*-------*\
+  EXPORTS
+\*-------*/
+// GETTERS
+module.exports.findAdminByToken = (token)=>{
+    const decodedAdmin = jwt.verify(token, process.env.JWT_SECRET);
+    return db.get(
+       `SELECT * FROM Administrators
+        LEFT JOIN Administrators_Tokens USING(administratorId)
+        WHERE token = ?
+        AND administratorId = ?`,
+        token, decodedAdmin.administratorId
+    )
+}
+module.exports.findAdminByCredentials = async (username, password)=>{
+    const admin = await db.get(
+       `SELECT *
+        FROM Administrators
+        WHERE username = ?'`,
+        username
+    );
+    verifyPassword(admin, password)
+    return admin;
+}
+
+//SETTERS
+const createToken = (admin)=>{
+    const token = generateToken(admin);
+    return db.run(
+       `INSERT INTO Administrators_Tokens
+            (administratorId, token)
+        VALUES (?, ?);`,
+        admin.administratorId, token
+    )
+}
+module.exports.updatePassword = (admin, newPassword)=>{
+    verifyPassword(admin, password)
+    admin.password = newPassword;
+    preSave(admin)
+    return db.run(
+       `UPDATE Administrators
+        SET hashedPassword = ?
+        WHERE administratorId = ?;`,
+        newHashed, admin.administratorId
+    )
+}

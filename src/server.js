@@ -9,17 +9,26 @@ require("../bot.js")
 /*------*\
   SERVER
 \*------*/
-// IMPORT fastify
+// Import fastify
 const fastify = require("fastify")({
-    logger: true
+    logger: {level: "debug"}
 });
-// const fastifyStatic = require("fastify-static");
 
-// INIT fastify
-const {doRoutes} = require("./routes.js")
-doRoutes(fastify);
+// Renderer
+fastify.register(require("point-of-view"),{
+    engine: {pug: require("pug")}
+})
 
-// START server
+// Cookies
+fastify.register(require('fastify-cookie'), {
+    secret: process.env.COOKIE_SECRET
+})
+
+// Routes
+fastify.register(require('fastify-formbody'))
+fastify.register(require("./routes.js"), {logLevel: "debug"})
+
+// Start server
 fastify.listen(3000, (err, address)=>{
     if (err) {
         console.error(err)

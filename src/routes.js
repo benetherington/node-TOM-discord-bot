@@ -1,39 +1,80 @@
 const path = require("path")
+
 const {getSuggestionsWithCountedVotes} = require("./sqlite.js");
 const {startNewVote} = require("../interface/vote-interface.js");
 const {addNewSuggestion} = require("../interface/title-interface.js");
+const {getAdminByToken, getAdminByCredentials, createToken} = require("./sqlite/admin.js");
+const { create } = require("domain");
 
 
-async function doRoutes (fastify, app) {
-    // RENDERING
-    fastify.register(require("point-of-view"),{
-        engine: {pug: require("pug")}
-    })
+const validateTokenOrRedirect = (request, reply)=>{
+    // Token must exist
+    if (!request.cookies.auth)
+    {reply.redirect("/login?auth=none");}
     
-    // STATIC
+    // Token must be valid
+    if (!getAdminByToken(request.cookies.auth))
+    {reply.redirect("/login?auth=none");}
+};
+
+
+module.exports = (fastify, opts, done)=>{
+    // STATIC ROUTES
     fastify.register(require('fastify-static'), {
         root: path.join(__dirname, 'views/icons'),
         prefix: '/icons/',
         wildcard: true
     })
     
-    // DYNAMIC
-    fastify.get("/", async (req, res)=>{
-        res.view("src/views/monitor")
+    // ROOT
+    fastify.get("/", async (request, reply)=>{
+        validateTokenOrRedirect(request, reply);
+        reply.view("src/views/monitor")
     })
+    
+    // LOGIN
+    fastify.get("/login", async (request, reply)=>{
+        reply.view("src/views/login")
+    })
+    fastify.post("/login", async (request, reply)=>{
+        // Authenticate administrator
+        const username = request.body.username;
+        const password = request.body.password;
+        const adminUser = await getAdminByCredentials(username, password);
+        
+        // Redirect if bad credentials
+        if (!adminUser) reply.redirect("/login?auth=failed")
+        
+        // Send an authentication token
+        const token = await createToken(adminUser);
+        reply.setCookie("auth", token)
+        
+        // Redirect to root
+        reply.redirect("/")
+    })
+    
+    // SUGGESTION VIEWER
     fastify.get("/api/titles/:epNum", async (request, reply)=>{
+        validateTokenOrRedirect(request, reply);
+        
         const epNum = request.params.epNum;
         const countedSuggestions = await getSuggestionsWithCountedVotes({epNum});
         if (!countedSuggestions) throw new Error("invalid");
         return countedSuggestions;
     })
+    
+    // SUGGESTION COMMANDS
     fastify.post("/api/titles/:messageId", (request, reply)=>{
+        validateTokenOrRedirect(request, reply);
+        
         const messageId = request.params.messageId;
         addNewSuggestionFromApi(messageId)
     })
     fastify.post("/api/vote", (request, reply)=>{
+        validateTokenOrRedirect(request, reply);
+        
         startNewVoteFromApi();
     })
-}
-
-module.exports = {doRoutes}
+    
+    done()
+};

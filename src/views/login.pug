@@ -1,0 +1,14 @@
+doctype html
+html
+    head
+        title TOMbot -- Log In
+        style
+            include login.css
+body
+    div(id="message")
+    form(action="/login" method="POST")
+        input(name="username" type="text")
+        input(name="password" type="password")
+        button(type="submit") Log in
+        script
+            include login.js

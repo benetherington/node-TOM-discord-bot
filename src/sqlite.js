@@ -36,7 +36,7 @@ const printDbSummary = async ()=>{
 /*-------*\
   DB INIT
 \*-------*/
-const migrationsPath = "../migrations/title-suggestions";
+const migrationsPath = "./migrations/title-suggestions";
 const initDB = async ()=>{
     console.log("SQLite")
     db = await dbWrapper.open({

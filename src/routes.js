@@ -30,6 +30,7 @@ module.exports = (fastify, opts, done)=>{
     // ROOT
     fastify.get("/", async (request, reply)=>{
         const admin = await getAdminFromTokenOrRedirect(request, reply);
+        reply.view("src/views/monitor", {username: admin.username})
     })
     
     // LOGIN

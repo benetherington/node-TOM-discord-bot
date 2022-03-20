@@ -82,7 +82,7 @@ const verifyPassword = async (admin, attemptedPassword)=>{
 const generateToken = (admin)=>{
     // Takes an admin object and returns a signed JSON Web Token.
     const token = jwt.sign(
-        {id: admin.administratorId.toString()},
+        {administratorId: admin.administratorId.toString()},
         process.env.JWT_SECRET,
         {expiresIn: config.admin.tokenExpiration}
     );
@@ -117,13 +117,13 @@ const preSave = async (admin)=>{
 module.exports.getAdminByToken = (token)=>{
     // Takes a token. If the token is valid, returns the associated
     // Administrator. If the token is invalid, throws an error.
-    const {administratorId} = verifyToken(token);
+    const admin = verifyToken(token);
     return db.get(
        `SELECT * FROM Administrators
         LEFT JOIN Administrator_Tokens USING(administratorId)
         WHERE token = ?
         AND administratorId = ?`,
-        token, administratorId
+        token, admin.administratorId
     )
 }
 module.exports.getAdminByCredentials = async (username, password)=>{

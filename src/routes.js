@@ -7,14 +7,15 @@ const {getAdminByToken, getAdminByCredentials, createToken} = require("./sqlite/
 const { create } = require("domain");
 
 
-const validateTokenOrRedirect = (request, reply)=>{
+const getAdminFromTokenOrRedirect = async (request, reply)=>{
     // Token must exist
     if (!request.cookies.auth)
     {reply.redirect("/login?auth=none");}
     
     // Token must be valid
-    if (!getAdminByToken(request.cookies.auth))
-    {reply.redirect("/login?auth=none");}
+    const admin = await getAdminByToken(request.cookies.auth);
+    if (!admin) reply.redirect("/login?auth=none");
+    else return admin;
 };
 
 
@@ -28,8 +29,7 @@ module.exports = (fastify, opts, done)=>{
     
     // ROOT
     fastify.get("/", async (request, reply)=>{
-        validateTokenOrRedirect(request, reply);
-        reply.view("src/views/monitor")
+        const admin = await getAdminFromTokenOrRedirect(request, reply);
     })
     
     // LOGIN
@@ -53,9 +53,10 @@ module.exports = (fastify, opts, done)=>{
         reply.redirect("/")
     })
     
-    // SUGGESTION VIEWER
+    // API
+    // view suggestions
     fastify.get("/api/titles/:epNum", async (request, reply)=>{
-        validateTokenOrRedirect(request, reply);
+        getAdminFromTokenOrRedirect(request, reply);
         
         const epNum = request.params.epNum;
         const countedSuggestions = await getSuggestionsWithCountedVotes({epNum});
@@ -63,15 +64,15 @@ module.exports = (fastify, opts, done)=>{
         return countedSuggestions;
     })
     
-    // SUGGESTION COMMANDS
+    // edit suggestions
     fastify.post("/api/titles/:messageId", (request, reply)=>{
-        validateTokenOrRedirect(request, reply);
+        getAdminFromTokenOrRedirect(request, reply);
         
         const messageId = request.params.messageId;
         addNewSuggestionFromApi(messageId)
     })
     fastify.post("/api/vote", (request, reply)=>{
-        validateTokenOrRedirect(request, reply);
+        getAdminFromTokenOrRedirect(request, reply);
         
         startNewVoteFromApi();
     })

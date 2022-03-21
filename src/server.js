@@ -26,7 +26,9 @@ fastify.register(require('fastify-cookie'), {
 
 // Routes
 fastify.register(require('fastify-formbody'))
-fastify.register(require("./routes.js"), {logLevel: "debug"})
+fastify.register(require("./routes/static.js"))
+fastify.register(require("./routes/login.js"))
+fastify.register(require("./routes/monitor.js"))
 
 // Start server
 fastify.listen(3000, (err, address)=>{

@@ -1,19 +1,8 @@
-const {getSuggestionsWithCountedVotes} = require("../sqlite.js");
-const {startNewVote} = require("../../interface/vote-interface.js");
-const {addNewSuggestion} = require("../../interface/title-interface.js");
-const {getAdminByToken, getAdminByCredentials, createToken} = require("../sqlite/admin.js");
+const {getSuggestionsWithCountedVotes}  = require("../sqlite.js");
+const {startNewVote}                    = require("../../interface/vote-interface.js");
+const {addNewSuggestion}                = require("../../interface/title-interface.js");
+const {getAdminFromTokenOrRedirect}     = require("./loginUtilities.js");
 
-
-const getAdminFromTokenOrRedirect = async (request, reply)=>{
-    // Token must exist
-    if (!request.cookies.auth)
-    {reply.redirect("/login?auth=none");}
-    
-    // Token must be valid
-    const admin = await getAdminByToken(request.cookies.auth);
-    if (!admin) reply.redirect("/login?auth=none");
-    else return admin;
-};
 
 
 module.exports = (fastify, opts, done)=>{

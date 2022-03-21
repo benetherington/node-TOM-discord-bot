@@ -139,7 +139,7 @@ module.exports.getAdminByCredentials = async (username, password)=>{
     return admin;
 }
 
-//SETTERS
+// SETTERS
 module.exports.createToken = async (admin)=>{
     const token = generateToken(admin);
     const inserted = await db.run(
@@ -159,5 +159,21 @@ module.exports.updatePassword = async (admin, newPassword)=>{
         SET hashedPassword = ?
         WHERE administratorId = ?;`,
         newHashed, admin.administratorId
+    )
+}
+
+// DELETERS
+module.exports.deleteTokensFromAdmin = (admin)=>{
+    return db.run(
+       `DELETE FROM Administrator_Tokens
+        WHERE AdministratorId = ?`,
+        admin.administratorId
+    )
+}
+module.exports.deleteToken = (token)=>{
+    return db.run(
+       `DELETE FROM Administrator_Tokens
+        WHERE token = ?`,
+        token
     )
 }

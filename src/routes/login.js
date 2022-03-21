@@ -1,5 +1,7 @@
-const {getAdminByCredentials, createToken} = require("../sqlite/admin.js");
-
+const {getAdminByCredentials,
+       createToken,
+       deleteTokensFromAdmin}                   = require("../sqlite/admin.js");
+const {getAdminFromTokenOrRedirect}             = require("./loginUtilities");
 
 module.exports = (fastify, opts, done)=>{
     
@@ -23,6 +25,21 @@ module.exports = (fastify, opts, done)=>{
         
         // Redirect to root
         reply.redirect("/")
+    })
+    
+    
+    fastify.post("/logout", async (request, reply)=>{
+        // Authenticate administrator
+        const admin = getAdminFromTokenOrRedirect(request, reply);
+        
+        // Delete tokens from database
+        await deleteTokensFromAdmin(admin);
+        
+        // Remove cookie
+        reply.clearCookie("auth")
+        
+        // redirect to login page
+        reply.redirect("/login")
     })
     
     

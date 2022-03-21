@@ -9,7 +9,7 @@ require("../bot.js")
 /*------*\
   SERVER
 \*------*/
-// Import fastify
+// Fastify
 const fastify = require("fastify")({
     logger: {level: "debug"}
 });

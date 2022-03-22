@@ -1,5 +1,9 @@
-
-div#header
-    b #{username}
-    form(action="/logout" method="post")
-        input(type="submit" value="Log Out")
+div#header.card
+    if username
+        b #{username}
+        form(action="/logout" method="post")
+            button(type="submit") Log out
+    else
+        b Guest
+        form(action="/login")
+            button(type="submit") Log in

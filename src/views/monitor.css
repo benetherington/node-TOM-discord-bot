@@ -1,13 +1,14 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-* {font-family: "Roboto", sans-serif;}
+h2.card {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+}
 
 /*---------------*\
   SUGGESTION GRID
 \*---------------*/
 /* grid container */
 .suggestions {
-    margin: 4px;
     padding-bottom: 4px;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12),
@@ -83,9 +84,14 @@
 /*--------*\
   CONTROLS
 \*--------*/
+#controls.card {
+    display: flex;
+    justify-content: center;
+}
 button.depressed {
-    border-style: ridge;
-    background-color: #80808099;
+    color: white;
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 9px var(--primary-dark);
 }
 
 /*----------------*\

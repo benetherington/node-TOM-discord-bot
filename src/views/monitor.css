@@ -1,7 +1,9 @@
 h2.card {
-    position: relative;
-    padding: 10px;
     text-align: center;
+    padding: 10px;
+    
+    width: fit-content;
+    margin-left: 10%;
 }
 
 /*---------------*\

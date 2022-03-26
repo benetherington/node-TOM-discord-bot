@@ -71,7 +71,7 @@ const removeRow = (element)=>{
 const getSuggestions   = (  )=>fetch("/api/titles/").then(r=>r.json());
 const deleteSuggestion = (id)=>fetch(`/api/titles/${id}`, {method:"DELETE"});
 const postVoteRequest  = (  )=>fetch("/api/vote", {method: "POST"});
-const postSuggestion   = (id)=>fetch(`/api/title/${id}`, {method: "POST"});
+const postSuggestion   = (id)=>fetch(`/api/titles/${id}`, {method: "POST"});
 
 /*----------------*\
   Suggestion input

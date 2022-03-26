@@ -3,8 +3,10 @@ const {addNewSuggestion} = require("../src/sqlite.js");
 const ID = require("../src/id.json");
 
 const fetchMessage = async(messageId)=>{
-    const groundControl = client.channels.cache.get(ID.channel.botTest);
-    return await groundControl.messages.fetch(messageId)
+    const channelId = process.env.TEST? ID.channel.botTest : ID.channel.groundControl;
+    const channel = await client.channels.fetch(channelId);
+    
+    return await channel.messages.fetch(messageId)
 }
 const fetchMemberFromDiscordAuthor = (author)=>{
     const tomCastGuild = client.guilds.cache.get(ID.guild.tomCast);

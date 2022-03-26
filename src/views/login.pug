@@ -1,0 +1,18 @@
+doctype html
+html
+    head
+        title TOMbot -- Log In
+        style
+            include app.css
+            include header.css
+            include login.css
+    body
+        include header
+        div#loginContent
+            form.card(id="login" action="/login" method="POST")
+                input(name="username" placeholder="username" type="text")
+                input(name="password" placeholder="********" type="password")
+                button(type="submit") Log in
+            div#message.card
+        script
+            include login.js

@@ -1,0 +1,19 @@
+#loginContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+
+#loginContent form {
+    display: flex;
+    flex-direction: column;
+    
+    padding: 16px;
+}
+
+#message:not(:empty) {
+    background-color: var(--secondary);
+    color: white;
+    text-align: center;
+    padding: 4px 10px;
+}

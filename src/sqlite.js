@@ -36,14 +36,15 @@ const printDbSummary = async ()=>{
 /*-------*\
   DB INIT
 \*-------*/
+const migrationsPath = "./migrations/title-suggestions";
 const initDB = async ()=>{
     console.log("SQLite")
     db = await dbWrapper.open({
         filename: dbFile,
         driver: sqlite3.cached.Database
     });
-    console.log("Migrating...")
-    await db.migrate()
+    console.log("Migrating title-suggestions...")
+    await db.migrate({migrationsPath})
     await printDbSummary()
 }
 initDB();
@@ -146,6 +147,13 @@ module.exports.addNewSuggestion = async(author, suggestion)=>{
     )
     return newSuggestion;
 }
+
+module.exports.deleteSuggestion = (suggestion)=>{
+    return db.run(
+        `DELETE FROM Suggestions WHERE suggestionId = ?;`,
+        suggestion.suggestionId
+    )
+};
 
 /*------*\
   VOTING

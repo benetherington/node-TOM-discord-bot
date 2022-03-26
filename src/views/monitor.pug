@@ -3,10 +3,13 @@ html
     head
         title TOMbot
         style
+            include app.css
+            include header.css
             include monitor.css
     body
-        h2 Current Suggestions
-        div.suggestions
+        include header
+        h2.card Current Suggestions
+        div.suggestions.card
             div#headers
                 h3.author Author
                 h3.suggestion Suggestion
@@ -17,7 +20,7 @@ html
                     //- p.suggestion
                     //- p.votes
                     //- button.suggestion-delete
-        div.controls
+        div#controls.card
             button#autoUpdate(onclick="autoUpdate()") Auto-update
             button(onclick="addSuggestion()") Add Suggestion
             button(onclick="callVote()") Call Vote

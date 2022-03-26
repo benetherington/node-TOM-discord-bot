@@ -1,0 +1,9 @@
+div#header
+    if username
+        b #{username}
+        form(action="/logout" method="post")
+            button(type="submit") Log out
+    else
+        b Guest
+        form(action="/login")
+            button(type="submit") Log in

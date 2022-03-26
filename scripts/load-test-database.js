@@ -10,13 +10,13 @@ const TOTAL_SUGGESTIONS = EPISODES*SUGGESTIONS
 const VOTES = 10;
 
 
-
+const migrationsPath = "./migrations/title-suggestions";
 const initDB = async ()=>{
     db = await dbWrapper.open({
         filename: dbFile,
         driver: sqlite3.cached.Database
     });
-    await db.migrate()
+    await db.migrate({migrationsPath})
 }
 
 const createEpisodes = async ()=>{

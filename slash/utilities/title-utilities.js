@@ -17,13 +17,11 @@ const createSuggestionFromInteraction = (interaction)=>{
 
 const formatTitleReply = (author, suggestion, voteCount=1)=>{
     const content = `<@${author.discordId}>: \`${suggestion.text}\``;
-    const row = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setLabel(`(${voteCount}) VOTE`)
-                .setStyle("SUCCESS")
-                .setCustomId(suggestion.suggestionId.toString())
-        )
+    const button = new MessageButton()
+        .setLabel(`(${voteCount}) VOTE`)
+        .setStyle("SUCCESS")
+        .setCustomId(suggestion.suggestionId.toString());
+    const row = new MessageActionRow().addComponents(button)
     return {content, components: [row]}
 }
 

@@ -1,13 +1,16 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-* {font-family: "Roboto", sans-serif;}
+h2.card {
+    text-align: center;
+    padding: 10px;
+    
+    width: fit-content;
+    margin-left: 10%;
+}
 
 /*---------------*\
   SUGGESTION GRID
 \*---------------*/
 /* grid container */
 .suggestions {
-    margin: 4px;
     padding-bottom: 4px;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12),
@@ -28,6 +31,7 @@
 /* row deletion */
 .row-container {
     max-height: 100px;
+    align-items: center;
     transition: max-height .5s, transform .75s;
 }
 .row-container.deleted {
@@ -36,7 +40,6 @@
 }
 /* all columns */
 #headers > h3, .row-container > * {
-    height: 100%;
     margin: 0;
     align-content: center;
     padding: 3px 10px;
@@ -68,9 +71,8 @@
 .suggestion-delete {
     grid-column: 11/12;
     border: none;
-    border-radius: 100%;
-    height: 80%;
-    aspect-ratio: 1/1;
+    height: 1.5em;
+    width: 1.5em;
     background-image: url("/icons/x-circle.svg");
     background-size: contain;
 }
@@ -83,9 +85,14 @@
 /*--------*\
   CONTROLS
 \*--------*/
+#controls.card {
+    display: flex;
+    justify-content: center;
+}
 button.depressed {
-    border-style: ridge;
-    background-color: #80808099;
+    color: white;
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 9px var(--primary-dark);
 }
 
 /*----------------*\

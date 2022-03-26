@@ -1,0 +1,6 @@
+{
+    "admin": {
+        "tokenExpiration": "72h",
+        "bcryptSaltRounds": 8
+    }
+}

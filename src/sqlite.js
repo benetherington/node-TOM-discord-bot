@@ -148,6 +148,13 @@ module.exports.addNewSuggestion = async(author, suggestion)=>{
     return newSuggestion;
 }
 
+module.exports.deleteSuggestion = (suggestion)=>{
+    return db.run(
+        `DELETE FROM Suggestions WHERE suggestionId = ?;`,
+        suggestion.suggestionId
+    )
+};
+
 /*------*\
   VOTING
 \*------*/

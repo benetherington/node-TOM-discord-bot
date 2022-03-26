@@ -98,7 +98,9 @@ const suggestionEscape = (e)=>{
 async function removeSuggestion(e) {
     const id = e.target.id.match(/\d+/)[0];
     if (!id) console.error(e);
-    removeRow(e.target);
+    
+    const apiCall = await deleteSuggestion(id);
+    if (apiCall.ok) removeRow(e.target);
 }
 // bottom toolbar
 var updateIntervalId;
@@ -113,8 +115,13 @@ const autoUpdate = ()=>{
 };
 const updateSuggestions = async()=>{
     getSuggestions()
-        .catch(console.error)
-        .then(suggestions=>suggestions.forEach(createOrUpdateRow));
+        .then(suggestions=>suggestions.forEach(createOrUpdateRow))
+        .catch(handleGetSuggestionFailure);
+};
+const handleGetSuggestionFailure = error=>{
+    console.log(error)
+    
+    autoUpdate()
 };
 const addSuggestion = ()=>{
     input = document.createElement("input");

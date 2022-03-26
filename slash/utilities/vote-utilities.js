@@ -10,8 +10,16 @@ const chunkArray = (toChunk, chunkSize)=>{
 }
 const formatVoteButton = ({author, suggestion, voteCount=1})=>{
     // Turns a countedSuggestion into a button.
+    
+    // limit label length
+    let label = `(${voteCount}) ${author.displayName||author.username}: ${suggestion.text}`
+    if (label.length>81) {
+        label = label.slice(0, 77);
+        label += "...";
+    }
+    
     return new MessageButton()
-        .setLabel(`(${voteCount}) ${author.displayName||author.username}: ${suggestion.text}`)
+        .setLabel(label)
         .setStyle("SECONDARY")
         .setCustomId(suggestion.suggestionId.toString());
 };

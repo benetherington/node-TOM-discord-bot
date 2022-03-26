@@ -1,6 +1,6 @@
-const {client} = require("../bot.js")
+const {client}          = require("../bot.js")
 const {getVoteMessages} = require("../slash/utilities/vote-utilities.js");
-const ID = require("../src/id.json");
+const ID                = require("../src/id.json");
 
 
 const startNewVoteFromApi = async ()=>{

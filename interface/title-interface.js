@@ -1,6 +1,7 @@
-const {client} = require("../bot.js");
-const {addNewSuggestion} = require("../src/sqlite.js");
-const ID = require("../src/id.json");
+const {client}           = require("../bot.js");
+const {addNewSuggestion, deleteSuggestion} = require("../src/sqlite.js");
+const ID                 = require("../src/id.json");
+
 
 const fetchMessage = async(messageId)=>{
     const channelId = process.env.TEST? ID.channel.botTest : ID.channel.groundControl;
@@ -28,10 +29,18 @@ const createSuggestionFromMessage = (message)=>{
 }
 
 const addNewSuggestionFromApi = async(messageId)=>{
+    console.log(`API creating ${messageId}`)
+    
     const message = await fetchMessage(messageId);
     const author = await createAuthorFromMessage(message);
     const suggestion = createSuggestionFromMessage(message);
     addNewSuggestion(author, suggestion)
 }
+const removeSuggestionFromApi = async (messageId)=>{
+    console.log(`API deleting ${messageId}`)
+    
+    const suggestion = {suggestionId: messageId};
+    deleteSuggestion(suggestion)
+};
 
-module.exports = {addNewSuggestionFromApi};
+module.exports = {addNewSuggestionFromApi, removeSuggestionFromApi};

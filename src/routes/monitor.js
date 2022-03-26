@@ -1,6 +1,7 @@
 const {getSuggestionsWithCountedVotes}  = require("../sqlite.js");
-const {startNewVote}                    = require("../../interface/vote-interface.js");
-const {addNewSuggestion}                = require("../../interface/title-interface.js");
+const {startNewVoteFromApi}             = require("../../interface/vote-interface.js");
+const {addNewSuggestionFromApi,
+        removeSuggestionFromApi}        = require("../../interface/title-interface.js");
 const {getAdminFromTokenOrRedirect}     = require("./loginUtilities.js");
 
 
@@ -31,11 +32,19 @@ module.exports = (fastify, opts, done)=>{
         
         const messageId = request.params.messageId;
         addNewSuggestionFromApi(messageId)
+        reply.send(1);
     })
     fastify.post("/api/vote", (request, reply)=>{
         getAdminFromTokenOrRedirect(request, reply);
         
         startNewVoteFromApi();
+        reply.send(1);
+    })
+    fastify.delete("/api/titles/:messageId", (request, reply)=>{
+        getAdminFromTokenOrRedirect(request, reply);
+        
+        removeSuggestionFromApi(request.params.messageId);
+        reply.send(1);
     })
     
     

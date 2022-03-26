@@ -31,6 +31,7 @@ h2.card {
 /* row deletion */
 .row-container {
     max-height: 100px;
+    align-items: center;
     transition: max-height .5s, transform .75s;
 }
 .row-container.deleted {
@@ -39,7 +40,6 @@ h2.card {
 }
 /* all columns */
 #headers > h3, .row-container > * {
-    height: 100%;
     margin: 0;
     align-content: center;
     padding: 3px 10px;
@@ -71,9 +71,8 @@ h2.card {
 .suggestion-delete {
     grid-column: 11/12;
     border: none;
-    border-radius: 100%;
-    height: 80%;
-    aspect-ratio: 1/1;
+    height: 1.5em;
+    width: 1.5em;
     background-image: url("/icons/x-circle.svg");
     background-size: contain;
 }

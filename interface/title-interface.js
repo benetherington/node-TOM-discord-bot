@@ -1,5 +1,5 @@
 const {client}           = require("../bot.js");
-const {addNewSuggestion, deleteSuggestion} = require("../src/sqlite.js");
+const {addNewSuggestion, deleteSuggestion} = require("../src/sqlite/suggestions.js");
 const ID                 = require("../src/id.json");
 
 

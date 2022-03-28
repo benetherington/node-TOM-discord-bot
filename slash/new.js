@@ -2,7 +2,7 @@ const {SlashCommandBuilder} = require('@discordjs/builders');
 const {ApplicationCommandPermissionType} = require("discord-api-types/v9");
 const {responses} = require("../src/interaction-config.json");
 const {role} = require("../src/id.json");
-const {addNewEpisode} = require("../src/sqlite.js");
+const {addNewEpisode} = require("../src/sqlite/suggestions.js");
 
 
 let data = new SlashCommandBuilder()

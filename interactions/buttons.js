@@ -1,6 +1,6 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
 const {countVotesOnSuggestion, hasVotedForSuggestion,
-       addVoterToSuggestion, removeVoterFromSuggestion} = require("../src/sqlite.js");
+       addVoterToSuggestion, removeVoterFromSuggestion} = require("../src/sqlite/suggestions.js");
 
 
 // DISCORD COMPONENTS

@@ -1,4 +1,4 @@
-const {getSuggestionsWithCountedVotes}  = require("../sqlite.js");
+const {getSuggestionsWithCountedVotes}  = require("../sqlite/suggestions.js");
 const {startNewVoteFromApi}             = require("../../interface/vote-interface.js");
 const {addNewSuggestionFromApi,
         removeSuggestionFromApi}        = require("../../interface/title-interface.js");

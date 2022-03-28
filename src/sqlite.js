@@ -86,20 +86,23 @@ module.exports.getSuggestionsWithCountedVotes = async (episode={})=>{
     
     // SELECT votes count, Suggestion text and Author discordId for all votes on
     // Suggestions associated with epNum
-    const countedSuggestions = await db.all(
-       `SELECT
-            COUNT(*) as voteCount,
-            Suggestions.suggestionId,
+    const countedSuggestions = await db.all(`
+        SELECT
+            COUNT(*) AS voteCount,
+            Suggestion_voters.suggestionId,
             text,
-            userName,
-            displayname
-        FROM Suggestion_Voters
-            INNER JOIN Suggestions USING(suggestionId)
-            INNER JOIN Authors USING(authorId)
-        WHERE Suggestions.episodeId = (SELECT episodeId FROM Episodes WHERE epNum = ?)
+            username,
+            displayName,
+            epNum
+        FROM
+            Suggestion_Voters
+                INNER JOIN Suggestions USING(suggestionId)
+                INNER JOIN Authors USING(authorId)
+                INNER JOIN Episodes USING(episodeId)
+        WHERE epNum = ?
         GROUP BY
-            Suggestion_Voters.suggestionId;`,
-        episode.epNum
+            Suggestion_voters.suggestionId;
+        `, episode.epNum
     )
     const formattedCountedSuggestions = countedSuggestions.map(suggestion=>{
         // EXTRACT
@@ -136,7 +139,7 @@ module.exports.addNewSuggestion = async(author, suggestion)=>{
         suggestion.token, suggestion.text
     );
     await db.run(
-        "INSERT INTO Suggestion_Voters (suggestionId, authorId) VALUES (?, ?);",
+        "INSERT INTO Suggestion_Voters (suggestionId, voterId) VALUES (?, ?);",
         suggestionsInsert.lastID, selectedAuthor.authorId
     )
     
@@ -168,8 +171,8 @@ module.exports.countVotesOnSuggestion = async (suggestion)=>{
 
 module.exports.hasVotedForSuggestion = (voter, suggestion)=>{
     return db.get(
-       `SELECT authorId FROM Suggestion_Voters
-        INNER JOIN Authors USING(authorId)
+       `SELECT voterId FROM Suggestion_Voters
+        INNER JOIN Authors ON authorId = voterId
         WHERE suggestionId = ? AND discordId = ?;`,
          suggestion.suggestionId, voter.discordId
      )
@@ -181,7 +184,7 @@ module.exports.addVoterToSuggestion = async (voter, suggestion)=>{
         voter.discordId, voter.username, voter.displayName
     )
     return db.run(
-        `INSERT INTO Suggestion_Voters (suggestionId, authorId)
+        `INSERT INTO Suggestion_Voters (suggestionId, voterId)
         VALUES (
             (?),
             (SELECT authorId FROM Authors WHERE discordId = ?)
@@ -194,7 +197,7 @@ module.exports.removeVoterFromSuggestion = (voter, suggestion)=>{
     return db.run(
        `DELETE FROM Suggestion_Voters
         WHERE suggestionId = (?)
-        AND authorId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
+        AND voterId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
          suggestion.suggestionId, voter.discordId
     );
 }

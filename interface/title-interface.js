@@ -18,7 +18,7 @@ const createAuthorFromMessage = async (message)=>{
     const discordId = message.author.id;
     const username = message.author.username;
     const member = await fetchMemberFromDiscordAuthor(message.author);
-    const displayName = member.nickname || {};
+    const displayName = member.nickname || "";
     return {discordId, username, displayName}
 }
 const createSuggestionFromMessage = (message)=>{

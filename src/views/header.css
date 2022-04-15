@@ -2,18 +2,18 @@
     margin-top: 0;
     margin-bottom: 16px;
     padding: 4px;
-
     background: white;
     box-shadow: 0 0 4px 1px grey;
-
     display: flex;
     justify-content: end;
     align-items: center;
 }
+
 #header * {
     font-size: initial;
     margin: 2px 5px;
 }
+
 #header button {
     font-size: small;
     color: black;

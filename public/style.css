@@ -2,77 +2,74 @@
 /* called by your view template */
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html {
-  cursor: url('https://cdn.glitch.com/83d1d036-7e28-4e31-8550-de4135657821%2Fpinpng.com-black-triangle-png-1772331.png') 2 2, auto;
+    cursor: url('https://cdn.glitch.com/83d1d036-7e28-4e31-8550-de4135657821%2Fpinpng.com-black-triangle-png-1772331.png')
+            2 2,
+        auto;
 }
 
 body {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem;
-  line-height: 2;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem;
+    line-height: 2;
 }
 
 code {
-  font-family: Menlo, Consolas, Monaco, "Lucida Console", Monospace;
+    font-family: Menlo, Consolas, Monaco, 'Lucida Console', Monospace;
 }
 main {
-  margin-bottom: 2rem;
+    margin-bottom: 2rem;
 }
 section,
 .nes-container {
-  margin-bottom: 2.5rem;
+    margin-bottom: 2.5rem;
 }
-
 
 /* Balloons sample */
 section.message-list {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 .message-list > .message {
-  display: flex;
-  margin-top: 5rem;
-  margin-bottom: 1rem;
-  flex-direction: row;
+    display: flex;
+    margin-top: 5rem;
+    margin-bottom: 1rem;
+    flex-direction: row;
 }
 .message-list > .message.-right {
-  justify-content: flex-end;
+    justify-content: flex-end;
 }
 
 .message-list > .message.-left {
-  justify-content: flex-start;
+    justify-content: flex-start;
 }
 
 .message-list > .message > .nes-balloon {
-  color: black;
+    color: black;
 }
 .message-list > .message i {
-  align-self: flex-end;
+    align-self: flex-end;
 }
 .message-list > .message.-left i {
-  margin-right: 2rem;
+    margin-right: 2rem;
 }
 .message-list > .message.-right i {
-  margin-left: 2rem;
+    margin-left: 2rem;
 }
 
 .nes-bcrikko::before {
-  color: #FF8300;
+    color: #ff8300;
 }
 
 @media screen and (max-width: 500px) {
-  .message-list > .message {
-    flex-direction: column;
-  }
-  .message-list > .message i {
-    display: none;
-  }
+    .message-list > .message {
+        flex-direction: column;
+    }
+    .message-list > .message i {
+        display: none;
+    }
 }
-
-
-
-

@@ -5,6 +5,10 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
+    "env": {
+        "node": true,
+        "browser": true
+    },
     "rules": {
         "prettier/prettier": [
             "warn",

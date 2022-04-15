@@ -1,9 +1,11 @@
 # TOMbot for Discord
+
 Written by Ben Etherington in 2022 as an adaptation of the [Python version](https://github.com/benetherington/TOMbot).
 
 Code reviewing and mentorship kindly provided by [Fonji](https://github.com/fonji).
 
 ## INTENT
+
 This bot automates tasks for [The Orbital Mechanics Podcast](http://orbitalpodcast.com).
 
 This repo can serve as a template for new bots, but isn't intended to be forked

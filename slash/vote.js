@@ -1,7 +1,10 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {getVoteMessages} = require('./utilities/vote-utilities.js');
 
-const data = new SlashCommandBuilder().setName('vote').setDescription('Begin a new voting round').toJSON();
+const data = new SlashCommandBuilder()
+    .setName('vote')
+    .setDescription('Begin a new voting round')
+    .toJSON();
 const execute = async (interaction) => {
     console.log(`${interaction.user.username} used /vote`);
 

@@ -13,7 +13,11 @@ const ID = require('./src/id.json');
   INIT
 \*----*/
 const intents = new Intents();
-intents.add(Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS);
+intents.add(
+    Intents.FLAGS.GUILD_PRESENCES,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+);
 const client = new Client({intents});
 
 /*-----*\
@@ -29,7 +33,9 @@ client.channels.fetch(ID.channel.groundControl);
 // These are registered in ./register-commands.js, which needs to be run once as
 // a provisioning step.
 client.slashes = new Collection();
-const interactionFileNames = fs.readdirSync('./slash').filter((fn) => fn.endsWith('.js'));
+const interactionFileNames = fs
+    .readdirSync('./slash')
+    .filter((fn) => fn.endsWith('.js'));
 for (const fileName of interactionFileNames) {
     let slash = require('./slash/' + fileName);
     client.slashes.set(slash.data.name, slash);

@@ -14,7 +14,7 @@
             "warn",
             {
                 "tabWidth": 4,
-                "printWidth": 120,
+                "printWidth": 80,
                 "singleQuote": true,
                 "trailingComma": "all",
                 "bracketSpacing": false,

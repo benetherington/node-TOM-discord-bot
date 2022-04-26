@@ -1,6 +1,9 @@
 const {getSuggestionsWithCountedVotes} = require('../sqlite/suggestions.js');
 const {startNewVoteFromApi} = require('../../interface/vote-interface.js');
-const {addNewSuggestionFromApi, removeSuggestionFromApi} = require('../../interface/title-interface.js');
+const {
+    addNewSuggestionFromApi,
+    removeSuggestionFromApi,
+} = require('../../interface/title-interface.js');
 const {getAdminFromTokenOrRedirect} = require('./loginUtilities.js');
 
 module.exports = (fastify, opts, done) => {
@@ -15,7 +18,9 @@ module.exports = (fastify, opts, done) => {
         getAdminFromTokenOrRedirect(request, reply);
 
         const epNum = request.params.epNum;
-        const countedSuggestions = await getSuggestionsWithCountedVotes({epNum});
+        const countedSuggestions = await getSuggestionsWithCountedVotes({
+            epNum,
+        });
         if (!countedSuggestions) throw new Error('invalid');
         return countedSuggestions;
     });

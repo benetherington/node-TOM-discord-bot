@@ -45,10 +45,13 @@ const createRow = ({suggestion, author, voteCount}) => {
   Suggestion row updation
 \*-----------------------*/
 const updateRowVoteCount = ({suggestion, voteCount}) => {
-    document.querySelector(`#votes-${suggestion.suggestionId}`).textContent = voteCount;
+    document.querySelector(`#votes-${suggestion.suggestionId}`).textContent =
+        voteCount;
 };
 const createOrUpdateRow = (countedSuggestion) => {
-    const displayed = document.querySelector(`*[id$='-${countedSuggestion.suggestion.suggestionId}']`);
+    const displayed = document.querySelector(
+        `*[id$='-${countedSuggestion.suggestion.suggestionId}']`,
+    );
 
     if (displayed) updateRowVoteCount(countedSuggestion);
     else createRow(countedSuggestion);

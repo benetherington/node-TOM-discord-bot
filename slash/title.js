@@ -5,7 +5,12 @@ const {getNewSuggestionMessage} = require('./utilities/title-utilities');
 let data = new SlashCommandBuilder()
     .setName('title')
     .setDescription('Suggest a new title for this episode')
-    .addStringOption((o) => o.setName('suggestion').setDescription('Your suggestion').setRequired(true))
+    .addStringOption((o) =>
+        o
+            .setName('suggestion')
+            .setDescription('Your suggestion')
+            .setRequired(true),
+    )
     .toJSON();
 
 const execute = async (interaction) => {

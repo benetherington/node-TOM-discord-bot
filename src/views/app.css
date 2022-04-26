@@ -1,8 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
-* {
-    font-family: Roboto, sans-serif;
-}
+/* prettier-ignore */
+* { font-family: Roboto, sans-serif; }
 
 body {
     --primary: #1565c0;

@@ -19,7 +19,9 @@ DB INIT
 \*-------*/
 const printDbSummary = async () => {
     try {
-        const selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
+        const selectTables = await db.all(
+            "SELECT name FROM sqlite_master WHERE type='table'",
+        );
         const exists = selectTables.map((row) => row.name).join(', ');
         console.log(`Tables: ${exists}`);
 
@@ -33,7 +35,9 @@ const printDbSummary = async () => {
             console.log('No admin users exist yet.');
         }
     } catch (error) {
-        console.error('There was an issue initializing the administrators database.');
+        console.error(
+            'There was an issue initializing the administrators database.',
+        );
         console.error(error);
     }
 };
@@ -58,7 +62,10 @@ initDB();
 const hashPassword = async (admin) => {
     // Takes an admin object, removes the password property, and adds/updates
     // the hashed password property.
-    const hashedPassword = await bcrypt.hash(admin.password, config.admin.bcryptSaltRounds);
+    const hashedPassword = await bcrypt.hash(
+        admin.password,
+        config.admin.bcryptSaltRounds,
+    );
     delete admin.password;
     admin.hashedPassword = hashedPassword;
     return admin;
@@ -66,7 +73,10 @@ const hashPassword = async (admin) => {
 const verifyPassword = async (admin, attemptedPassword) => {
     // Takes an admin object and a password attempt. If the password is valid,
     // returns true. If the password is invalid, throws an error.
-    const passwordValid = await bcrypt.compare(attemptedPassword, admin.hashedPassword);
+    const passwordValid = await bcrypt.compare(
+        attemptedPassword,
+        admin.hashedPassword,
+    );
     if (!passwordValid) {
         console.log(`Failed authentication for ${username}`);
         throw new Error('password invalid');
@@ -76,9 +86,13 @@ const verifyPassword = async (admin, attemptedPassword) => {
 };
 const generateToken = (admin) => {
     // Takes an admin object and returns a signed JSON Web Token.
-    const token = jwt.sign({administratorId: admin.administratorId.toString()}, process.env.JWT_SECRET, {
-        expiresIn: config.admin.tokenExpiration,
-    });
+    const token = jwt.sign(
+        {administratorId: admin.administratorId.toString()},
+        process.env.JWT_SECRET,
+        {
+            expiresIn: config.admin.tokenExpiration,
+        },
+    );
     return token;
 };
 const verifyToken = (token) => {

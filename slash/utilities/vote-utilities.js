@@ -1,5 +1,7 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
-const {getSuggestionsWithCountedVotes} = require('../../src/sqlite/suggestions.js');
+const {
+    getSuggestionsWithCountedVotes,
+} = require('../../src/sqlite/suggestions.js');
 
 const chunkArray = (toChunk, chunkSize) => {
     let chunked = [];
@@ -12,13 +14,17 @@ const formatVoteButton = ({author, suggestion, voteCount = 1}) => {
     // Turns a countedSuggestion into a button.
 
     // limit label length
+    // prettier-ignore
     let label = `(${voteCount}) ${author.displayName || author.username}: ${suggestion.text}`;
     if (label.length > 81) {
         label = label.slice(0, 77);
         label += '...';
     }
 
-    return new MessageButton().setLabel(label).setStyle('SECONDARY').setCustomId(suggestion.suggestionId.toString());
+    return new MessageButton()
+        .setLabel(label)
+        .setStyle('SECONDARY')
+        .setCustomId(suggestion.suggestionId.toString());
 };
 const formatVoteRow = (countedSuggestionRowChunk) => {
     // Turns an array of countedSuggestions into a MessageActionRow
@@ -27,7 +33,10 @@ const formatVoteRow = (countedSuggestionRowChunk) => {
 };
 const getVoteMessage = (countedSuggestionMessageChunk) => {
     // Turns an array of countedSuggestions into a ReplyOption.
-    const countedSuggestionRowChunks = chunkArray(countedSuggestionMessageChunk, 5);
+    const countedSuggestionRowChunks = chunkArray(
+        countedSuggestionMessageChunk,
+        5,
+    );
     const components = countedSuggestionRowChunks.map(formatVoteRow);
     return {content: 'Title suggestions so far:', components};
 };
@@ -36,9 +45,14 @@ const getVoteMessages = async () => {
 
     // SELECT Suggestions
     const allCountedSuggestions = await getSuggestionsWithCountedVotes();
-    console.log(`Found ${allCountedSuggestions.length} suggestions to vote on.`);
+    console.log(
+        `Found ${allCountedSuggestions.length} suggestions to vote on.`,
+    );
     // SPLIT suggestions into chunks
-    const countedSuggestionMessageChunks = chunkArray(allCountedSuggestions, 5 * 5);
+    const countedSuggestionMessageChunks = chunkArray(
+        allCountedSuggestions,
+        5 * 5,
+    );
     return countedSuggestionMessageChunks.map(getVoteMessage);
 };
 

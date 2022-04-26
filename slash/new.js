@@ -8,7 +8,9 @@ let data = new SlashCommandBuilder()
     .setName('new')
     .setDescription('Starts a new episode recording')
     .setDefaultPermission(false)
-    .addIntegerOption((o) => o.setName('ep_num').setDescription('Episode number').setRequired(true))
+    .addIntegerOption((o) =>
+        o.setName('ep_num').setDescription('Episode number').setRequired(true),
+    )
     .toJSON();
 data.permissions = [
     {
@@ -28,7 +30,9 @@ let execute = async (interaction) => {
             // TODO: silly. Welcome everyone to City [epNum] https://static.wikia.nocookie.net/half-life/images/c/cb/Breencast_first.jpg/revision/latest/top-crop/width/360/height/360?cb=20091026102502&path-prefix=en
         } else {
             interaction.reply(responses.error);
-            console.error(`sqlite.addNewEpisode returned false. epNum ${epNum}`);
+            console.error(
+                `sqlite.addNewEpisode returned false. epNum ${epNum}`,
+            );
         }
     } catch (error) {
         interaction.reply(responses.failure);

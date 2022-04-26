@@ -1,9 +1,14 @@
 const {client} = require('../bot.js');
-const {addNewSuggestion, deleteSuggestion} = require('../src/sqlite/suggestions.js');
+const {
+    addNewSuggestion,
+    deleteSuggestion,
+} = require('../src/sqlite/suggestions.js');
 const ID = require('../src/id.json');
 
 const fetchMessage = async (messageId) => {
-    const channelId = process.env.TEST ? ID.channel.botTest : ID.channel.groundControl;
+    const channelId = process.env.TEST
+        ? ID.channel.botTest
+        : ID.channel.groundControl;
     const channel = await client.channels.fetch(channelId);
 
     return await channel.messages.fetch(messageId);

@@ -1,4 +1,8 @@
-const {getAdminByCredentials, createToken, deleteTokensFromAdmin} = require('../sqlite/admin.js');
+const {
+    getAdminByCredentials,
+    createToken,
+    deleteTokensFromAdmin,
+} = require('../sqlite/admin.js');
 const {getAdminFromTokenOrRedirect} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {

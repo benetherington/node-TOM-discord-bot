@@ -8,7 +8,9 @@ let db;
 \*---------*/
 const printDbSummary = async () => {
     try {
-        const selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
+        const selectTables = await db.all(
+            "SELECT name FROM sqlite_master WHERE type='table'",
+        );
         const exists = selectTables.map((row) => row.name).join(', ');
         console.log(`Tables: ${exists}`);
 
@@ -50,7 +52,8 @@ initDB();
 /*-------*\
   EPISODE
 \*-------*/
-const getCurrentEpisode = () => db.get('SELECT * FROM Episodes ORDER BY created_at DESC;');
+const getCurrentEpisode = () =>
+    db.get('SELECT * FROM Episodes ORDER BY created_at DESC;');
 
 module.exports.getCurrentEpNum = async () => {
     const currentEp = await getCurrentEpisode();
@@ -59,7 +62,10 @@ module.exports.getCurrentEpNum = async () => {
 
 module.exports.addNewEpisode = async (epNum) => {
     await db.run('INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);', epNum);
-    const episode = await db.get('SELECT * FROM Episodes WHERE epNum = ?;', epNum);
+    const episode = await db.get(
+        'SELECT * FROM Episodes WHERE epNum = ?;',
+        epNum,
+    );
     return episode;
 };
 
@@ -67,7 +73,10 @@ module.exports.addNewEpisode = async (epNum) => {
   SUGGESTIONS
 \*-----------*/
 module.exports.getSuggestion = (suggestion) => {
-    return db.get('SELECT * FROM Suggestions WHERE suggestionId = ?', suggestion.suggestionId);
+    return db.get(
+        'SELECT * FROM Suggestions WHERE suggestionId = ?',
+        suggestion.suggestionId,
+    );
 };
 
 module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
@@ -79,8 +88,7 @@ module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
     // SELECT votes count, Suggestion text and Author discordId for all votes on
     // Suggestions associated with epNum
     const countedSuggestions = await db.all(
-        `
-        SELECT
+        `SELECT
             COUNT(*) AS voteCount,
             Suggestion_voters.suggestionId,
             text,
@@ -94,13 +102,13 @@ module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
                 INNER JOIN Episodes USING(episodeId)
         WHERE epNum = ?
         GROUP BY
-            Suggestion_voters.suggestionId;
-        `,
+            Suggestion_voters.suggestionId;`,
         episode.epNum,
     );
     const formattedCountedSuggestions = countedSuggestions.map((suggestion) => {
         // EXTRACT
-        const {voteCount, suggestionId, text, username, displayName} = suggestion;
+        const {voteCount, suggestionId, text, username, displayName} =
+            suggestion;
         // PACKAGE
         return {
             suggestion: {suggestionId, text},
@@ -122,11 +130,15 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
         author.username,
         author.displayName,
     );
-    const selectedAuthor = await db.get('SELECT * FROM Authors WHERE discordId = ?;', author.discordId);
+    const selectedAuthor = await db.get(
+        'SELECT * FROM Authors WHERE discordId = ?;',
+        author.discordId,
+    );
 
     // INSERT suggestion
     const suggestionsInsert = await db.run(
-        'INSERT INTO Suggestions (episodeId, authorId, token, text) ' + 'VALUES (?, ?, ?, ?);',
+        'INSERT INTO Suggestions (episodeId, authorId, token, text) ' +
+            'VALUES (?, ?, ?, ?);',
         episode.episodeId,
         selectedAuthor.authorId,
         suggestion.token,
@@ -139,12 +151,18 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
     );
 
     // SELECT suggestion
-    const newSuggestion = await db.get('SELECT * FROM Suggestions WHERE suggestionId = ?;', suggestionsInsert.lastID);
+    const newSuggestion = await db.get(
+        'SELECT * FROM Suggestions WHERE suggestionId = ?;',
+        suggestionsInsert.lastID,
+    );
     return newSuggestion;
 };
 
 module.exports.deleteSuggestion = (suggestion) => {
-    return db.run(`DELETE FROM Suggestions WHERE suggestionId = ?;`, suggestion.suggestionId);
+    return db.run(
+        `DELETE FROM Suggestions WHERE suggestionId = ?;`,
+        suggestion.suggestionId,
+    );
 };
 
 /*------*\

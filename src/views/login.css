@@ -1,13 +1,12 @@
 #loginContent {
     display: flex;
     flex-direction: column;
-    align-items: center
+    align-items: center;
 }
 
 #loginContent form {
     display: flex;
     flex-direction: column;
-    
     padding: 16px;
 }
 

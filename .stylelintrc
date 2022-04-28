@@ -1,0 +1,6 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "indentation": [4, { "message": "Please use 4 spaces for indentation." }]
+  }
+}

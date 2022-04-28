@@ -1,39 +1,38 @@
-const path = require("path");
+const path = require('path');
 
 /*---*\
   BOT
 \*---*/
-require("../bot.js")
-
+require('../bot.js');
 
 /*------*\
   SERVER
 \*------*/
 // Fastify
-const fastify = require("fastify")({
-    logger: {level: "debug"}
+const fastify = require('fastify')({
+    logger: {level: 'debug'},
 });
 
 // Renderer
-fastify.register(require("point-of-view"),{
-    engine: {pug: require("pug")}
-})
+fastify.register(require('point-of-view'), {
+    engine: {pug: require('pug')},
+});
 
 // Cookies
 fastify.register(require('fastify-cookie'), {
-    secret: process.env.COOKIE_SECRET
-})
+    secret: process.env.COOKIE_SECRET,
+});
 
 // Routes
-fastify.register(require('fastify-formbody'))
-fastify.register(require("./routes/static.js"))
-fastify.register(require("./routes/login.js"))
-fastify.register(require("./routes/monitor.js"))
+fastify.register(require('fastify-formbody'));
+fastify.register(require('./routes/static.js'));
+fastify.register(require('./routes/login.js'));
+fastify.register(require('./routes/monitor.js'));
 
 // Start server
-fastify.listen(3000, (err, address)=>{
+fastify.listen(3000, (err, address) => {
     if (err) {
-        console.error(err)
-        process.exit(1)
+        console.error(err);
+        process.exit(1);
     }
-})
+});

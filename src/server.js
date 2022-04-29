@@ -19,12 +19,12 @@ fastify.register(require('point-of-view'), {
 });
 
 // Cookies
-fastify.register(require('fastify-cookie'), {
+fastify.register(require('@fastify/cookie'), {
     secret: process.env.COOKIE_SECRET,
 });
 
 // Routes
-fastify.register(require('fastify-formbody'));
+fastify.register(require('@fastify/formbody'));
 fastify.register(require('./routes/static.js'));
 fastify.register(require('./routes/login.js'));
 fastify.register(require('./routes/monitor.js'));

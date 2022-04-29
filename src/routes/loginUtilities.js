@@ -7,7 +7,15 @@ module.exports.getAdminFromTokenOrRedirect = async (request, reply) => {
     }
 
     // Token must be valid
-    const admin = await getAdminByToken(request.cookies.auth);
-    if (!admin) reply.redirect('/login?auth=none');
-    else return admin;
+    let admin;
+    try {
+        admin = await getAdminByToken(request.cookies.auth);
+        if (!admin) reply.redirect('/login?auth=none');
+    } catch (error) {
+        if (error.message === 'jwt expired') {
+            reply.clearCookie('auth').redirect('/login?auth=expired');
+        }
+    }
+
+    return admin;
 };

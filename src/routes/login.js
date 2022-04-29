@@ -7,7 +7,7 @@ const {getAdminFromTokenOrRedirect} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
     fastify.get('/login', async (request, reply) => {
-        reply.view('src/views/login');
+        return reply.view('src/views/login');
     });
 
     fastify.post('/login', async (request, reply) => {
@@ -19,12 +19,9 @@ module.exports = (fastify, opts, done) => {
         // Redirect if bad credentials
         if (!adminUser) reply.redirect('/login?auth=failed');
 
-        // Send an authentication token
+        // Create an authentication token
         const token = await createToken(adminUser);
-        reply.setCookie('auth', token);
-
-        // Redirect to root
-        reply.redirect('/');
+        reply.setCookie('auth', token).redirect('/');
     });
 
     fastify.post('/logout', async (request, reply) => {
@@ -34,11 +31,9 @@ module.exports = (fastify, opts, done) => {
         // Delete tokens from database
         await deleteTokensFromAdmin(admin);
 
-        // Remove cookie
-        reply.clearCookie('auth');
-
-        // redirect to login page
-        reply.redirect('/login');
+        reply
+            .clearCookie('auth') // Remove cookie
+            .redirect('/login'); // redirect to login page
     });
 
     done();

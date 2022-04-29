@@ -10,7 +10,7 @@ module.exports = (fastify, opts, done) => {
     // Suggestion monitor
     fastify.get('/', async (request, reply) => {
         const admin = await getAdminFromTokenOrRedirect(request, reply);
-        reply.view('src/views/monitor', {username: admin.username});
+        return reply.view('src/views/monitor', {username: admin.username});
     });
 
     // XML: get suggestions

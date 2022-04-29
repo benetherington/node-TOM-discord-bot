@@ -24,6 +24,7 @@
     "pug": "^3.0.2",
     "sqlite": "^4.0.23",
     "sqlite3": "^4.2.0",
+    "twitter": "^1.7.1",
     "twitter-api-sdk": "^1.0.4"
   },
   "engines": {

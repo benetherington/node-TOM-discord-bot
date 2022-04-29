@@ -23,7 +23,8 @@
     "point-of-view": "^5.1.0",
     "pug": "^3.0.2",
     "sqlite": "^4.0.23",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^4.2.0",
+    "twitter-api-sdk": "^1.0.4"
   },
   "engines": {
     "node": "^16.13.2"

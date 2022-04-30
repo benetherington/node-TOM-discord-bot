@@ -4,7 +4,7 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const {Client, auth} = require('twitter-api-sdk');
-const {addNewTwsfGuess} = require('../../src/sqlite/twsf');
+const {addNewTwsfGuess} = require('../src/sqlite/twsf');
 
 const TOMUserId = '2827032970';
 const client = new Client(process.env.TWITTER_BEARER_TOKEN);

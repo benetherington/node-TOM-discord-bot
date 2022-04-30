@@ -9,8 +9,8 @@ require('../bot.js');
   TWITTER
 \*-------*/
 const schedule = require('node-schedule');
-const storeNewTwsfTweets = require('../integrations/twitter-v1');
-const storeNewTwsfDirectMessages = require('../integrations/twitter-v2');
+const storeNewTwsfTweets = require('../integrations/twitter-v2');
+const storeNewTwsfDirectMessages = require('../integrations/twitter-v1');
 
 // Schedule twitter checks Sunday and Thursday at 12pm EST.
 // The intention is to schedule this at the start of the show. Twitter allows us

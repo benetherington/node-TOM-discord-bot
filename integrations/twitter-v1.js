@@ -3,10 +3,10 @@ try {
 } catch (ReferenceError) {
     console.log('oh hey we must be running on Glitch');
 }
+const Twitter = require('twitter');
+const {addNewTwsfGuess} = require('../src/sqlite/twsf');
 
 const TOMUserId = '2827032970';
-const Twitter = require('twitter');
-
 const client = new Twitter({
     consumer_key: process.env.TWITTER_API_KEY,
     consumer_secret: process.env.TWITTER_API_KEY_SECRET,
@@ -85,7 +85,7 @@ module.exports.storeNewTwsfDirectMessages = async () => {
 
     // Get new DMs
     const twsfDms = await fetchTwsfDirectMessages();
-    
+
     // Store new DMs
     const storeagePromises = twsfDms.map((dm) => addNewTwsfGuess(dm));
     const storeageResults = await Promise.all(storeagePromises);
@@ -93,7 +93,9 @@ module.exports.storeNewTwsfDirectMessages = async () => {
 
     if (success) console.log('Done storing new #ThisWeekSF direct messages!');
     else {
-        console.error('Something went wrong storing #ThisWeekSF direct messages...');
+        console.error(
+            'Something went wrong storing #ThisWeekSF direct messages...',
+        );
         console.error({storeageResults});
     }
 };

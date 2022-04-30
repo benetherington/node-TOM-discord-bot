@@ -20,6 +20,7 @@
     "express": "^4.17.2",
     "fastify": "^3.27.1",
     "jsonwebtoken": "^8.5.1",
+    "node-schedule": "^2.1.0",
     "point-of-view": "^5.1.0",
     "pug": "^3.0.2",
     "sqlite": "^4.0.23",

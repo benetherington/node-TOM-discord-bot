@@ -35,7 +35,7 @@ const formatDirectMessage = async (event) => {
     };
 };
 
-const fetchTwsfDirectMessages = async (cursor = undefined) => {
+module.exports.fetchTwsfDirectMessages = async (cursor = undefined) => {
     console.log('Fetching #ThisWeekSF direct messages...');
 
     // Fetch direct message events
@@ -81,5 +81,3 @@ const fetchTwsfDirectMessages = async (cursor = undefined) => {
     // Done!
     return formattedMessages;
 };
-
-module.exports.fetchTwsfDirectMessages = fetchTwsfDirectMessages;

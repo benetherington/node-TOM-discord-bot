@@ -4,14 +4,15 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const {Client, auth} = require('twitter-api-sdk');
+const {addNewTwsfGuess} = require('../../src/sqlite/twsf');
 
 const TOMUserId = '2827032970';
 const client = new Client(process.env.TWITTER_BEARER_TOKEN);
 
-const findSelfReplies = async (id, authorId) => {
+const findSelfReplies = async (tweetId, authorId) => {
     // Fetch all tweets replying to this one
     const {data: conversation = []} = await client.tweets.tweetsRecentSearch({
-        query: `conversation_id:${id}`,
+        query: `conversation_id:${tweetId}`,
         expansions: ['author_id'],
     });
 
@@ -22,9 +23,7 @@ const findSelfReplies = async (id, authorId) => {
         .join(' ');
 };
 
-module.exports.fetchTwsfTweets = async () => {
-    console.log('Fetching #ThisWeekSF tweets...');
-
+const fetchTwsfTweets = async () => {
     // Search for recent tweets
     const {data, includes} = await client.tweets.tweetsRecentSearch({
         query: '#thisweeksf',
@@ -35,12 +34,14 @@ module.exports.fetchTwsfTweets = async () => {
         // Required expansions for tweet.fields and media.fields
         expansions: ['author_id', 'attachments.media_keys'],
     });
-    console.log(`Found ${data.length} #ThisWeekSF tweets.`);
 
-    // Extract and format data
+    return {data, includes};
+};
+
+const formatTweets = async ({data, includes}) => {
     const tweetPromises = data.map(async (tweet) => {
         // Destructure tweet
-        const {id, text: origText, author_id: authorId} = tweet;
+        const {id: tweetId, text: origText, author_id: authorId} = tweet;
 
         // Gather author information from includes
         const {
@@ -50,17 +51,38 @@ module.exports.fetchTwsfTweets = async () => {
         } = includes.users.find((includedUser) => includedUser.id === authorId);
 
         // Find the rest of a multi-part guess
-        const additionalText = await findSelfReplies(id, authorId);
+        const additionalText = await findSelfReplies(tweetId, authorId);
         const text = origText + additionalText;
 
         // Done!
         return {
             author: {twitterId, twitterName, twitterUsername},
-            tweet: {id, text},
+            guess: {type: 'tweet', tweetId, text},
         };
     });
     const tweets = await Promise.all(tweetPromises);
-    console.log("Done processing #ThisWeekSF tweets!")
 
     return tweets;
+};
+
+module.exports.storeNewTwsfTweets = async () => {
+    console.log('Storing new #ThisWeekSF tweets...');
+
+    // Get new tweets
+    const {data, includes} = await fetchTwsfTweets();
+    console.log(`Found ${data.length} #ThisWeekSF tweets.`);
+
+    // Fetch conversations, format for the database
+    const twsfTweets = await formatTweets({data, includes});
+
+    // Store new tweets
+    const storeagePromises = twsfTweets.map((tweet) => addNewTwsfGuess(tweet));
+    const storeageResults = await Promise.all(storeagePromises);
+    const success = storeageResults.every((r) => r);
+
+    if (success) console.log('Done storing new #ThisWeekSF tweets!');
+    else {
+        console.error('Something went wrong storing #ThisWeekSF tweets...');
+        console.error({storeageResults});
+    }
 };

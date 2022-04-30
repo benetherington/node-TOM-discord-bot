@@ -16,28 +16,26 @@ const client = new Twitter({
 
 const formatDirectMessage = async (event) => {
     const {
-        id,
+        id: twitterDmId,
         message_create: {
-            sender_id: authorId,
+            sender_id: twitterId,
             message_data: {text},
         },
     } = event;
 
     const authorData = await client.get('users/show.json', {
-        user_id: authorId,
+        user_id: twitterId,
     });
 
     const {name: twitterName, screen_name: twitterUsername} = authorData;
 
     return {
-        author: {twitterId: authorId, twitterName, twitterUsername},
-        dm: {id, text},
+        author: {twitterId, twitterName, twitterUsername},
+        guess: {type: 'twitter dm', twitterDmId, text},
     };
 };
 
-module.exports.fetchTwsfDirectMessages = async (cursor = undefined) => {
-    console.log('Fetching #ThisWeekSF direct messages...');
-
+const fetchTwsfDirectMessages = async (cursor = undefined) => {
     // Fetch direct message events
     const {events} = await client.get('direct_messages/events/list.json', {
         cursor,
@@ -80,4 +78,22 @@ module.exports.fetchTwsfDirectMessages = async (cursor = undefined) => {
 
     // Done!
     return formattedMessages;
+};
+
+module.exports.storeNewTwsfDirectMessages = async () => {
+    console.log('Storing #ThisWeekSF direct messages...');
+
+    // Get new DMs
+    const twsfDms = await fetchTwsfDirectMessages();
+    
+    // Store new DMs
+    const storeagePromises = twsfDms.map((dm) => addNewTwsfGuess(dm));
+    const storeageResults = await Promise.all(storeagePromises);
+    const success = storeageResults.every((r) => r);
+
+    if (success) console.log('Done storing new #ThisWeekSF direct messages!');
+    else {
+        console.error('Something went wrong storing #ThisWeekSF direct messages...');
+        console.error({storeageResults});
+    }
 };

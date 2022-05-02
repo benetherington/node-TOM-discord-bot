@@ -3,7 +3,7 @@ const {
     createToken,
     deleteTokensFromAdmin,
 } = require('../sqlite/admin.js');
-const {getAdminFromTokenOrRedirect} = require('./loginUtilities');
+const {getAdminOrErrorFromToken} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
     fastify.get('/login', async (request, reply) =>
@@ -16,20 +16,23 @@ module.exports = (fastify, opts, done) => {
         const password = request.body.password;
         const adminUser = await getAdminByCredentials(username, password);
 
-        // Redirect if bad credentials
-        if (!adminUser) reply.redirect('/login?auth=failed');
+        if (adminUser) {
+            // Good credentials, create an authentication token
+            const token = await createToken(adminUser);
+            return reply.setCookie('auth', token).redirect('/');
+        } else {
+            // Bad credentials, redirect
+            reply.redirect('/login?auth=failed');
+        }
 
-        // Create an authentication token
-        const token = await createToken(adminUser);
-        return reply.setCookie('auth', token).redirect('/');
     });
 
     fastify.post('/logout', async (request, reply) => {
         // Authenticate administrator
-        const admin = getAdminFromTokenOrRedirect(request, reply);
+        const {admin} = getAdminOrErrorFromToken(request.cookies.auth);
 
         // Delete tokens from database
-        await deleteTokensFromAdmin(admin);
+        if (admin) await deleteTokensFromAdmin(admin);
 
         return reply
             .clearCookie('auth') // Remove cookie

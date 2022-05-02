@@ -95,13 +95,8 @@ const generateToken = (admin) => {
     );
     return token;
 };
-const verifyToken = (token) => {
-    // Takes a JSON Web Token. If the token is valid, returns the decoded data.
-    // If the token is invalid, throws an error.
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decodedToken) throw new Error('token invalid');
-    return decodedToken;
-};
+// Returns decoded data or throws an error
+const decodeToken = (token) => jwt.verify(token, process.env.JWT_SECRET);
 
 /*--------------*\
   AUTHENTICATION
@@ -120,7 +115,7 @@ const preSave = async (admin) => {
 module.exports.getAdminByToken = (token) => {
     // Takes a token. If the token is valid, returns the associated
     // Administrator. If the token is invalid, throws an error.
-    const admin = verifyToken(token);
+    const admin = decodeToken(token);
     return db.get(
         `SELECT * FROM Administrators
         LEFT JOIN Administrator_Tokens USING(administratorId)

@@ -1,21 +1,36 @@
 const {getAdminByToken} = require('../sqlite/admin.js');
 
-module.exports.getAdminFromTokenOrRedirect = async (request, reply) => {
+const getAdminOrErrorFromToken = async (authCookie) => {
     // Token must exist
-    if (!request.cookies.auth) {
-        reply.redirect('/login?auth=none');
+    if (!authCookie) {
+        return {authError: 'none'};
     }
 
     // Token must be valid
-    let admin;
     try {
-        admin = await getAdminByToken(request.cookies.auth);
-        if (!admin) reply.redirect('/login?auth=none');
+        const admin = await getAdminByToken(authCookie);
+        // If admin is null, the token is valid, but the admin doesn't exist in
+        // the db. This is not an expected situation.
+        if (!admin) throw 'JWT valid, but admin record not found';
+
+        return {admin};
     } catch (error) {
         if (error.message === 'jwt expired') {
-            reply.clearCookie('auth').redirect('/login?auth=expired');
+            return {authError: 'expired'};
+        } else {
+            console.error(error);
+            return {authError: 'none'};
         }
     }
+};
+module.exports.getAdminOrErrorFromToken = getAdminOrErrorFromToken;
 
-    return admin;
+module.exports.adminPreHandler = async (request, reply) => {
+    const {admin, authError} = await getAdminOrErrorFromToken(request.cookies.auth);
+
+    if (admin) {
+        request.admin = admin;
+    } else {
+        return reply.redirect(`/login?auth=${authError}`);
+    }
 };

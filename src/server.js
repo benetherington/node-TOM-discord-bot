@@ -28,6 +28,7 @@ fastify.register(require('@fastify/formbody'));
 fastify.register(require('./routes/static.js'));
 fastify.register(require('./routes/login.js'));
 fastify.register(require('./routes/monitor.js'));
+fastify.register(require('./routes/email.js'));
 
 // Start server
 fastify.listen(3000, (err, address) => {

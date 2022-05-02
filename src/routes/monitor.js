@@ -22,7 +22,7 @@ module.exports = (fastify, opts, done) => {
             epNum,
         });
         if (!countedSuggestions) throw new Error('invalid');
-        return countedSuggestions;
+        return reply.send(countedSuggestions);
     });
 
     // XML: edit suggestions

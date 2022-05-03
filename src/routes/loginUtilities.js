@@ -3,7 +3,7 @@ const {getAdminByToken} = require('../sqlite/admin.js');
 const getAdminOrErrorFromToken = async (authCookie) => {
     // Token must exist
     if (!authCookie) {
-        return {authError: 'none'};
+        return {errorMessage: 'You must log in to do that.'};
     }
 
     // Token must be valid
@@ -16,21 +16,28 @@ const getAdminOrErrorFromToken = async (authCookie) => {
         return {admin};
     } catch (error) {
         if (error.message === 'jwt expired') {
-            return {authError: 'expired'};
+            return {
+                errorMessage: 'Your credentials expired. Please log in again.',
+            };
         } else {
             console.error(error);
-            return {authError: 'none'};
+            return {errorMessage: 'You must log in to do that.'};
         }
     }
 };
 module.exports.getAdminOrErrorFromToken = getAdminOrErrorFromToken;
 
 module.exports.adminPreHandler = async (request, reply) => {
-    const {admin, authError} = await getAdminOrErrorFromToken(request.cookies.auth);
+    const {admin, errorMessage} = await getAdminOrErrorFromToken(
+        request.cookies.auth,
+    );
 
     if (admin) {
         request.admin = admin;
     } else {
-        return reply.redirect(`/login?auth=${authError}`);
+        // "Redirect" to login
+        return reply.view('src/views/login', {
+            errorMessage,
+        });
     }
 };

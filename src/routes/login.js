@@ -22,9 +22,10 @@ module.exports = (fastify, opts, done) => {
             return reply.setCookie('auth', token).redirect('/');
         } else {
             // Bad credentials, redirect
-            reply.redirect('/login?auth=failed');
+            reply.view('src/views/login', {
+                errorMessage: 'Wrong username or password.',
+            });
         }
-
     });
 
     fastify.post('/logout', async (request, reply) => {

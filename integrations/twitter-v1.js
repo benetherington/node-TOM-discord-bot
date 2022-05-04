@@ -86,11 +86,17 @@ module.exports.storeNewTwsfDirectMessages = async () => {
     // Get new DMs
     const twsfDms = await fetchTwsfDirectMessages();
 
+    // Don't continue if there weren't any DMs
+    if (!twsfDms.length) {
+        console.log('No #ThisWeekSF direct messages found.');
+        return;
+    }
+
     // Store new DMs
-    const storagePromises = twsfDms.map((dm) => addNewTwsfGuess(dm));
-    const storageResults = await Promise.all(storagePromises);
+    const storageResults = await Promise.all(twsfDms.map(addNewTwsfGuess));
     const success = storageResults.every((r) => r);
 
+    // Done! Report final results.
     if (success) console.log('Done storing new #ThisWeekSF direct messages!');
     else {
         console.error(

@@ -14,7 +14,16 @@ const client = new Twitter({
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-const formatDirectMessage = async (event) => {
+const isIncomingHashtag = (event) =>
+    // Docs not clear there's another type, but just to be safe
+    event.type === 'message_create' &&
+    // Remove messages we've sent
+    event.message_create.target.sender_id !== TOMUserId &&
+    // Include messages with the trigger hashtag
+    event.message_create.message_data.entities.hashtags.some(
+        (ht) => ht.text.toLowerCase() === 'thisweeksf',
+    );
+const authorAndGuessFromDm = async (event) => {
     const {
         id: twitterDmId,
         message_create: {
@@ -35,49 +44,47 @@ const formatDirectMessage = async (event) => {
     };
 };
 
-const fetchTwsfDirectMessages = async (cursor = undefined) => {
-    // Fetch direct message events
-    const {events} = await client.get('direct_messages/events/list.json', {
-        cursor,
-    });
-    console.log(`Found ${events.length} direct messsages.`);
+const fetchTwsfDirectMessages = async () => {
+    let doneFetching = false;
+    let cursor = undefined;
+    let guessesAndAuthors = [];
 
-    // Filter messages. I'm not sure another type is ever provided, but can't
-    // hurt to be safe.
-    const directMessages = events.filter(
-        (event) => event.type === 'message_create',
-    );
+    while (!doneFetching) {
+        // Fetch direct message events
+        const {events} = await client.get('direct_messages/events/list.json', {
+            cursor,
+        });
 
-    // Get rid of messages we've sent
-    const incomingMessages = directMessages.filter(
-        (dm) => dm.message_create.target.sender_id !== TOMUserId,
-    );
+        // Check for another page
+        if (events.nextCursor) {
+            // We'll do an additional loop
+            cursor = events.nextCursor;
+            console.log(
+                `Found ${events.length} direct messsages and another page.`,
+            );
+        } else {
+            doneFetching = true;
+            console.log(
+                `Found ${events.length} direct messsages and no more pages.`,
+            );
+        }
 
-    // Find messages with the trigger hashtag
-    let hashtagMessages = incomingMessages.filter((dm) =>
-        dm.message_create.message_data.entities.hashtags.some(
-            (ht) => ht.text.toLowerCase() === 'thisweeksf',
-        ),
-    );
-    console.log(
-        `${hashtagMessages.length} of them are #ThisWeekSF direct messsages.`,
-    );
+        // Find the message we want
+        const hashtagMessages = events.filter(isIncomingHashtag);
+        console.log(
+            `${hashtagMessages.length} of them are #ThisWeekSF direct messsages.`,
+        );
 
-    // Extract the data we want
-    const formattedPromises = hashtagMessages.map(formatDirectMessage);
-    const formattedMessages = await Promise.all(formattedPromises);
-
-    // Check for another page
-    if (events.nextCursor) {
-        // Recurse, passing along the cursor
-        const nextPage = await fetchTwsfDirectMessages(events.nextCursor);
-        // Add recursion result to this page's messages
-        hashtagMessages = Array.concat(hashtagMessages, nextPage || []);
+        // Format data to send to the DB
+        const thisPageGuessesAuthors = await Promise.all(
+            hashtagMessages.map(authorAndGuessFromDm),
+        );
+        guessesAndAuthors.push(thisPageGuessesAuthors);
     }
-    console.log('Done processing #ThisWeekSF direct messsages!');
 
     // Done!
-    return formattedMessages;
+    console.log('Done processing #ThisWeekSF direct messsages!');
+    return guessesAndAuthors;
 };
 
 module.exports.storeNewTwsfDirectMessages = async () => {

@@ -40,7 +40,7 @@ const authorAndGuessFromDm = async (event) => {
         guess: {type: 'twitter dm', twitterDmId, text},
     };
 };
-const fetchTwsfDirectMessages = async () => {
+const fetchDMs = async () => {
     let doneFetching = false;
     let cursor = undefined;
     let guessesAndAuthors = [];
@@ -83,11 +83,11 @@ const fetchTwsfDirectMessages = async () => {
     return guessesAndAuthors;
 };
 
-module.exports.storeNewTwsfDirectMessages = async () => {
+module.exports.storeDMs = async () => {
     console.log('Storing #ThisWeekSF direct messages...');
 
     // Get new DMs
-    const twsfDms = await fetchTwsfDirectMessages();
+    const twsfDms = await fetchDMs();
 
     // Don't continue if there weren't any DMs
     if (!twsfDms.length) {

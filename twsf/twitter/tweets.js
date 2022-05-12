@@ -43,7 +43,7 @@ const client = {
     },
 };
 
-const fetchSelfReplyTexts = async (status) => {
+const fetchSelfReplies = async (status) => {
     const twitterUsername = status.user.screen_name;
     const tweetId = status.id_str;
 
@@ -91,7 +91,7 @@ const guessAndAuthorFromTweet = async (status) => {
 
     // Construct guess for DB
     // Start by checking for self-replies to this tweet
-    const textReplies = await fetchSelfReplyTexts(status);
+    const textReplies = await fetchSelfReplies(status);
     const text = [textInitial, ...textReplies].join(' ');
     const guess = {
         type: 'tweet',
@@ -101,14 +101,14 @@ const guessAndAuthorFromTweet = async (status) => {
 
     return {guess, author};
 };
-const fetchTwsfTweets = () =>
+const fetchTweets = () =>
     client.search({query: '#thisweeksf'}).then((r) => r.all());
 
-module.exports.storeNewTwsfTweets = async () => {
+module.exports.storeTweets = async () => {
     console.log('Storing #ThisWeekSF tweets...');
 
     // Get new tweets
-    const twsfTweets = await fetchTwsfTweets();
+    const twsfTweets = await fetchTweets();
 
     // Don't continue if there weren't any tweets
     if (!twsfTweets.length) {

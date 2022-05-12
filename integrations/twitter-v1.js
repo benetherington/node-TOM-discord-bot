@@ -3,16 +3,45 @@ try {
 } catch (ReferenceError) {
     console.log('oh hey we must be running on Glitch');
 }
-const Twitter = require('twitter');
+const fetch = require('node-fetch');
 const {addNewTwsfGuess} = require('../src/sqlite/twsf');
 
-const TOMUserId = '2827032970';
-const client = new Twitter({
-    consumer_key: process.env.TWITTER_API_KEY,
-    consumer_secret: process.env.TWITTER_API_KEY_SECRET,
-    access_token_key: process.env.TWITTER_ACCESS_TOKEN,
-    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-});
+const client = {
+    _base: 'https://api.twitter.com/1.1/',
+    headers: {Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN},
+    get: function (tweetId) {
+        return fetch(
+            this._base +
+                'statuses/show.json?tweet_mode=extended&id=' +
+                tweetId.toString(),
+            {
+                headers: this.headers,
+            },
+        ).then((r) => r.json());
+    },
+    search: async function (query) {
+        let response = await fetch(
+            this._base + 'tweets/search/30day/prod.json',
+            {
+                method: 'POST',
+                headers: this.headers,
+                body: JSON.stringify(query),
+            },
+        );
+        const jsn = await response.json();
+        jsn.pages = () => this._pages(jsn, query);
+        return jsn;
+    },
+    _pages: async function (response, query) {
+        let searchResults = response.results;
+        while (response.next) {
+            query.next = response.next;
+            response = await this.search(query);
+            searchResults = searchResults.concat(response.results);
+        }
+        return searchResults;
+    },
+};
 
 const isIncomingHashtag = (event) =>
     // Docs not clear there's another type, but just to be safe

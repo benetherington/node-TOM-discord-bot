@@ -10,9 +10,7 @@ let db;
 \*---------*/
 const printDbSummary = async () => {
     try {
-        const selectTables = await db.all(
-            "SELECT name FROM sqlite_master WHERE type='table'",
-        );
+        const selectTables = await db.all("SELECT name FROM sqlite_master WHERE type='table'",);
         const exists = selectTables.map((row) => row.name).join(', ');
         console.log(`Tables: ${exists}`);
 

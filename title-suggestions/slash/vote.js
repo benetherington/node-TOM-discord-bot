@@ -1,5 +1,6 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {getVoteMessages} = require('./utilities/vote-utilities');
+const {responses: config} = require("../../config/discord-interaction.json");
 
 const data = new SlashCommandBuilder()
     .setName('vote')

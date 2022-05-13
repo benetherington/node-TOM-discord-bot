@@ -12,7 +12,7 @@ module.exports = (fastify, opts, done) => {
 
     // Suggestion monitor
     fastify.get('/', {preHandler: adminPreHandler}, async (request, reply) => {
-        return reply.view('../views/monitor', {
+        return reply.view('src/views/monitor', {
             username: request.admin.username,
         });
     });

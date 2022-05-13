@@ -77,7 +77,7 @@ module.exports.adminPreHandler = async (request, reply) => {
         request.admin = admin;
     } else {
         // Clear authCookie and "redirect" to login
-        return reply.clearCookie('auth').view('../views/login', {
+        return reply.clearCookie('auth').view('src/views/login', {
             errorMessage,
         });
     }

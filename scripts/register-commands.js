@@ -36,26 +36,6 @@ const provisionSlashes = async (slashes) => {
         console.error("Something went wrong in provisionSlashes")
         console.error(error)
     }
-
-    // batch edit command permissions
-    try {
-        const fullPermissions = registeredSlashes
-            .map(getSlashIdWithPermissions)
-            .filter((slash) => slash.permissions);
-        await rest.put(
-            Routes.guildApplicationCommandsPermissions(
-                ID.user.bot,
-                ID.guild.tomCast,
-            ),
-            {
-                body: fullPermissions,
-            },
-        );
-        console.log('Application command permissions edit successful');
-    } catch (error) {
-        console.error('Something went wrong in provisionSlashes');
-        console.error(error);
-    }
 };
 
 provisionSlashes(slashes);

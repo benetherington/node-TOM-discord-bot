@@ -37,7 +37,7 @@ const interactionFileNames = fs
     .readdirSync('./title-suggestions/slash')
     .filter((fn) => fn.endsWith('.js'));
 for (const fileName of interactionFileNames) {
-    let slash = require('./title-suggestions/slash' + fileName);
+    let slash = require('./title-suggestions/slash/' + fileName);
     client.slashes.set(slash.data.name, slash);
 }
 const receiveSlash = async (interaction) => {

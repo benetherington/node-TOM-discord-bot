@@ -40,7 +40,7 @@ const getVoteMessage = (countedSuggestionMessageChunk) => {
     const components = countedSuggestionRowChunks.map(formatVoteRow);
     return {content: 'Title suggestions so far:', components};
 };
-const getVoteMessages = async () => {
+module.exports.getVoteMessages = async () => {
     // Gets the current suggestions and returns an array of ReplyOptions.
 
     // SELECT Suggestions
@@ -55,5 +55,3 @@ const getVoteMessages = async () => {
     );
     return countedSuggestionMessageChunks.map(getVoteMessage);
 };
-
-module.exports = {getVoteMessages};

@@ -5,7 +5,7 @@ const {
 
 module.exports = (fastify, opts, done) => {
     fastify.get('/login', async (request, reply) =>
-        reply.view('../views/login'),
+        reply.view('src/views/login'),
     );
 
     fastify.post('/login', async (request, reply) => {
@@ -20,7 +20,7 @@ module.exports = (fastify, opts, done) => {
             return reply.setCookie('auth', authCookie).redirect('/');
         } else {
             // Bad credentials, redirect
-            reply.view('../views/login', {
+            reply.view('src/views/login', {
                 errorMessage: 'Wrong username or password.',
             });
         }

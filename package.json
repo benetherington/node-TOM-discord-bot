@@ -1,13 +1,12 @@
 {
-  "name": "discord-magic-8",
+  "name": "tom-discord-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js"
+    "start": "node ./app.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Ben Etherington",
+  "license": "MIT",
   "dependencies": {
     "@discordjs/rest": "^0.3.0",
     "@fastify/cookie": "^6.0.0",

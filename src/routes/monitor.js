@@ -26,11 +26,7 @@ module.exports = (fastify, opts, done) => {
             const countedSuggestions = await getSuggestionsWithCountedVotes({
                 epNum,
             });
-            if (countedSuggestions.length) {
-                return reply.send(countedSuggestions);
-            } else {
-                return reply.code(406).send() // 406: not acceptable
-            }
+            return reply.send(countedSuggestions);
         },
     );
 

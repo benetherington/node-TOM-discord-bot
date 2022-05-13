@@ -56,7 +56,8 @@ const receiveSlash = async (interaction) => {
   EVENT LISTENERS
 \*---------------*/
 client.once('ready', () => {
-    console.log('Ready!');
+    const respondingIn = process.env.TEST ? '#bot_control' : '#ground_control';
+    console.log(`Ready! GUI commands output to: ${respondingIn}.`);
 });
 client.on('invalidated', () => {
     console.log('Session invalidated.');

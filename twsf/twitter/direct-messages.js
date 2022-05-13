@@ -4,9 +4,9 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const Twitter = require('twitter');
-// const {addNewTwsfGuess} = require('../src/sqlite/twsf');
+const {addNewTwsfGuess} = require('../../database/twsf');
 
-const TOMUserId = '2827032970';
+const ID = require("../../config/twitter-id.json");
 const client = new Twitter({
     consumer_key: process.env.TWITTER_API_KEY,
     consumer_secret: process.env.TWITTER_API_KEY_SECRET,
@@ -18,7 +18,7 @@ const isIncomingHashtag = (event) =>
     // Docs not clear there's another type, but just to be safe
     event.type === 'message_create' &&
     // Remove messages we've sent
-    event.message_create.target.sender_id !== TOMUserId &&
+    event.message_create.target.sender_id !== ID.user.tom &&
     // Include messages with the trigger hashtag
     event.message_create.message_data.entities.hashtags.some(
         (ht) => ht.text.toLowerCase() === 'thisweeksf',
@@ -83,7 +83,7 @@ const fetchDMs = async () => {
     return guessesAndAuthors;
 };
 
-module.exports.storeDMs = async () => {
+module.exports = async () => {
     console.log('Storing #ThisWeekSF direct messages...');
 
     // Get new DMs

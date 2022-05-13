@@ -1,6 +1,8 @@
-const dbFile = require('path').resolve('./.data/title-suggestions.db');
 const sqlite3 = require('sqlite3').verbose();
 const dbWrapper = require('sqlite');
+
+const dbFile = require('path').resolve('./.data/title-suggestions.db');
+const migrationsPath = './database/migrations/title-suggestions';
 let db;
 
 /*---------*\
@@ -36,7 +38,6 @@ const printDbSummary = async () => {
 /*-------*\
   DB INIT
 \*-------*/
-const migrationsPath = './migrations/title-suggestions';
 const initDB = async () => {
     console.log('SQLite');
     db = await dbWrapper.open({

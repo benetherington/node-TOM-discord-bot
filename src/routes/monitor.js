@@ -1,10 +1,10 @@
-const {getSuggestionsWithCountedVotes} = require('../sqlite/suggestions.js');
-const {startNewVoteFromApi} = require('../../interface/vote-interface.js');
+const {getSuggestionsWithCountedVotes} = require('../../database/suggestions');
+const {startNewVoteFromApi} = require('../webhook-handlers/vote');
 const {
     addNewSuggestionFromApi,
     removeSuggestionFromApi,
-} = require('../../interface/title-interface.js');
-const {adminPreHandler} = require('./loginUtilities.js');
+} = require('../webhook-handlers/title-suggestions');
+const {adminPreHandler} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
     // Allow adminPreHandler to pass the admin object to route handlers.
@@ -12,7 +12,7 @@ module.exports = (fastify, opts, done) => {
 
     // Suggestion monitor
     fastify.get('/', {preHandler: adminPreHandler}, async (request, reply) => {
-        return reply.view('src/views/monitor', {
+        return reply.view('../views/monitor', {
             username: request.admin.username,
         });
     });

@@ -7,8 +7,8 @@ try {
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const {getAdminById, getAdminByUsername} = require('../sqlite/admin.js');
-const config = require('../config.json');
+const {getAdminById, getAdminByUsername} = require('../../database/admin');
+const config = require('../../config/website.json');
 
 // const hashPassword = async (admin) => {
 //     // Takes an admin object, removes the password property, and adds/updates
@@ -77,7 +77,7 @@ module.exports.adminPreHandler = async (request, reply) => {
         request.admin = admin;
     } else {
         // Clear authCookie and "redirect" to login
-        return reply.clearCookie('auth').view('src/views/login', {
+        return reply.clearCookie('auth').view('../views/login', {
             errorMessage,
         });
     }

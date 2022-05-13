@@ -1,7 +1,7 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
 const {
     getSuggestionsWithCountedVotes,
-} = require('../../src/sqlite/suggestions.js');
+} = require('../../../database/suggestions');
 
 const chunkArray = (toChunk, chunkSize) => {
     let chunked = [];

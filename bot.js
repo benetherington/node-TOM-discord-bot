@@ -6,8 +6,8 @@ try {
 
 const {Client, Intents, Collection} = require('discord.js');
 const fs = require('fs');
-const {receiveButton} = require('./interactions/buttons.js');
-const ID = require('./src/id.json');
+const {receiveButton} = require('./title-suggestions/interactions/buttons');
+const ID = require('./config/discord-id.json');
 
 /*----*\
   INIT
@@ -30,14 +30,14 @@ client.channels.fetch(ID.channel.groundControl);
 /*-------*\
   SLASHES
 \*-------*/
-// These are registered in ./register-commands.js, which needs to be run once as
-// a provisioning step.
+// These are registered in ./scripts/register-commands.js, which needs to be run
+// once as a provisioning step.
 client.slashes = new Collection();
 const interactionFileNames = fs
-    .readdirSync('./slash')
+    .readdirSync('./title-suggestions/slash')
     .filter((fn) => fn.endsWith('.js'));
 for (const fileName of interactionFileNames) {
-    let slash = require('./slash/' + fileName);
+    let slash = require('./title-suggestions/slash' + fileName);
     client.slashes.set(slash.data.name, slash);
 }
 const receiveSlash = async (interaction) => {

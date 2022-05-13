@@ -1,8 +1,8 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {ApplicationCommandPermissionType} = require('discord-api-types/v9');
-const {responses} = require('../src/interaction-config.json');
-const {role} = require('../src/id.json');
-const {addNewEpisode} = require('../src/sqlite/suggestions.js');
+const {responses: config} = require('../../config/discord-interaction.json');
+const ID = require('../../config/discord-id.json');
+const {addNewEpisode} = require('../../database/suggestions');
 
 let data = new SlashCommandBuilder()
     .setName('new')
@@ -14,7 +14,7 @@ let data = new SlashCommandBuilder()
     .toJSON();
 data.permissions = [
     {
-        id: role.tomCrew,
+        id: ID.role.tomCrew,
         type: ApplicationCommandPermissionType.Role,
         permission: true,
     },
@@ -26,16 +26,16 @@ let execute = async (interaction) => {
     try {
         let success = await addNewEpisode(epNum);
         if (success) {
-            interaction.reply(responses.acknowledge);
+            interaction.reply(config.acknowledge);
             // TODO: silly. Welcome everyone to City [epNum] https://static.wikia.nocookie.net/half-life/images/c/cb/Breencast_first.jpg/revision/latest/top-crop/width/360/height/360?cb=20091026102502&path-prefix=en
         } else {
-            interaction.reply(responses.error);
+            interaction.reply(config.error);
             console.error(
                 `sqlite.addNewEpisode returned false. epNum ${epNum}`,
             );
         }
     } catch (error) {
-        interaction.reply(responses.failure);
+        interaction.reply(config.failure);
         console.error('slash/new failed in an unexpected way.');
         console.error(error);
     }

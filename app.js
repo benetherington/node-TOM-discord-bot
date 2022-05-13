@@ -3,20 +3,20 @@ const path = require('path');
 /*---*\
   BOT
 \*---*/
-require('../bot.js');
+require('./bot');
 
 /*-------*\
   TWITTER
 \*-------*/
 const schedule = require('node-schedule');
-const storeNewTwsfTweets = require('../integrations/twitter-v2');
-const storeNewTwsfDirectMessages = require('../integrations/twitter-v1');
+const storeNewTwsfTweets = require('./twsf/twitter/tweets');
+const storeNewTwsfDirectMessages = require('./twsf/twitter/direct-messages');
 
-// Schedule twitter checks Sunday and Thursday at 12pm EST.
-// The intention is to schedule this at the start of the show. Twitter allows us
-// to search the last seven days of tweets, so we should check at least once a
-// week, twice to be safe. Glitch server is in UTC.
-const twitterJob = schedule.scheduleJob('* * 16 * 0,4', () => {
+// Schedule twitter checks Sunday and Thursday at 12pm EST. The intention is to
+// schedule this at the start of the show. Twitter allows us to search the last
+// thirty days of tweets, so we don't need to check more than once a week. We
+// should check just before the show begins. Glitch server is in UTC.
+const twitterJob = schedule.scheduleJob('* * 16 * 0', () => {
     storeNewTwsfTweets();
     storeNewTwsfDirectMessages();
 });
@@ -41,9 +41,9 @@ fastify.register(require('@fastify/cookie'), {
 
 // Routes
 fastify.register(require('@fastify/formbody'));
-fastify.register(require('./routes/static.js'));
-fastify.register(require('./routes/login.js'));
-fastify.register(require('./routes/monitor.js'));
+fastify.register(require('./src/routes/static.js'));
+fastify.register(require('./src/routes/login.js'));
+fastify.register(require('./src/routes/monitor.js'));
 
 // Start server
 fastify.listen(3000, (err, address) => {

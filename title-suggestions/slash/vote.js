@@ -10,10 +10,20 @@ const execute = async (interaction) => {
 
     try {
         const responses = await getVoteMessages();
-        // TODO:Delete the most recent vote message.
-        // SEND reply and followups
-        await interaction.reply(responses.shift());
-        while (responses.length) await interaction.followUp(responses.shift());
+        if (responses.length === 0) {
+            // No suggestions yet
+            interaction.reply({
+                content: 'No title suggestions yet!',
+                ephemeral: true,
+            });
+        } else {
+            // TODO:Delete the most recent vote message.
+            // SEND reply and followups
+            await interaction.reply(responses.shift());
+            while (responses.length) {
+                await interaction.followUp(responses.shift());
+            }
+        }
     } catch (error) {
         console.log(error);
     }

@@ -14,8 +14,12 @@ const {Routes} = require('discord-api-types/v9');
 const ID = require('../config/discord-id.json');
 
 // Gather all slash files to register
-const slashFiles = fs.readdirSync("./title-suggestions/slash").filter(f=>f.endsWith(".js"));
-const slashes = slashFiles.map(fileName=>require("../title-suggestions/slash/"+fileName).data);
+const slashFiles = fs
+    .readdirSync('./title-suggestions/slash')
+    .filter((f) => f.endsWith('.js'));
+const slashes = slashFiles.map(
+    (fileName) => require('../title-suggestions/slash/' + fileName).data,
+);
 
 // Init our REST API object. We don't need the full Client right now.
 const rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN);
@@ -30,11 +34,13 @@ const provisionSlashes = async (slashes) => {
                 body: slashes,
             },
         );
-        console.log("Guild command registration successful.")
-        console.log("Don't forget to update permissions! Server Settngs>integrations>manage")
+        console.log('Guild command registration successful.');
+        console.log(
+            "Don't forget to update permissions! Server Settngs>integrations>manage",
+        );
     } catch (error) {
-        console.error("Something went wrong in provisionSlashes")
-        console.error(error)
+        console.error('Something went wrong in provisionSlashes');
+        console.error(error);
     }
 };
 

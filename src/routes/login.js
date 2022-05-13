@@ -1,7 +1,4 @@
-const {
-    getAdminByCredentials,
-    createAuthCookie,
-} = require('./loginUtilities');
+const {getAdminByCredentials, createAuthCookie} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
     fastify.get('/login', async (request, reply) =>

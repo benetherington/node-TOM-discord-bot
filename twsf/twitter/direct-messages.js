@@ -6,7 +6,7 @@ try {
 const Twitter = require('twitter');
 const {addNewTwsfGuess} = require('../../database/twsf');
 
-const ID = require("../../config/twitter-id.json");
+const ID = require('../../config/twitter-id.json');
 const client = new Twitter({
     consumer_key: process.env.TWITTER_API_KEY,
     consumer_secret: process.env.TWITTER_API_KEY_SECRET,

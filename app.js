@@ -47,7 +47,7 @@ fastify.register(require('./src/routes/monitor.js'));
 
 // Start server
 fastify.listen(3000, (err, address) => {
-    console.log(`Listening on ${address}`)
+    console.log(`Listening on ${address}`);
     if (err) {
         console.error(err);
         process.exit(1);

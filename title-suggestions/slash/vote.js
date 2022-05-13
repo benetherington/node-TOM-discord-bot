@@ -1,6 +1,6 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {getVoteMessages} = require('./utilities/vote-utilities');
-const {responses: config} = require("../../config/discord-interaction.json");
+const {responses: config} = require('../../config/discord-interaction.json');
 
 const data = new SlashCommandBuilder()
     .setName('vote')
@@ -24,7 +24,7 @@ const execute = async (interaction) => {
             }
         }
     } catch (error) {
-        interaction.editReply(config.failure)
+        interaction.editReply(config.failure);
         console.log(error);
     }
 };

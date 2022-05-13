@@ -4,13 +4,15 @@ try {
 } catch (ReferenceError) {
     console.log('oh hey we must be running on Glitch');
 }
-
-const dbFile = require('path').resolve('./.data/admin.db');
 const sqlite3 = require('sqlite3').verbose();
 const dbWrapper = require('sqlite');
 
+const dbFile = require('path').resolve('./.data/admin.db');
+const migrationsPath = './database/migrations/admin';
+let db;
+
 /*-------*\
-DB INIT
+  DB INIT
 \*-------*/
 const printDbSummary = async () => {
     try {
@@ -37,8 +39,6 @@ const printDbSummary = async () => {
     }
 };
 
-let db;
-const migrationsPath = './migrations/admin';
 const initDB = async () => {
     console.log('SQLite');
     db = await dbWrapper.open({

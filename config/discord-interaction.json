@@ -40,6 +40,10 @@
         ]
     },
     "responses": {
+        "nothingToVoteOn": {
+            "content": "No title suggestions yet!",
+            "ephemeral": true
+        },
         "error": {
             "content": "Hmmm, something went wrong, but not too badly?",
             "ephemeral": true

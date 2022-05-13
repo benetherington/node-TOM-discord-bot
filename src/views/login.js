@@ -7,5 +7,7 @@ if (params.has('auth')) {
         message.innerText = 'You must log in to do that.';
     } else if (status === 'failed') {
         message.innerText = 'Wrong username or password.';
+    } else if (status === 'expired') {
+        message.innerText = 'Your credentials expired. Please log in again.';
     }
 }

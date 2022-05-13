@@ -5,6 +5,22 @@ const path = require('path');
 \*---*/
 require('../bot.js');
 
+/*-------*\
+  TWITTER
+\*-------*/
+const schedule = require('node-schedule');
+const storeNewTwsfTweets = require('../integrations/twitter-v2');
+const storeNewTwsfDirectMessages = require('../integrations/twitter-v1');
+
+// Schedule twitter checks Sunday and Thursday at 12pm EST.
+// The intention is to schedule this at the start of the show. Twitter allows us
+// to search the last seven days of tweets, so we should check at least once a
+// week, twice to be safe. Glitch server is in UTC.
+const twitterJob = schedule.scheduleJob('* * 16 * 0,4', () => {
+    storeNewTwsfTweets();
+    storeNewTwsfDirectMessages();
+});
+
 /*------*\
   SERVER
 \*------*/

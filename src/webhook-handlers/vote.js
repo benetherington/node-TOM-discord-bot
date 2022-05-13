@@ -1,8 +1,10 @@
-const {client} = require('../bot.js');
-const {getVoteMessages} = require('../slash/utilities/vote-utilities.js');
-const ID = require('../src/id.json');
+const {client} = require('../../bot');
+const {
+    getVoteMessages,
+} = require('../../title-suggestions/slash/utilities/vote-utilities');
+const ID = require('../../config/discord-id.json');
 
-const startNewVoteFromApi = async () => {
+module.exports.startNewVoteFromApi = async () => {
     console.log('Bot monitor GUI requested vote message');
 
     const channelId = process.env.TEST
@@ -14,5 +16,3 @@ const startNewVoteFromApi = async () => {
     const firstMessage = channel.send(voteMessages.shift());
     while (voteMessages.length) await firstMessage.reply(voteMessages.shift());
 };
-
-module.exports = {startNewVoteFromApi};

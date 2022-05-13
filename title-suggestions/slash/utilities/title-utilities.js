@@ -1,5 +1,5 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
-const {addNewSuggestion} = require('../../src/sqlite/suggestions.js');
+const {addNewSuggestion} = require('../../../database/suggestions');
 
 const createAuthorFromInteraction = (interaction) => {
     const discordId = interaction.user.id;

@@ -1,4 +1,3 @@
-const dbFile = require('path').resolve('./.data/title-suggestions.db');
 const sqlite3 = require('sqlite3').verbose();
 const dbWrapper = require('sqlite');
 let db;
@@ -9,7 +8,8 @@ const SUGGESTIONS = 10;
 const TOTAL_SUGGESTIONS = EPISODES * SUGGESTIONS;
 const VOTES = 10;
 
-const migrationsPath = './migrations/title-suggestions';
+const dbFile = require('path').resolve('./.data/title-suggestions.db');
+const migrationsPath = './database/migrations/title-suggestions';
 const initDB = async () => {
     db = await dbWrapper.open({
         filename: dbFile,

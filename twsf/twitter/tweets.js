@@ -4,7 +4,7 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const fetch = require('node-fetch');
-const {addNewTwsfGuess} = require('../src/sqlite/twsf');
+const {addNewTwsfGuess} = require('../../database/twsf');
 
 const client = {
     _base: 'https://api.twitter.com/1.1/',
@@ -104,7 +104,7 @@ const guessAndAuthorFromTweet = async (status) => {
 const fetchTweets = () =>
     client.search({query: '#thisweeksf'}).then((r) => r.all());
 
-module.exports.storeTweets = async () => {
+module.exports = async () => {
     console.log('Storing #ThisWeekSF tweets...');
 
     // Get new tweets

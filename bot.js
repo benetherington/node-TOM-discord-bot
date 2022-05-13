@@ -63,10 +63,16 @@ client.on('invalidated', () => {
     console.log('Session invalidated.');
 });
 client.on('interactionCreate', (interaction) => {
-    if (interaction.isCommand()) {
-        receiveSlash(interaction);
-    } else if (interaction.isButton()) {
-        receiveButton(interaction);
+    try {
+        if (interaction.isCommand()) {
+            receiveSlash(interaction);
+        } else if (interaction.isButton()) {
+            receiveButton(interaction);
+        }
+    } catch (error) {
+        console.error('Error encountered while handling incoming interaction!');
+        console.error(interaction);
+        console.error(error);
     }
 });
 

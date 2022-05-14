@@ -1,4 +1,4 @@
-const {addNewTwsfGuess} = require('../src/sqlite/twsf');
+const {addNewTwsfGuess} = require('../database/twsf');
 
 // Glitch handles its own env
 try {
@@ -7,92 +7,147 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 
+const shiftFromLine = (textLines) => {
+    let fromLine; // = "From: Damonjalis <fake_greek_email@gmail.com>"
+
+    // Shift out lines until we find one starting with "From:"
+    while (!fromLine) {
+        const thisLine = textLines.shift();
+        if (thisLine.startsWith('From:')) {
+            fromLine = thisLine;
+        }
+    }
+
+    // Parse the line
+    const nickAndEmail = /From: (?<nick>.*?) <(?<email>.*?)>/.exec(
+        fromLine,
+    ).groups;
+
+    // Done!
+    return nickAndEmail;
+};
+const shiftSubjectLine = (textLines) => {
+    let subjectLine; // = "Subject: Thisweeksf"
+
+    // Shift out lines until we find one starting with "Subject:"
+    while (!subjectLine) {
+        const thisLine = textLines.shift();
+        if (thisLine.startsWith('Subject:')) {
+            subjectLine = thisLine;
+        }
+    }
+
+    // Parse the line
+    const subject = subjectLine.slice(9);
+
+    // Done!
+    return subject;
+};
+const shiftBodyLines = (textLines) => {
+    // "To: info@tom.com\n\n\nYour multiline\nmessage here."
+    let doneLooking = false;
+
+    // Shift out lines until we find one starting with "To:"
+    while (!doneLooking) {
+        const thisLine = textLines.shift();
+        doneLooking = thisLine.startsWith('To:');
+    }
+
+    // Shift out whitespace-only lines
+    doneLooking = false;
+    while (!doneLooking) {
+        textLines.shift();
+        doneLooking = /\S/.test(textLines[0]);
+    }
+
+    // Join the rest of the email
+    body = textLines.join('');
+
+    // Done!
+    return body;
+};
 const parseTextContent = (textContent) => {
     // Parse forwarded emails. For now, we won't be collecting emails directly
     // from listeners. Instead, Ben will forward them.
     // Any of these parsing steps might encounter errors. Let's make future
     // debugging easier by accumulating error messages as we go and including
     // them in the database.
-    let errors = new Array();
+    const parsedElements = {};
+    let errors = [];
 
-    // The major components we're looking for are separated by line breaks
+    // The components we're looking for are separated by line breaks
     const textLines = textContent.split(/(\r|\n|\r\n)/);
 
     // From: Damonjalis <fake_greek_email@gmail.com>
-    let nick = '',
-        email = '';
     try {
-        // Look for the right line
-        const fromLine = textLines.find((line) => line.startsWith('From:'));
-        // Split out nickname and email address
-        ({nick, email} = /From: (?<nick>.*?) <(?<email>.*?)>/.exec(
-            fromLine,
-        ).groups);
+        const {nick, email} = shiftFromLine(textLines);
+        parsedElements.nick = nick;
+        parsedElements.email = email;
     } catch (error) {
         errors.push(['from', error.message]);
     }
 
     // Subject: Thisweeksf
-    let subject = '';
     try {
         // Look for the right line
-        const subjectLine = textLines.find((line) =>
-            line.startsWith('Subject:'),
-        );
-        // Strip off the beginning
-        subject = subjectLine.slice(9);
+        parsedElements.subject = shiftSubjectLine(textLines);
     } catch (error) {
         errors.push(['subject', error.message]);
     }
 
     // To: info@tom.com\n\n\nYour multiline\nmessage here.
-    let body = '';
     try {
-        // We'll ignore everything before the "To:" line
-        const toLineIdx = textLines.findIndex((line) => line.startsWith('To:'));
-        // After "To:", we'll skip all empty lines.
-        const bodyStartOffset = textLines
-            .slice(toLineIdx + 1)
-            .findIndex((line) => /\S/.test(line));
-        // Once we have a line with more than whitespace, we'll grab it,
-        // everything after it, and squish them together. Line breaks should
-        // already be present.
-        body = textLines.slice(toLineIdx + bodyStartOffset + 1).join('');
+        // Look for the right line
+        parsedElements.body = shiftBodyLines(textLines);
     } catch (error) {
         errors.push(['body', error.message]);
     }
 
-    // Ensure only strings or null are passed to the database
+    // Log any errors
     if (errors.length) {
-        errors = JSON.stringify(Object.fromEntries(errors));
+        console.log('Non-fatal error/s encountered while parsing TWSF email:');
+        console.log(errors);
     } else {
         errors = null;
     }
 
-    return {nick, email, subject, body, errors};
+    // Done!
+    return {parsedElements, errors};
 };
 
-module.exports.storeNewTwsfEmail = (textContent) => {
-    // Parse the email
-    const {
-        nick: emailName,
-        email: emailAddress,
-        subject,
-        body: text,
-        errors,
-    } = parseTextContent(textContent);
+const guessAndAuthorFromEmail = ({parsedElements, errors}) => {
+    const subject = parsedElements.subject;
+    const text = parsedElements.body;
+    const guess = {type: 'email', subject, text, errors};
 
-    // Prepare database data
-    const guess = {type: 'email', subject, text};
-    const author = {email, emailAddress, emailName};
+    const emailAddress = parsedElements.email;
+    const emailName = parsedElements.nick;
+    const author = {emailAddress, emailName};
 
-    // Store email
-    const success = addNewTwsfGuess({guess, author});
+    return {guess, author};
+};
 
-    // Done!
-    if (success) console.log('Done storing new TWSF email!');
-    else {
-        console.error('Something went wrong while storing TWSF email...');
-        console.error({storeageResults});
+module.exports = (textContent) => {
+    try {
+        // Parse the email
+        const parsedElementsAndErrors = parseTextContent(textContent);
+        if (!parsedElementsAndErrors.parsedElements)
+            throw 'Something went wrong while parsing TWSF email...';
+
+        // Prepare database data
+        const guessAndAuthor = guessAndAuthorFromEmail(parsedElementsAndErrors);
+        if (!guessAndAuthor.guess && guessAndAuthor.author)
+            throw 'Something went wrong while preparing to store TWSF email...';
+
+        // Store email
+        const successfullyStored = addNewTwsfGuess(guessAndAuthor);
+        if (!successfullyStored)
+            throw 'Something went wrong while storing TWSF email...';
+
+        // Done!
+        console.log('Done storing new TWSF email!');
+    } catch (error) {
+        console.error(error);
+        console.error(textContent);
     }
 };

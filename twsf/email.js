@@ -1,4 +1,4 @@
-const {addNewTwsfGuess} = require('../database/twsf');
+const {addNewTwsfGuess, addTwsfError} = require('../database/twsf');
 
 // Glitch handles its own env
 try {
@@ -149,5 +149,6 @@ module.exports = (textContent) => {
     } catch (error) {
         console.error(error);
         console.error(textContent);
+        addTwsfError(JSON.stringify({error, textContent}));
     }
 };

@@ -5,10 +5,9 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 
-const storeNewTwsfEmail = require('../../integrations/email');
+const storeNewTwsfEmail = require('../../twsf/email');
 
 module.exports = (fastify, opts, done) => {
-    // Suggestion monitor
     fastify.post('/twsf-email', async (request, reply) => {
         console.log('Incoming TWSF email!');
 

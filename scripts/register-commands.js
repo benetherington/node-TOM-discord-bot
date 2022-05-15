@@ -11,11 +11,15 @@ try {
 const fs = require('fs');
 const {REST} = require('@discordjs/rest');
 const {Routes} = require('discord-api-types/v9');
-const ID = require('../src/id.json');
+const ID = require('../config/discord-id.json');
 
 // Gather all slash files to register
-const slashFiles = fs.readdirSync("./slash").filter(f=>f.endsWith(".js"));
-const slashes = slashFiles.map(fileName=>require("../slash/"+fileName).data);
+const slashFiles = fs
+    .readdirSync('./title-suggestions/slash')
+    .filter((f) => f.endsWith('.js'));
+const slashes = slashFiles.map(
+    (fileName) => require('../title-suggestions/slash/' + fileName).data,
+);
 
 // Init our REST API object. We don't need the full Client right now.
 const rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN);
@@ -30,28 +34,10 @@ const provisionSlashes = async (slashes) => {
                 body: slashes,
             },
         );
-        console.log("Guild command registration successful.")
-        console.log("Don't forget to update permissions! Server Settngs>integrations>manage")
-    } catch (error) {
-        console.error("Something went wrong in provisionSlashes")
-        console.error(error)
-    }
-}
-
-        // batch edit command permissions
-        const fullPermissions = registeredSlashes
-            .map(getSlashIdWithPermissions)
-            .filter((slash) => slash.permissions);
-        await rest.put(
-            Routes.guildApplicationCommandsPermissions(
-                ID.user.bot,
-                ID.guild.tomCast,
-            ),
-            {
-                body: fullPermissions,
-            },
+        console.log('Guild command registration successful.');
+        console.log(
+            "Don't forget to update permissions! Server Settngs>integrations>manage",
         );
-        console.log('Application command permissions edit successful');
     } catch (error) {
         console.error('Something went wrong in provisionSlashes');
         console.error(error);

@@ -1,5 +1,5 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
-const {emoji, responses} = require('../src/interaction-config.json');
+const {emoji: config} = require('../../config/discord-interaction.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,7 +14,7 @@ module.exports = {
                 `I'm a bit limited. I mostly collect episode name suggestions, which ` +
                 `Ben thinks is a pretty fun audience interaction. I let everyone know ` +
                 `I haven't crashed yet by reacting to commands with a ` +
-                `${emoji.botAck}.\n\n`,
+                `${config.botAck}.\n\n`,
             ephemeral: true,
         });
     },

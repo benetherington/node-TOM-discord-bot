@@ -1,5 +1,5 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
-const {responses: config} = require('../src/interaction-config.json');
+const {responses: config} = require('../../config/discord-interaction.json');
 const {getNewSuggestionMessage} = require('./utilities/title-utilities');
 
 let data = new SlashCommandBuilder()

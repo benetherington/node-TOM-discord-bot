@@ -1,6 +1,7 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {responses} = require('../../../config/discord-interaction.json');
 const {addNewTwsfGuess, updateTwsfGuess} = require('../../../database/twsf');
+const {responses: config} = require('../../../config/discord-interaction.json');
 const ID = require('../../../config/discord-id.json');
 
 /*---------*\
@@ -9,23 +10,14 @@ const ID = require('../../../config/discord-id.json');
 const getInteractionResponse = (interaction) => {
     const hideReply = interaction.options.getBoolean('hidden');
     if (hideReply) {
-        return {
-            content: 'Thank you! Your guess has been logged.',
-            ephemeral: true,
-        };
+        return config.twsf.hiddenReply;
     } else {
-        // This is a public guess, so get the guess string
-        const guessText = interaction.options.getString('guess');
-        const content = `<@${interaction.user.id}> guessed: ||${guessText}||`;
-        // We don't want to ping anyone, espeically if there's an unescaped
-        // mention in the guess
-        const allowed_mentions = {parse: []};
-        return {
-            content,
-            allowed_mentions,
-            ephemeral: false,
-            fetchReply: true,
-        };
+        const responseOptions = config.twsf.publicReply;
+        responseOptions.content = responseOptions.content
+            .replace('id', interaction.user.id)
+            .replace('txt', interaction.options.getString('guess'));
+
+        return responseOptions;
     }
 };
 const guessAndAuthorFromInteraction = (interaction) => {
@@ -83,7 +75,6 @@ const handleClueRequest = async (interaction) => {
 
     interaction.editReply({content: lastTwsfMessage.content});
 };
-
 
 /*-------*\
   Exports

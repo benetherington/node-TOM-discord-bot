@@ -5,13 +5,23 @@
 -- Add Guesses table
 CREATE TABLE Guesses (
     guessId     INTEGER NOT NULL PRIMARY KEY,
-    authorId    INTEGER NOT NULL
+    authorId    INTEGER NOT NULL,
     
-    type            INTEGER NOT NULL,
-                        CHECK(type>=0 AND type<=3)
+    -- TYPES --
+    -- TWEET: 0
+    -- TWITTER_DM: 1
+    -- EMAIL: 2
+    -- DISCORD: 3
+    type            INTEGER NOT NULL CHECK(
+        type BETWEEN 0 AND 3
+    ),
     text            TEXT    NOT NULL,
-    tweetId         TEXT    UNIQUE,
-    discordReplyId  TEXT    UNIQUE,
+    tweetId         TEXT    UNIQUE CHECK(
+        CASE WHEN tweetId IS NOT NULL THEN type IS 0 END
+    ),
+    discordReplyId  TEXT    UNIQUE CHECK(
+        CASE WHEN discordReplyId NOT NULL THEN type IS 3 END
+    ),
     
     created_at      TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at      TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime'))
@@ -42,8 +52,8 @@ BEGIN TRANSACTION;
         displayName     TEXT,
         
         twitterId            TEXT UNIQUE, -- Anvil import: audience['twitter_user_id']
-        twitterDisplayName   TEXT,        -- Not imported from Anvil
         twitterUsername      TEXT UNIQUE, -- Anvil import: audience['twitter_screen_name']
+        twitterDisplayName   TEXT,        -- Not imported from Anvil
         emailAddress         TEXT UNIQUE, -- Anvil import: audience['email']
         emailName            TEXT,        -- Not imported from Anvil
         callsign             TEXT,        -- Anvil import: audience['nickname']

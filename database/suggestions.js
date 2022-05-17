@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const dbWrapper = require('sqlite');
 
 const dbFile = require('path').resolve('./.data/title-suggestions.db');
-const migrationsPath = './database/migrations/title-suggestions';
+const migrationsPath = './database/migrations/public';
 let db;
 
 /*---------*\

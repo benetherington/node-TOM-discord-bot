@@ -168,22 +168,19 @@ const insertGuessByType = (authorId, guess) => {
             authorId,
             guess.type,
             guess.text,
-            // guess.discordReplyId won't be set on initial guess creation
+            // guess.discordReplyId won't be set on guess creation
         );
     }
 };
 
-/*-------*\
-  EXPORTS
-\*-------*/
 module.exports.addNewTwsfGuess = async ({guess, author}) => {
     console.log('add new twsf guess');
     console.table({author, guess});
 
-    // FIND Author based on guess type
+    // SELECT existing (?) Author based on guess type
     const selectedAuthor = await getAuthorByGuessType(guess.type, author);
 
-    // UPSERT Author with incoming values
+    // UPDATE or INSERT Author with incoming values
     if (selectedAuthor) await updateAuthorByGuessType(guess.type, author);
     else selectedAuthor = await insertAuthorByGuessType(guess.type, author);
 
@@ -192,6 +189,9 @@ module.exports.addNewTwsfGuess = async ({guess, author}) => {
     return guessInsert;
 };
 module.exports.updateTwsfGuess = (guess, messageId) => {
+    // Used by TWSF Discord integration. Guesses arriving in "hidden" slash
+    // commands don't ever get a replyId. ReplyId points to the bot's response,
+    // so we have to wait until after the initial submission.
     console.log('update twsf guess');
     console.table({guess, messageId});
 

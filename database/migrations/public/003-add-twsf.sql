@@ -14,7 +14,11 @@ CREATE TABLE IF NOT EXISTS Guesses (
     -- DISCORD: 3
     type            INTEGER NOT NULL CHECK(type BETWEEN 0 AND 3),
     text            TEXT    NOT NULL,
-    tweetId         TEXT    UNIQUE CHECK(CASE WHEN tweetId IS NOT NULL THEN type IS 0 END),
+    
+    correct         BOOLEAN,
+    bonusPoint      BOOLEAN CHECK(CASE WHEN bonusPoint THEN correct END),
+    
+    tweetId         TEXT    UNIQUE CHECK(CASE WHEN tweetId NOT NULL THEN type IN (0, 1) END),
     discordReplyId  TEXT    UNIQUE CHECK(CASE WHEN discordReplyId NOT NULL THEN type IS 3 END),
     
     created_at      TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),

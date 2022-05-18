@@ -183,7 +183,7 @@ module.exports.addNewTwsfGuess = async ({guess, author}) => {
     const guessInsert = await insertGuessByType(selectedAuthor.authorId, guess);
     return guessInsert;
 };
-module.exports.updateTwsfGuess = (guess, messageId) => {
+module.exports.updateTwsfGuessDiscordReply = (guess) => {
     // Used by TWSF Discord integration. Guesses arriving in "hidden" slash
     // commands don't ever get a replyId. ReplyId points to the bot's response,
     // so we have to wait until after the initial submission.
@@ -194,7 +194,7 @@ module.exports.updateTwsfGuess = (guess, messageId) => {
         `UPDATE Guesses
             SET discordReplyId = ?
             WHERE guessId = ?;`,
-        messageId,
+        guess.discordReplyId,
         guess.guessId,
     );
 };

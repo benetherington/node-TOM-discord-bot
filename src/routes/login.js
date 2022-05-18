@@ -1,6 +1,9 @@
 const {getAdminByCredentials, createAuthCookie} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
+    // Allow adminPreHandler to pass the admin object to route handlers.
+    fastify.decorateRequest('admin', null);
+    
     fastify.get('/login', async (request, reply) =>
         reply.view('src/views/login'),
     );

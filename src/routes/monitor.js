@@ -7,9 +7,6 @@ const {
 const {adminPreHandler} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
-    // Allow adminPreHandler to pass the admin object to route handlers.
-    fastify.decorateRequest('admin', null);
-
     // Suggestion monitor
     fastify.get('/', {preHandler: adminPreHandler}, async (request, reply) => {
         return reply.view('src/views/monitor', {

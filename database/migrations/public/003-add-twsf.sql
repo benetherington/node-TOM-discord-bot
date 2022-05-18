@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------
 
 -- Add Guesses table
-CREATE TABLE Guesses (
+CREATE TABLE IF NOT EXISTS Guesses (
     guessId     INTEGER NOT NULL PRIMARY KEY,
     authorId    INTEGER NOT NULL,
     
@@ -24,7 +24,7 @@ CREATE TABLE Guesses (
     ),
     
     created_at      TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
-    updated_at      TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime'))
+    updated_at      TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     
     FOREIGN KEY (authorId)
         REFERENCES Authors (authorId)
@@ -62,7 +62,7 @@ BEGIN TRANSACTION;
         created_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime')),
         updated_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime'))
     );
-    INSERT INTO AuthorsAddColumns
+INSERT INTO AuthorsAddColumns (authorId, discordId, username, displayName, created_at, updated_at)
         SELECT authorId, discordId, username, displayName, created_at, updated_at
         FROM Authors;
     DROP TABLE Authors;
@@ -77,26 +77,24 @@ PRAGMA foreign_keys=on;
 --------------------------------------------------------------------------
 
 -- Drop Guesses table
-DROP TABLE Guesses;
-DROP TRIGGER guess_updated_at;
+DROP TABLE IF EXISTS Guesses;
+DROP TRIGGER IF EXISTS guess_updated_at;
 
 -- Drop identifiers from Authors
 PRAGMA foreign_keys=off;
-BEGIN TRANSACTION;
-    CREATE TABLE AuthorsDeleteColumns (
-        authorId        INTEGER PRIMARY KEY,
-        
-        discordId       INTEGER NOT NULL UNIQUE,
-        username        TEXT,
-        displayName     TEXT,
-        
-        created_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime')),
-        updated_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime'))
-    );
-    INSERT INTO AuthorsDeleteColumns
-        SELECT authorId, discordId, username, displayName, created_at, updated_at
-        FROM Authors;
-    DROP TABLE Authors;
-    ALTER TABLE AuthorsDeleteColumns RENAME TO Authors;
-COMMIT;
+CREATE TABLE AuthorsDeleteColumns (
+    authorId        INTEGER PRIMARY KEY,
+    
+    discordId       INTEGER NOT NULL UNIQUE,
+    username        TEXT,
+    displayName     TEXT,
+    
+    created_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime')),
+    updated_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime')),
+);
+INSERT INTO AuthorsDeleteColumns (authorId, discordId, username, displayName, created_at, updated_at)
+    SELECT authorId, discordId, username, displayName, created_at, updated_at
+    FROM Authors;
+DROP TABLE Authors;
+ALTER TABLE AuthorsDeleteColumns RENAME TO Authors;
 PRAGMA foreign_keys=on;

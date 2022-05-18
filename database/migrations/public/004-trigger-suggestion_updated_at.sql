@@ -2,7 +2,7 @@
 -- Up
 --------------------------------------------------------------------------
 
-CREATE TRIGGER suggestion_updated_at
+CREATE TRIGGER IF NOT EXISTS suggestion_updated_at
     AFTER UPDATE ON Suggestions
 BEGIN
     UPDATE Suggestions
@@ -15,4 +15,4 @@ END;
 -- Down
 --------------------------------------------------------------------------
 
-DROP TRIGGER suggestion_updated_at;
+DROP TRIGGER IF EXISTS suggestion_updated_at;

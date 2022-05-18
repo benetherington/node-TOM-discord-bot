@@ -1,10 +1,10 @@
-const {getSuggestionsWithCountedVotes} = require('../sqlite/suggestions.js');
-const {startNewVoteFromApi} = require('../../interface/vote-interface.js');
+const {getSuggestionsWithCountedVotes} = require('../../database/suggestions');
+const {startNewVoteFromApi} = require('../webhook-handlers/vote');
 const {
     addNewSuggestionFromApi,
     removeSuggestionFromApi,
-} = require('../../interface/title-interface.js');
-const {adminPreHandler} = require('./loginUtilities.js');
+} = require('../webhook-handlers/title-suggestions');
+const {adminPreHandler} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
     // Allow adminPreHandler to pass the admin object to route handlers.
@@ -26,11 +26,7 @@ module.exports = (fastify, opts, done) => {
             const countedSuggestions = await getSuggestionsWithCountedVotes({
                 epNum,
             });
-            if (countedSuggestions.length) {
-                return reply.send(countedSuggestions);
-            } else {
-                return reply.code(406).send() // 406: not acceptable
-            }
+            return reply.send(countedSuggestions);
         },
     );
 

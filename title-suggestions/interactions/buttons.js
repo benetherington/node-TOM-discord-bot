@@ -4,7 +4,7 @@ const {
     hasVotedForSuggestion,
     addVoterToSuggestion,
     removeVoterFromSuggestion,
-} = require('../src/sqlite/suggestions.js');
+} = require('../../database/suggestions');
 
 // DISCORD COMPONENTS
 const replicateOrUpdateButton = (button, searchId, newCount) => {

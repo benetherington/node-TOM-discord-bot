@@ -1,5 +1,3 @@
-const path = require('path');
-
 /*---*\
   BOT
 \*---*/
@@ -41,9 +39,10 @@ fastify.register(require('@fastify/cookie'), {
 
 // Routes
 fastify.register(require('@fastify/formbody'));
-fastify.register(require('./src/routes/static.js'));
-fastify.register(require('./src/routes/login.js'));
-fastify.register(require('./src/routes/monitor.js'));
+fastify.register(require('./src/routes/static'));
+fastify.register(require('./src/routes/login'));
+fastify.register(require('./src/routes/monitor'));
+fastify.register(require('./src/routes/twsf'));
 
 // Start server
 fastify.listen(3000, (err, address) => {

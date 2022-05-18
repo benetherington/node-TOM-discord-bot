@@ -39,7 +39,7 @@ const printDbSummary = async () => {
 \*-------*/
 const initDB = async () => {
     const public = require("./public");
-    db = await public();
+    db = await public;
 };
 initDB().then(printDbSummary);
 

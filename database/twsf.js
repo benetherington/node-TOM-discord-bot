@@ -159,7 +159,7 @@ const insertGuessByType = (authorId, guess) => {
     } else if (guess.type === types.DISCORD) {
         return db.run(
             `INSERT INTO Guesses (authorId, type, text)
-                VALUES (?, ?, ?, ?);`,
+                VALUES (?, ?, ?);`,
             authorId,
             guess.type,
             guess.text,

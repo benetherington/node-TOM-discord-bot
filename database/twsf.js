@@ -38,7 +38,7 @@ const printDbSummary = async () => {
   DB INIT
 \*-------*/
 const initDB = async () => {
-    const public = require("./public");
+    const public = require('./public');
     db = await public;
 };
 initDB().then(printDbSummary);
@@ -195,6 +195,16 @@ module.exports.updateTwsfGuessDiscordReply = (guess) => {
             SET discordReplyId = ?
             WHERE guessId = ?;`,
         guess.discordReplyId,
+        guess.guessId,
+    );
+};
+module.exports.scoreTwsfGuess = (guess) => {
+    return db.run(
+        `UPDATE Guesses
+            SET correct = ?, bonusPoint = ?
+            WHERE guessId = ?;`,
+        guess.correct,
+        guess.bonusPoint,
         guess.guessId,
     );
 };

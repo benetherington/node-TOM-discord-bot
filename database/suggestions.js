@@ -39,16 +39,10 @@ const printDbSummary = async () => {
   DB INIT
 \*-------*/
 const initDB = async () => {
-    console.log('SQLite');
-    db = await dbWrapper.open({
-        filename: dbFile,
-        driver: sqlite3.cached.Database,
-    });
-    console.log('Migrating title-suggestions...');
-    await db.migrate({migrationsPath});
-    await printDbSummary();
+    const public = require("./public");
+    db = await public();
 };
-initDB();
+initDB().then(printDbSummary);
 
 /*-------*\
   EPISODE

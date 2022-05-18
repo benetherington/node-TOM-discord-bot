@@ -11,7 +11,7 @@ let db;
 const printDbSummary = async () => {
     try {
         const selectTables = await db.all(
-            "SELECT name FROM sqlite_master WHERE type='table'",
+            "SELECT name FROM sqlite_master WHERE type='table';",
         );
         const exists = selectTables.map((row) => row.name).join(', ');
         console.log(`Tables: ${exists}`);
@@ -38,15 +38,10 @@ const printDbSummary = async () => {
   DB INIT
 \*-------*/
 const initDB = async () => {
-    db = await dbWrapper.open({
-        filename: dbFile,
-        driver: sqlite3.cached.Database,
-    });
-    console.log('Migrating Guesses...');
-    await db.migrate({migrationsPath});
-    await printDbSummary();
+    const public = require("./public");
+    db = await public();
 };
-initDB();
+initDB().then(printDbSummary);
 
 /*--------*\
   TYPE DEF

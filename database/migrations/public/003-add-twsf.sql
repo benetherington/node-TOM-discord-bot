@@ -6,6 +6,7 @@
 CREATE TABLE IF NOT EXISTS Guesses (
     guessId     INTEGER NOT NULL PRIMARY KEY,
     authorId    INTEGER NOT NULL,
+    episodeId   INTEGER,
     
     -- TYPES:
     -- TWEET: 0
@@ -15,8 +16,8 @@ CREATE TABLE IF NOT EXISTS Guesses (
     type            INTEGER NOT NULL CHECK(type BETWEEN 0 AND 3),
     text            TEXT    NOT NULL,
     
-    correct         BOOLEAN,
-    bonusPoint      BOOLEAN CHECK(CASE WHEN bonusPoint THEN correct END),
+    correct         BOOLEAN DEFAULT NULL,
+    bonusPoint      BOOLEAN DEFAULT FALSE CHECK(CASE WHEN bonusPoint THEN correct END),
     
     tweetId         TEXT    UNIQUE CHECK(CASE WHEN tweetId NOT NULL THEN type IN (0, 1) END),
     discordReplyId  TEXT    UNIQUE CHECK(CASE WHEN discordReplyId NOT NULL THEN type IS 3 END),
@@ -27,7 +28,11 @@ CREATE TABLE IF NOT EXISTS Guesses (
     FOREIGN KEY (authorId)
         REFERENCES Authors (authorId)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (episodeId)
+        REFERENCES Episodes (episodeId)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 CREATE TRIGGER guess_updated_at

@@ -12,6 +12,9 @@ const fetchDb = async () => {
     db = await public;
 };
 
+/*--------*\
+  EPISODES
+\*--------*/
 const createEpisodes = async () => {
     for (let epIdx = 0; epIdx <= EPISODES; epIdx++) {
         await db.run(
@@ -23,6 +26,9 @@ const createEpisodes = async () => {
     }
 };
 
+/*-------*\
+  AUTHORS
+\*-------*/
 const createAuthors = async () => {
     for (let authId = 0; authId <= AUTHORS; authId++) {
         await db.run(
@@ -37,6 +43,9 @@ const createAuthors = async () => {
     }
 };
 
+/*-----------------*\
+  SUGGESTIONS&VOTES
+\*-----------------*/
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
@@ -90,6 +99,9 @@ const createSuggestions = async () => {
     }
 };
 
+/*-------*\
+  GUESSES
+\*-------*/
 const types = {
     TWEET: 0,
     TWITTER_DM: 1,
@@ -149,16 +161,16 @@ const insertDiscordGuess = async (authId) => {
         insertGuess.lastID,
     );
 };
-const updateScore = (guessId, correct, bonusPoint) => {
-    return db.run(
+const updateScore = (guessId, episodeId, correct, bonusPoint) =>
+    db.run(
         `UPDATE Guesses
-            SET correct = ?, bonusPoint = ?
+            SET episodeId = ?, correct = ?, bonusPoint = ?
             WHERE guessId = ?;`,
+        episodeId,
         correct,
         bonusPoint,
         guessId,
     );
-};
 const createGuesses = async () => {
     for (let idx = 0; idx < GUESSES; idx++) {
         const authId = Math.round(Math.random() * AUTHORS);
@@ -168,10 +180,12 @@ const createGuesses = async () => {
         await insertDiscordGuess(authId);
     }
 
-    for (let guessId = 1; guessId <= GUESSES*4; guessId++) {
-        const [correct, bonusPoint] = ['00', '10', '11'][guessId % 3];
-
-        await updateScore(guessId, correct, bonusPoint);
+    const guessesPerEpisode = (EPISODES / GUESSES) * 4;
+    for (let guessIdx = 0; guessIdx < GUESSES * 4; guessIdx++) {
+        const [correct, bonusPoint] = ['00', '10', '11'][guessIdx % 3];
+        const guessId = guessIdx + 1;
+        const episodeId = Math.floor(guessIdx / guessesPerEpisode)+1;
+        await updateScore(guessId, episodeId, correct, bonusPoint);
     }
 };
 

@@ -48,7 +48,7 @@ initDB().then(printDbSummary);
   EPISODE
 \*-------*/
 const getCurrentEpisode = () =>
-    db.get('SELECT * FROM Episodes ORDER BY created_at DESC;');
+    db.get('SELECT * FROM Episodes ORDER BY created_at DESC LIMIT 1;');
 
 module.exports.getCurrentEpNum = async () => {
     const currentEp = await getCurrentEpisode();

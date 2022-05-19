@@ -13,8 +13,13 @@ const fetchDb = async () => {
 };
 
 const createEpisodes = async () => {
-    for (let epId = 100; epId <= 100 + EPISODES; epId++) {
-        await db.run('INSERT INTO Episodes (epNum) VALUES (?);', epId);
+    for (let epIdx = 0; epIdx <= EPISODES; epIdx++) {
+        await db.run(
+            `INSERT INTO Episodes (epNum, created_at)
+                VALUES (?, DATETIME('now', ?));`,
+            100 + EPISODES - epIdx,
+            `-${epIdx + 1} seconds`,
+        );
     }
 };
 

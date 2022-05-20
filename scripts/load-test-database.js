@@ -16,12 +16,16 @@ const fetchDb = async () => {
   EPISODES
 \*--------*/
 const createEpisodes = async () => {
-    for (let epIdx = 0; epIdx <= EPISODES; epIdx++) {
+    for (let epIdx = 0; epIdx < EPISODES; epIdx++) {
+        const episodeId = EPISODES - epIdx;
+        const epNum = 100 + EPISODES - epIdx - 1;
+        const createdOffset = `-${epIdx} seconds`;
         await db.run(
-            `INSERT INTO Episodes (epNum, created_at)
-                VALUES (?, DATETIME('now', ?));`,
-            100 + EPISODES - epIdx,
-            `-${epIdx + 1} seconds`,
+            `INSERT INTO Episodes (episodeId, epNum, created_at)
+                VALUES (?, ?, DATETIME('now', ?));`,
+            episodeId,
+            epNum,
+            createdOffset,
         );
     }
 };
@@ -184,7 +188,7 @@ const createGuesses = async () => {
     for (let guessIdx = 0; guessIdx < GUESSES * 4; guessIdx++) {
         const [correct, bonusPoint] = ['00', '10', '11'][guessIdx % 3];
         const guessId = guessIdx + 1;
-        const episodeId = Math.floor(guessIdx / guessesPerEpisode)+1;
+        const episodeId = Math.floor(guessIdx / guessesPerEpisode) + 1;
         await updateScore(guessId, episodeId, correct, bonusPoint);
     }
 };

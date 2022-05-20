@@ -174,9 +174,22 @@ module.exports.getUnscoredGuesses = () =>
             type, text, correct, bonusPoint,
             callsign, twitterDisplayName, displayName, emailName
         FROM Guesses
-        LEFT JOIN Authors using(authorId)
+        LEFT JOIN Authors USING(authorId)
         WHERE episodeId IS NULL;`,
     );
+module.exports.getCorrectGuesses = () =>
+    db.all(
+        `SELECT
+            type, text, correct, bonusPoint,
+            callsign, twitterDisplayName, displayName, emailName
+        FROM Guesses
+        LEFT JOIN Authors USING(authorId)
+        WHERE correct
+            AND episodeId = (
+                SELECT episodeId FROM Episodes
+                ORDER BY created_at DESC LIMIT 1
+            );`
+    )
 module.exports.addNewGuess = async ({guess, author}) => {
     console.log('add new twsf guess');
     console.table({author, guess});

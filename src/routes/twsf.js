@@ -1,6 +1,10 @@
 const {adminPreHandler} = require('./loginUtilities');
 
-const {scoreGuess, getUnscoredGuesses} = require('../../database/twsf');
+const {
+    scoreGuess,
+    getUnscoredGuesses,
+    getCorrectGuesses,
+} = require('../../database/twsf');
 
 module.exports = (fastify, opts, done) => {
     // Guess viewer
@@ -25,6 +29,12 @@ module.exports = (fastify, opts, done) => {
             reply.send(guesses);
         },
     );
+    fastify.get(
+        '/api/twsf/correct',
+        {preHandler: adminPreHandler},
+        async (request, reply) => {
+            const guesses = await getCorrectGuesses();
+            console.log(`Found ${guesses.length} correct guesses for this episode.`);
 
             reply.send(guesses);
         },

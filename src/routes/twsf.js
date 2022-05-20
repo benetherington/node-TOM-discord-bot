@@ -16,11 +16,15 @@ module.exports = (fastify, opts, done) => {
 
     // API: get this week's guesses
     fastify.get(
-        '/api/twsf/new',
+        '/api/twsf/unscored',
         {preHandler: adminPreHandler},
         async (request, reply) => {
-            const guessses = await getUnscoredGuesses();
-            console.log(`Found ${guesses.length} new TWSF guesses`);
+            const guesses = await getUnscoredGuesses();
+            console.log(`Found ${guesses.length} unscored TWSF guesses.`);
+
+            reply.send(guesses);
+        },
+    );
 
             reply.send(guesses);
         },

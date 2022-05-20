@@ -168,7 +168,16 @@ const insertGuessByType = (authorId, guess) => {
     }
 };
 
-module.exports.addNewTwsfGuess = async ({guess, author}) => {
+module.exports.getUnscoredGuesses = () =>
+    db.all(
+        `SELECT
+            type, text, correct, bonusPoint,
+            callsign, twitterDisplayName, displayName, emailName
+        FROM Guesses
+        LEFT JOIN Authors using(authorId)
+        WHERE episodeId IS NULL;`,
+    );
+module.exports.addNewGuess = async ({guess, author}) => {
     console.log('add new twsf guess');
     console.table({author, guess});
 
@@ -183,7 +192,7 @@ module.exports.addNewTwsfGuess = async ({guess, author}) => {
     const guessInsert = await insertGuessByType(selectedAuthor.authorId, guess);
     return guessInsert;
 };
-module.exports.updateTwsfGuessDiscordReply = (guess) => {
+module.exports.updateGuessDiscordReply = (guess) => {
     // Used by TWSF Discord integration. Guesses arriving in "hidden" slash
     // commands don't ever get a replyId. ReplyId points to the bot's response,
     // so we have to wait until after the initial submission.
@@ -198,11 +207,15 @@ module.exports.updateTwsfGuessDiscordReply = (guess) => {
         guess.guessId,
     );
 };
-module.exports.scoreTwsfGuess = (guess) => {
+module.exports.scoreGuess = (guess) => {
+    const currentEpisode = db.get(
+        'SELECT episodeId FROM Episodes ORDER BY created_at DESC LIMIT 1;',
+    );
     return db.run(
         `UPDATE Guesses
-            SET correct = ?, bonusPoint = ?
+            SET episodeId = ?, correct = ?, bonusPoint = ?
             WHERE guessId = ?;`,
+        currentEpisode.episodeId,
         guess.correct,
         guess.bonusPoint,
         guess.guessId,

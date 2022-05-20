@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS Guesses (
     type            INTEGER NOT NULL CHECK(type BETWEEN 0 AND 3),
     text            TEXT    NOT NULL,
     
-    correct         BOOLEAN DEFAULT NULL,
-    bonusPoint      BOOLEAN DEFAULT FALSE CHECK(CASE WHEN bonusPoint THEN correct END),
+    correct         BOOLEAN NOT NULL DEFAULT FALSE,
+    bonusPoint      BOOLEAN NOT NULL DEFAULT FALSE CHECK(CASE WHEN bonusPoint THEN correct END),
     
     tweetId         TEXT    UNIQUE CHECK(CASE WHEN tweetId NOT NULL THEN type IN (0, 1) END),
     discordReplyId  TEXT    UNIQUE CHECK(CASE WHEN discordReplyId NOT NULL THEN type IS 3 END),

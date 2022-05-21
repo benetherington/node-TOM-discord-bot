@@ -4,6 +4,7 @@ const {
     scoreGuess,
     getUnscoredGuesses,
     getCorrectGuesses,
+    guessTypes,
 } = require('../../database/twsf');
 
 module.exports = (fastify, opts, done) => {
@@ -12,6 +13,7 @@ module.exports = (fastify, opts, done) => {
         '/twsf',
         {preHandler: adminPreHandler},
         async (request, reply) => {
+            reply.locals = {guessTypes:JSON.stringify(guessTypes)};
             return reply.view('src/views/twsf', {
                 username: request.admin.username,
             });
@@ -40,9 +42,9 @@ module.exports = (fastify, opts, done) => {
         },
     );
 
-    // API: score a guess
+    // API: score guesses
     fastify.post(
-        '/api/twsf/score',
+        '/api/twsf/scores',
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const guesses = request.body;

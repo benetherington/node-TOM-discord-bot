@@ -88,7 +88,7 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
 #filter label { font-weight: bold; }
 
 /* GUESSES CARD */
-#guesses {
+#guesses:empty {
     min-height: 150px;
 }
 
@@ -173,7 +173,12 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
         0 1px 2px rgb(0 0 0 / 24%);
 }
 
-#guesses .link.twitter { background-image: url("/icons/twitter.svg"); }
-#guesses .link.twitter-dm { background-image: url("/icons/chat-left.svg"); }
-#guesses .link.email { background-image: url("/icons/envelope-paper-heart.svg"); }
+#guesses .link.tweet { background-image: url("/icons/twitter.svg"); }
+
+#guesses .link.twitter-dm {
+    background-image: url("/icons/envelope-paper.svg"), url("/icons/twitter.svg");
+    background-position: center, 18px 6px;
+    background-size: 50px, 27px;
+}
+#guesses .link.email { background-image: url("/icons/envelope-paper.svg"); }
 #guesses .link.discord { background-image: url("/icons/discord.svg"); }

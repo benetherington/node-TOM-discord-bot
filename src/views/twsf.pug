@@ -24,54 +24,27 @@ html
                     
                     div.slider
         div#guesses.card
-            div.row-container
-                div.author
-                    h3.callsign The Greek
-                    div.points.slide-radio.three
-                        input#none-1.toggle-option(
-                            type='radio' name='points' value='none' required
-                        )
-                        label(for="none-1")
-                        input#correct-1.toggle-option(
-                            type='radio' name='points' value='correct' required
-                        )
-                        label(for="correct-1")
-                        input#bonus-1.toggle-option(
-                            type='radio' name='points' value='bonus' required
-                        )
-                        label(for="bonus-1")
-                        div.slider
-                div.text
-                    | May 19th 1961. Flyby of Venus by Venera 1. Soviet union had lost radio contact previous to flyby so no data was received. So if a spacecraft flys by a planet but no data is sent, did it fly by?
-                    | I remember referencing this in a previous thisweeksf. Mariner 2 maybe?
-                    | The Greek
-                    | May 19th 1961. Flyby of Venus by Venera 1. Soviet union had lost radio contact previous to flyby so no data was received. So if a spacecraft flys by a planet but no data is sent, did it fly by?
-                    | I remember referencing this in a previous thisweeksf. Mariner 2 maybe?
-                    | The Greek
+            //- div.row-container
+            //-     div.author
+            //-         h3.callsign Ben Etherington
+            //-         div.points.slide-radio.three
+            //-             input#none-2.toggle-option(
+            //-                 type='radio' name='points-2' value='none' required
+            //-             )
+            //-             label(for="none-2")
+            //-             input#correct-2.toggle-option(
+            //-                 type='radio' name='points-2' value='correct' required
+            //-             )
+            //-             label(for="correct-2")
+            //-             input#bonus-2.toggle-option(
+            //-                 type='radio' name='points-2' value='bonus' required
+            //-             )
+            //-             label(for="bonus-2")
+            //-             div.slider
+            //-     div.text
+            //-         | A potato maybe?
                 
-                button.link.email
-
-            div.row-container
-                div.author
-                    h3.callsign Ben Etherington
-                    div.points.slide-radio.three
-                        input#none-2.toggle-option(
-                            type='radio' name='points-2' value='none' required
-                        )
-                        label(for="none-2")
-                        input#correct-2.toggle-option(
-                            type='radio' name='points-2' value='correct' required
-                        )
-                        label(for="correct-2")
-                        input#bonus-2.toggle-option(
-                            type='radio' name='points-2' value='bonus' required
-                        )
-                        label(for="bonus-2")
-                        div.slider
-                div.text
-                    | A potato maybe?
-                
-                button.link.discord
+            //-     button.link.discord
         script
             != "const guessTypes = " + guessTypes + ";"
         script

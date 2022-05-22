@@ -157,6 +157,7 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
     margin: 8px 0;
 }
 
+/* Link buttons */
 .link {
     grid-area: link;
     align-self: center;
@@ -171,6 +172,7 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
     box-shadow:
         0 1px 3px rgb(0 0 0 / 12%),
         0 1px 2px rgb(0 0 0 / 24%);
+    cursor: pointer;
 }
 
 #guesses .link.tweet { background-image: url("/icons/twitter.svg"); }
@@ -180,5 +182,16 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
     background-position: center, 18px 6px;
     background-size: 50px, 27px;
 }
-#guesses .link.email { background-image: url("/icons/envelope-paper.svg"); }
+
+#guesses .link.email {
+    background-image: url("/icons/envelope-paper.svg");
+    box-shadow: none;
+    filter: brightness(118%) saturate(37%);
+    cursor: default;
+}
+
+#guesses .link.email:hover {
+    background-color: var(--primary-light);
+}
+
 #guesses .link.discord { background-image: url("/icons/discord.svg"); }

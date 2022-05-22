@@ -171,7 +171,7 @@ const insertGuessByType = (authorId, guess) => {
 module.exports.getUnscoredGuesses = () =>
     db.all(
         `SELECT
-            type, text, correct, bonusPoint,
+            guessId, type, text, correct, bonusPoint,
             callsign, twitterDisplayName, displayName, emailName
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
@@ -180,7 +180,7 @@ module.exports.getUnscoredGuesses = () =>
 module.exports.getCorrectGuesses = () =>
     db.all(
         `SELECT
-            type, text, correct, bonusPoint,
+            guessId, type, text, correct, bonusPoint,
             callsign, twitterDisplayName, displayName, emailName
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
@@ -188,8 +188,8 @@ module.exports.getCorrectGuesses = () =>
             AND episodeId = (
                 SELECT episodeId FROM Episodes
                 ORDER BY created_at DESC LIMIT 1
-            );`
-    )
+            );`,
+    );
 module.exports.addNewGuess = async ({guess, author}) => {
     console.log('add new twsf guess');
     console.table({author, guess});
@@ -220,13 +220,13 @@ module.exports.updateGuessDiscordReply = (guess) => {
         guess.guessId,
     );
 };
-module.exports.scoreGuess = (guess) => {
-    const currentEpisode = db.get(
+module.exports.scoreGuess = async (guess) => {
+    const currentEpisode = await db.get(
         'SELECT episodeId FROM Episodes ORDER BY created_at DESC LIMIT 1;',
     );
     return db.run(
         `UPDATE Guesses
-            SET episodeId = ?, correct = ?, bonusPoint = ?
+            SET episodeId = COALESCE(episodeId, ?), correct = ?, bonusPoint = ?
             WHERE guessId = ?;`,
         currentEpisode.episodeId,
         guess.correct,

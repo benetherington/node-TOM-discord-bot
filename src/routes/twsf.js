@@ -13,7 +13,7 @@ module.exports = (fastify, opts, done) => {
         '/twsf',
         {preHandler: adminPreHandler},
         async (request, reply) => {
-            reply.locals = {guessTypes:JSON.stringify(guessTypes)};
+            reply.locals = {guessTypes: JSON.stringify(guessTypes)};
             return reply.view('src/views/twsf', {
                 username: request.admin.username,
             });
@@ -36,7 +36,9 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const guesses = await getCorrectGuesses();
-            console.log(`Found ${guesses.length} correct guesses for this episode.`);
+            console.log(
+                `Found ${guesses.length} correct guesses for this episode.`,
+            );
 
             reply.send(guesses);
         },
@@ -44,40 +46,16 @@ module.exports = (fastify, opts, done) => {
 
     // API: score guesses
     fastify.post(
-        '/api/twsf/scores',
+        '/api/twsf/score',
         {preHandler: adminPreHandler},
         async (request, reply) => {
-            const guesses = request.body;
-            console.log(guesses);
+            const guess = request.body;
+            console.log(guess);
 
-            // Update guesses in DB
-            let errors = guesses.map(async (guess) => {
-                try {
-                    const update = await scoreTwsfGuess(guess);
-                    if (update.changes === 1) return false;
-                } catch {}
-                // something went wrong
-                console.error('Something went wrong updating guess score.');
-                console.error(guess);
-                return guess.guessId;
-            });
-            errors = await Promise.all(errors);
-
-            // Return status update
-            if (errors.every((g) => g)) {
-                // Everything failed
-                return reply.code(422); // unprocessable entity
-            }
-            errors = errors.filter((g) => g).map((g) => g.guessId);
-            if (errors.length) {
-                // Something failed
-                reply
-                    .status(207) // multi-status
-                    .send(errors);
-            } else {
-                // Nothing failed
-                reply.send(1);
-            }
+            // Update guess
+            const update = await scoreGuess(guess);
+            if (update.changes === 1) reply.send(1);
+            else return reply.code(422); // unprocessable entity
         },
     );
 

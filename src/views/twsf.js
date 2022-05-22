@@ -34,8 +34,21 @@ const guessCard = document.getElementById('guesses');
 const currentMode = document.querySelector('#filter input:checked').value;
 const sanitizeInput = (text) =>
     text.replace('javascript', '').replace('<', '[');
+const getLinkHref = (guess) => {
+    if (guess.type === guessTypes.TWEET) {
+        return 'https://www.twitter.com/twitter/status/' + guess.tweetId;
+    } else if (guess.type === guessTypes.TWITTER_DM) {
+        return 'https://twitter.com/messages/2827032970-' + guess.tweetId;
+    } else if (guess.type === guessTypes.DISCORD && guess.discordReplyId) {
+        return (
+            'https://discord.com/channels/137948573605036033/934901291644256366/' +
+            guess.discordReplyId
+        );
+    } else return '';
+};
 const createGuessRow = (guess) => {
     // Assemble and sanitize variables to display
+    const type = getGuessName(guess.type);
     const authorName = sanitizeInput(
         guess.callsign ||
             guess.displayName ||
@@ -43,7 +56,7 @@ const createGuessRow = (guess) => {
             guess.emailName,
     );
     const guessText = sanitizeInput(guess.text);
-    const type = getGuessName(guess.type);
+    const linkHref = getLinkHref(guess);
 
     // Build element to put on the page
     const rowContainer = document.createElement('div');
@@ -83,6 +96,9 @@ const createGuessRow = (guess) => {
         <div class="text">${guessText}</div>
         <button class="link ${type}"></button>`;
 
+    rowContainer
+        .querySelector('button')
+        .addEventListener('click', () => window.open(linkHref));
     rowContainer
         .querySelectorAll('input')
         .forEach((input) => input.addEventListener('change', newScore));

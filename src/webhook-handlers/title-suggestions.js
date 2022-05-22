@@ -6,12 +6,15 @@ const {
 const ID = require('../../config/discord-id.json');
 
 const fetchMessage = async (messageId) => {
-    const channelId = process.env.TEST
-        ? ID.channel.botTest
-        : ID.channel.groundControl;
-    const channel = await client.channels.fetch(channelId);
-
-    return await channel.messages.fetch(messageId);
+    // Fetch message from #ground_control
+    let channel = await client.channels.fetch(ID.channel.groundControl);
+    try {return await channel.messages.fetch(messageId);}
+    catch {}
+    
+    // Try again in #bot_control
+    channel = await client.channels.fetch(ID.channel.botTest);
+    try {return await channel.messages.fetch(messageId);}
+    catch {console.log("Could not add unknown message as a title suggestion.")}
 };
 const fetchMemberFromDiscordAuthor = (author) => {
     const tomCastGuild = client.guilds.cache.get(ID.guild.tomCast);

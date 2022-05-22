@@ -8,7 +8,7 @@ const {adminPreHandler} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
     // Suggestion monitor
-    fastify.get('/', {preHandler: adminPreHandler}, async (request, reply) => {
+    fastify.get('/titles', {preHandler: adminPreHandler}, async (request, reply) => {
         return reply.view('src/views/monitor', {
             username: request.admin.username,
         });

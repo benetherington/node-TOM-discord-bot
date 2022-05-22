@@ -5,18 +5,51 @@
     background: white;
     box-shadow: 0 0 4px 1px grey;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#header .container {
+    display: flex;
+    flex-direction: row;
     justify-content: end;
     align-items: center;
 }
 
-#header * {
-    font-size: initial;
-    margin: 2px 5px;
-}
-
 #header button {
     font-size: small;
+    font-weight: normal;
     color: black;
     border-color: black;
     padding: 4px 8px;
+}
+
+#header .grouped:first-of-type button {
+    /* Leftmost button
+       Grouped buttons yield their border styling to the right */
+    margin-right: 0;
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#header .grouped:not(:first-of-type):not(:last-of-type) button {
+    /* Middle buttons */
+    margin: inherit 0;
+    border-right: none;
+    border-left-width: 1px;
+    border-radius: 0;
+}
+
+#header .grouped:last-of-type button { /* stylelint-disable-line no-descending-specificity */
+    /* Rightmost button */
+    margin-left: 0;
+    border-top-left-radius: 0;
+    border-left-width: 1px;
+    border-bottom-left-radius: 0;
+}
+
+#login {
+    font-size: initial;
+    margin: 2px 5px;
 }

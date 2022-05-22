@@ -1,3 +1,10 @@
+/* HEADER NAV BUTTONS */
+#nav-twsf {
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 9px var(--primary-dark);
+    color: white !important;
+}
+
 /* TOGGLE SLIDER */
 .slide-radio {
     background-color: var(--primary-light);
@@ -75,13 +82,15 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
     justify-content: flex-start;
     align-items: center;
     gap: 20px;
+    margin: 8px 4px; /* Taking up from .card */
 }
 
 .title .card {
     text-align: center;
     padding: 10px;
     width: fit-content;
-    margin-left: 10%;
+    margin: 0; /* Passing to .title for proper collapsing */
+    margin-left: 10%; /* Offset from side of screen */
 }
 
 #filter { width: 200px; }

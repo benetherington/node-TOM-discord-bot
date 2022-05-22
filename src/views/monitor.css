@@ -1,3 +1,10 @@
+/* HEADER NAV BUTTONS */
+#nav-title {
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 9px var(--primary-dark);
+    color: white !important;
+}
+
 h2.card {
     text-align: center;
     padding: 10px;

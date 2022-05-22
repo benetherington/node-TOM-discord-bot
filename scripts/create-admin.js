@@ -11,7 +11,6 @@ const dbWrapper = require('sqlite');
 const dbFile = require('path').resolve('./.data/admin.db');
 const migrationsPath = './database/migrations/admin';
 
-
 const hashPassword = async (admin) => {
     // Takes an admin object, removes the password property, and adds/updates
     // the hashed password property.
@@ -23,26 +22,26 @@ const hashPassword = async (admin) => {
     admin.hashedPassword = hashedPassword;
     return admin;
 };
-const admin = {username, password}
+const admin = {username, password};
 hashPassword(admin);
 
-const insertAdmin = async()=>{
+const insertAdmin = async () => {
     const db = await dbWrapper.open({
         filename: dbFile,
         driver: sqlite3.cached.Database,
     });
     await db.migrate({migrationsPath});
-    const existingCount = await db.get("SELECT COUNT(*) FROM Administrators");
+    const existingCount = await db.get('SELECT COUNT(*) FROM Administrators');
     console.log(`There are currently ${existingCount['COUNT(*)']} admins.`);
-    
+
     await db.run(
         `INSERT INTO Administrators (username, hashedPassword) VALUES (?,?)`,
         admin.username,
-        admin.hashedPassword
-    )
-    
-    const newCount = await db.get("SELECT COUNT(*) FROM Administrators");
+        admin.hashedPassword,
+    );
+
+    const newCount = await db.get('SELECT COUNT(*) FROM Administrators');
     console.log(`There are now ${newCount['COUNT(*)']} admins.`);
-}
+};
 
 insertAdmin();

@@ -14,7 +14,7 @@ const execute = async (interaction) => {
         const responses = await getVoteMessages();
         if (responses.length === 0) {
             // No suggestions yet
-            interaction.editReply(config.nothingToVoteOn);
+            interaction.editReply(config.titleSuggestions.nothingToVoteOn);
         } else {
             // TODO:Delete the most recent vote message.
             // SEND reply and followups

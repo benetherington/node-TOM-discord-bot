@@ -236,3 +236,13 @@ module.exports.scoreGuess = async (guess) => {
         guess.guessId,
     );
 };
+
+module.exports.updateTwsfGuess = (guess, messageId) => {
+    console.log('update twsf guess');
+    console.table({guess, messageId});
+    return guess;
+};
+
+module.exports.addTwsfError = (breadCrumbs) => {
+    console.table(breadCrumbs);
+}

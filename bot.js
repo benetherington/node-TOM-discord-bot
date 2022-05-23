@@ -6,6 +6,7 @@ try {
 
 const {Client, Intents, Collection} = require('discord.js');
 const fs = require('fs');
+const path = require('path');
 const {receiveButton} = require('./title-suggestions/interactions/buttons');
 const ID = require('./config/discord-id.json');
 
@@ -30,27 +31,34 @@ client.channels.fetch(ID.channel.groundControl);
 /*-------*\
   SLASHES
 \*-------*/
-// These are registered in ./scripts/register-commands.js, which needs to be run
-// once as a provisioning step.
+// We'll load all of our slash handlers into a collection, and store it inside
+// client. These handlers are triggered by events sent to us by Discord. Before
+// one of these events is triggered, we need to tell the Discord server what's
+// available, which we do in ./scripts/register-commands.js. This needs to be
+// run once as a provisioning step whever slashes change.
 client.slashes = new Collection();
-const interactionFileNames = fs
-    .readdirSync('./title-suggestions/slash')
+
+// Title suggestions
+const suggestionFolder = './title-suggestions/slash/';
+const suggestionFileNames = fs
+    .readdirSync(suggestionFolder)
     .filter((fn) => fn.endsWith('.js'));
-for (const fileName of interactionFileNames) {
-    let slash = require('./title-suggestions/slash/' + fileName);
+for (const fileName of suggestionFileNames) {
+    const filePath = path.resolve(suggestionFolder, fileName);
+    let slash = require(filePath);
     client.slashes.set(slash.data.name, slash);
 }
-const receiveSlash = async (interaction) => {
-    let slash = client.slashes.get(interaction.commandName);
-    if (!slash) {
-        return;
-    }
 
-    slash.execute(interaction).catch((error) => {
-        console.error(error);
-        interaction.reply(responses.failure);
-    });
-};
+// TWSF
+const twsfFolder = './twsf/discord/slash/';
+const twsfFileNames = fs
+    .readdirSync(twsfFolder)
+    .filter((fn) => fn.endsWith('.js'));
+for (const fileName of twsfFileNames) {
+    const filePath = path.resolve(twsfFolder, fileName);
+    let slash = require(filePath);
+    client.slashes.set(slash.data.name, slash);
+}
 
 /*---------------*\
   EVENT LISTENERS
@@ -62,6 +70,16 @@ client.once('ready', () => {
 client.on('invalidated', () => {
     console.log('Session invalidated.');
 });
+
+const receiveSlash = async (interaction) => {
+    let slash = client.slashes.get(interaction.commandName);
+    if (!slash) return;
+
+    slash.execute(interaction).catch((error) => {
+        console.error(error);
+        interaction.reply(responses.failure);
+    });
+};
 client.on('interactionCreate', (interaction) => {
     try {
         if (interaction.isCommand()) {

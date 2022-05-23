@@ -1,4 +1,46 @@
 {
+    "responses": {
+        "titleSuggestions": {
+            "nothingToVoteOn": {
+                "content": "No title suggestions yet!",
+                "ephemeral": true
+            }
+        },
+        "twsf": {
+            "hiddenReply": {
+                "content": "Thank you! Your guess has been logged.",
+                "ephemeral": true
+            },
+            "publicReply": {
+                "content": "<@id> guessed: ||txt||",
+                "allowed_mentions": {"parse": []},
+                "ephemeral": false,
+                "fetchReply": true
+            }
+        },
+        "help": {
+            "content": [
+                "Hey there! I'm Jukebox. I got this name when Ben thought it",
+                "would be cool to play music cues during live recordings.",
+                "Right now, I'm a bit limited. I mostly collect episode name",
+                "suggestions, which Ben thinks is a pretty fun audience",
+                "interaction. Type /title to give it a shot!"
+            ],
+            "ephemeral": true
+        },
+        "error": {
+            "content": "Hmmm, something went wrong, but not too badly?",
+            "ephemeral": true
+        },
+        "failure": {
+            "content": "Oh, dang, I broke.",
+            "ephemeral": true
+        },
+        "acknowledge": {
+            "content": "You got it, boss.",
+            "ephemeral": true
+        }
+    },
     "emoji": {
         "botAck": "🤖",
         "error": "❓",
@@ -38,23 +80,5 @@
             "↘️",
             "↙️"
         ]
-    },
-    "responses": {
-        "nothingToVoteOn": {
-            "content": "No title suggestions yet!",
-            "ephemeral": true
-        },
-        "error": {
-            "content": "Hmmm, something went wrong, but not too badly?",
-            "ephemeral": true
-        },
-        "failure": {
-            "content": "Oh, dang, I broke.",
-            "ephemeral": true
-        },
-        "acknowledge": {
-            "content": "You got it, boss.",
-            "ephemeral": true
-        }
     }
 }

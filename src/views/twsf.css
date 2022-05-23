@@ -1,4 +1,6 @@
-/* HEADER NAV BUTTONS */
+/* -------------------- *\
+   HEADER NAV HIGHLIGHT
+\* -------------------- */
 #nav-twsf {
     background-color: var(--primary-light);
     box-shadow: inset 0 0 9px var(--primary-dark);
@@ -93,15 +95,18 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
     margin-left: 10%; /* Offset from side of screen */
 }
 
+/* View filters */
 #filter { width: 200px; }
 #filter label { font-weight: bold; }
 
-/* GUESSES CARD */
+/* ------------ *\
+   GUESSES CARD
+\* ------------ */
 #guesses:empty {
     min-height: 150px;
 }
 
-/* Guess row */
+/* Each guess row */
 #guesses .row-container {
     display: grid;
     grid-template:
@@ -116,6 +121,7 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
     background-color: aliceblue;
 }
 
+/* Author box */
 #guesses .author {
     grid-area: author;
     justify-self: center;
@@ -127,12 +133,13 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
     gap: 3px;
 }
 
+/* Author box -- callsign */
 #guesses .callsign {
     margin: 0;
     text-align: center;
 }
 
-/* Score toggle slider */
+/* Author box -- scoring slider */
 #guesses .slide-radio {
     width: 150px;
     grid-area: points;
@@ -158,16 +165,8 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
     background-image: url("/icons/award.svg");
 }
 
-#guesses .text {
-    grid-area: text;
-    align-self: center;
-    border-left: 3px solid #626262;
-    padding-left: 11px;
-    margin: 8px 0;
-}
-
 /* Link buttons */
-.link {
+#guesses .link {
     grid-area: link;
     align-self: center;
     justify-self: center;
@@ -204,3 +203,12 @@ input:invalid ~ .slider { /* stylelint-disable-line no-descending-specificity */
 }
 
 #guesses .link.discord { background-image: url("/icons/discord.svg"); }
+
+/* Guess text */
+#guesses .text {
+    grid-area: text;
+    align-self: center;
+    border-left: 3px solid #626262;
+    padding-left: 11px;
+    margin: 8px 0;
+}

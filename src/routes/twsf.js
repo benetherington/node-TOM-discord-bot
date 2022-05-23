@@ -26,7 +26,7 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const guesses = await getUnscoredGuesses();
-            console.log(`Found ${guesses.length} unscored TWSF guesses.`);
+            request.log.info(`Found ${guesses.length} unscored TWSF guesses.`);
 
             reply.send(guesses);
         },
@@ -36,7 +36,7 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const guesses = await getCorrectGuesses();
-            console.log(
+            request.log.info(
                 `Found ${guesses.length} correct guesses for this episode.`,
             );
 
@@ -50,7 +50,7 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const guess = request.body;
-            console.log(guess);
+            request.log.info(guess);
 
             // Update guess
             const update = await scoreGuess(guess);

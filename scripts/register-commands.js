@@ -9,17 +9,34 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const fs = require('fs');
+const path = require('path');
 const {REST} = require('@discordjs/rest');
 const {Routes} = require('discord-api-types/v9');
 const ID = require('../config/discord-id.json');
 
 // Gather all slash files to register
-const slashFiles = fs
-    .readdirSync('./title-suggestions/slash')
-    .filter((f) => f.endsWith('.js'));
-const slashes = slashFiles.map(
-    (fileName) => require('../title-suggestions/slash/' + fileName).data,
-);
+const slashes = [];
+
+// Title suggestions
+const suggestionFolder = './title-suggestions/slash/';
+const suggestionFileNames = fs
+    .readdirSync(suggestionFolder)
+    .filter((fn) => fn.endsWith('.js'));
+for (const fileName of suggestionFileNames) {
+    const filePath = path.resolve(suggestionFolder, fileName);
+    const slashData = require(filePath).data;
+    slashes.push(slashData);
+}
+// TWSF
+const twsfFolder = './twsf/discord/slash/';
+const twsfFileNames = fs
+    .readdirSync(twsfFolder)
+    .filter((fn) => fn.endsWith('.js'));
+for (const fileName of twsfFileNames) {
+    const filePath = path.resolve(twsfFolder, fileName);
+    const slashData = require(filePath).data;
+    slashes.push(slashData);
+}
 
 // Init our REST API object. We don't need the full Client right now.
 const rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN);

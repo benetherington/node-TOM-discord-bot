@@ -1,5 +1,5 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
-const {emoji: config} = require('../../config/discord-interaction.json');
+const {responses} = require('../../config/discord-interaction.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,15 +7,8 @@ module.exports = {
         .setDescription('Help and info'),
     async execute(interaction) {
         // TODO: complete help string
-        interaction.reply({
-            content:
-                `Hey there! I'm Jukebox. I got this name when Ben thought it ` +
-                `would be cool to play music cues during live recordings. Right now, ` +
-                `I'm a bit limited. I mostly collect episode name suggestions, which ` +
-                `Ben thinks is a pretty fun audience interaction. I let everyone know ` +
-                `I haven't crashed yet by reacting to commands with a ` +
-                `${config.botAck}.\n\n`,
-            ephemeral: true,
-        });
+        const responseOptions = responses.help;
+        responseOptions.content = responseOptions.content.join(' ');
+        interaction.reply(responseOptions);
     },
 };

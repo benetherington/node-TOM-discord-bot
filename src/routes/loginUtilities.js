@@ -54,12 +54,18 @@ getAdminOrErrorFromCookie = async (authCookie) => {
 };
 
 module.exports.getAdminByCredentials = async (username, password) => {
+    // Look up username
     const admin = await getAdminByUsername(username);
-    const passwordValid = await bcrypt.compare(password, admin.hashedPassword);
+    if (!admin) {
+        request.log.info(`Non-existent admin ${username}.`);
+        return false;
+    }
 
+    // Check password
+    const passwordValid = await bcrypt.compare(password, admin.hashedPassword);
     if (passwordValid) return admin;
     else {
-        console.log(`Failed authentication for ${username}`);
+        request.log.info(`Bad password for ${username}.`);
         return false;
     }
 };

@@ -1,0 +1,145 @@
+/* -------------------- *\
+   HEADER NAV HIGHLIGHT
+\* -------------------- */
+#nav-twsf {
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 9px var(--primary-dark);
+    color: white !important;
+}
+
+/* ---------- *\
+   TITLE CARD
+\* ---------- */
+.title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    margin: 8px 4px; /* Taking up from .card */
+}
+
+.title .card {
+    text-align: center;
+    padding: 10px;
+    width: fit-content;
+    margin: 0; /* Passing to .title for proper collapsing */
+    margin-left: 10%; /* Offset from side of screen */
+}
+
+/* View filters */
+#filter { width: 200px; }
+#filter label { font-weight: bold; }
+
+/* ------------ *\
+   GUESSES CARD
+\* ------------ */
+#guesses:empty {
+    min-height: 150px;
+}
+
+/* Each guess row */
+#guesses .row-container {
+    display: grid;
+    grid-template:
+        "author link text"
+        / 15% 10% 75%;
+    box-shadow:
+        0 1px 3px rgb(0 0 0 / 12%),
+        0 1px 2px rgb(0 0 0 / 24%);
+}
+
+#guesses .row-container:hover {
+    background-color: aliceblue;
+}
+
+/* Author box */
+#guesses .author {
+    grid-area: author;
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    gap: 3px;
+}
+
+/* Author box -- callsign */
+#guesses .callsign {
+    margin: 0;
+    text-align: center;
+}
+
+/* Author box -- scoring slider */
+#guesses .slide-radio {
+    width: 150px;
+    grid-area: points;
+    justify-self: center;
+    align-self: end;
+}
+
+#guesses .toggle-option + label {
+    aspect-ratio: 1/1;
+    height: 25px;
+    background-size: contain;
+}
+
+#guesses .toggle-option[value="none"] + label {
+    background-image: url("/icons/hand-thumbs-down.svg");
+}
+
+#guesses .toggle-option[value="correct"] + label {
+    background-image: url("/icons/hand-thumbs-up.svg");
+}
+
+#guesses .toggle-option[value="bonus"] + label {
+    background-image: url("/icons/award.svg");
+}
+
+/* Link buttons */
+#guesses .link {
+    grid-area: link;
+    align-self: center;
+    justify-self: center;
+    height: 60px;
+    width: 60px;
+    background-repeat: no-repeat;
+    background-size: 50px;
+    background-position: center;
+    background-color: var(--primary-light);
+    border: none;
+    box-shadow:
+        0 1px 3px rgb(0 0 0 / 12%),
+        0 1px 2px rgb(0 0 0 / 24%);
+    cursor: pointer;
+}
+
+#guesses .link.tweet { background-image: url("/icons/twitter.svg"); }
+
+#guesses .link.twitter-dm {
+    background-image: url("/icons/envelope-paper.svg"), url("/icons/twitter.svg");
+    background-position: center, 18px 6px;
+    background-size: 50px, 27px;
+}
+
+#guesses .link.email {
+    background-image: url("/icons/envelope-paper.svg");
+    box-shadow: none;
+    filter: brightness(118%) saturate(37%);
+    cursor: default;
+}
+
+#guesses .link.email:hover {
+    background-color: var(--primary-light);
+}
+
+#guesses .link.discord { background-image: url("/icons/discord.svg"); }
+
+/* Guess text */
+#guesses .text {
+    grid-area: text;
+    align-self: center;
+    border-left: 3px solid #626262;
+    padding-left: 11px;
+    margin: 8px 0;
+}

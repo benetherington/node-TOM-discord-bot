@@ -1,0 +1,51 @@
+doctype html
+html
+    head
+        title TOMbot
+        style
+            include app.css
+            include header.css
+            include twsf.css
+    body
+        include header
+        div.title
+            h2.card This Week in Spaceflight History
+            div#controls
+                div#filter.slide-radio.two
+                    input#week.toggle-option(
+                        type='radio' name='filter' value='week' checked
+                    )
+                    label(for="week") Show All
+                    
+                    input#unscored.toggle-option(
+                        type='radio' name='filter' value='unscored'
+                    )
+                    label(for="unscored") Show New
+                    
+                    div.slider
+        div#guesses.card
+            //- div.row-container
+            //-     div.author
+            //-         h3.callsign Ben Etherington
+            //-         div.points.slide-radio.three
+            //-             input#none-2.toggle-option(
+            //-                 type='radio' name='points-2' value='none' required
+            //-             )
+            //-             label(for="none-2")
+            //-             input#correct-2.toggle-option(
+            //-                 type='radio' name='points-2' value='correct' required
+            //-             )
+            //-             label(for="correct-2")
+            //-             input#bonus-2.toggle-option(
+            //-                 type='radio' name='points-2' value='bonus' required
+            //-             )
+            //-             label(for="bonus-2")
+            //-             div.slider
+            //-     div.text
+            //-         | A potato maybe?
+                
+            //-     button.link.discord
+        script
+            != "const guessTypes = " + guessTypes + ";"
+        script
+            include ./twsf.js

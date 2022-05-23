@@ -1,26 +1,30 @@
 const {getSuggestionsWithCountedVotes} = require('../../database/suggestions');
-const {startNewVoteFromApi} = require('../webhook-handlers/vote');
+const {startNewVoteFromApi} = require('../../title-suggestions/api/vote');
 const {
     addNewSuggestionFromApi,
     removeSuggestionFromApi,
-} = require('../webhook-handlers/title-suggestions');
+} = require('../../title-suggestions/api/title-suggestions');
 const {adminPreHandler} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
-    // Allow adminPreHandler to pass the admin object to route handlers.
-    fastify.decorateRequest('admin', null);
-
     // Suggestion monitor
-    fastify.get('/', {preHandler: adminPreHandler}, async (request, reply) => {
-        return reply.view('src/views/monitor', {
-            username: request.admin.username,
-        });
-    });
+    fastify.get('/', {preHandler: adminPreHandler}, (_, reply) =>
+        reply.redirect('/titles'),
+    );
+    fastify.get(
+        '/titles',
+        {preHandler: adminPreHandler},
+        async (request, reply) => {
+            return reply.view('src/views/monitor', {
+                username: request.admin.username,
+            });
+        },
+    );
 
     // API: get suggestions
     fastify.get(
         '/api/titles/:epNum',
-        {preHandler: adminPreHandler},
+        {preHandler: adminPreHandler, logLevel: 'warn'},
         async (request, reply) => {
             const epNum = request.params.epNum;
             const countedSuggestions = await getSuggestionsWithCountedVotes({
@@ -30,16 +34,22 @@ module.exports = (fastify, opts, done) => {
         },
     );
 
-    // API: edit suggestions
+    // API: add suggestion
     fastify.post(
         '/api/titles/:messageId',
         {preHandler: adminPreHandler},
         (request, reply) => {
             const messageId = request.params.messageId;
-            addNewSuggestionFromApi(messageId);
-            reply.send(1);
+            addNewSuggestionFromApi(messageId)
+                .then(() => reply.send(1))
+                .catch((error) => {
+                    request.log.error({error, messageId});
+                    return reply.code(422); // unprocessable entity
+                });
         },
     );
+
+    // API: start vote
     fastify.post(
         '/api/vote',
         {preHandler: adminPreHandler},
@@ -48,6 +58,8 @@ module.exports = (fastify, opts, done) => {
             reply.send(1);
         },
     );
+
+    // API: delete suggestion
     fastify.delete(
         '/api/titles/:messageId',
         {preHandler: adminPreHandler},

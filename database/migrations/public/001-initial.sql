@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------
 
 
-CREATE TABLE Episodes (
+CREATE TABLE IF NOT EXISTS Episodes (
     episodeId   INTEGER NOT NULL PRIMARY KEY,
     
     epNum       INTEGER NOT NULL UNIQUE,
@@ -12,7 +12,7 @@ CREATE TABLE Episodes (
     updated_at  TEXT    NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
 
-CREATE TABLE Suggestions (
+CREATE TABLE IF NOT EXISTS Suggestions (
     suggestionId    INTEGER          PRIMARY KEY,
     episodeId       INTEGER NOT NULL,
     authorId        INTEGER NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE Suggestions (
         ON DELETE CASCADE
 );
 
-CREATE TABLE Authors (
+CREATE TABLE IF NOT EXISTS Authors (
     authorId        INTEGER PRIMARY KEY,
     
     discordId       INTEGER NOT NULL UNIQUE,
@@ -44,7 +44,7 @@ CREATE TABLE Authors (
     updated_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime'))
 );
 
-CREATE TABLE Suggestion_Voters (
+CREATE TABLE IF NOT EXISTS Suggestion_Voters (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     
     suggestionId    INTEGER NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE Suggestion_Voters (
 -- Down
 --------------------------------------------------------------------------
 
-DROP TABLE Episodes;
-DROP TABLE Suggestions;
-DROP TABLE Authors;
-DROP Table Suggestion_Voters;
+DROP TABLE IF EXISTS Episodes;
+DROP TABLE IF EXISTS Suggestions;
+DROP TABLE IF EXISTS Authors;
+DROP Table IF EXISTS Suggestion_Voters;

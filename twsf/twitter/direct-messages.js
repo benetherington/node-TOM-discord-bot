@@ -24,7 +24,7 @@ const isIncomingHashtag = (event) =>
         (ht) => ht.text.toLowerCase() === 'thisweeksf',
     );
 const authorAndGuessFromDm = async (event) => {
-    const twitterDmId = event.id,
+    const tweetId = event.id,
         twitterId = event.message_create.sender_id,
         text = event.message_create.message_data.text;
 
@@ -37,7 +37,7 @@ const authorAndGuessFromDm = async (event) => {
 
     return {
         author: {twitterId, twitterDisplayName, twitterUsername},
-        guess: {type: 'twitter dm', twitterDmId, text},
+        guess: {type: 'twitter dm', tweetId, text},
     };
 };
 const fetchDMs = async () => {

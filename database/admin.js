@@ -47,9 +47,8 @@ const initDB = async () => {
     });
     console.log('Migrating admin...');
     await db.migrate({migrationsPath});
-    await printDbSummary();
 };
-initDB();
+initDB().then(printDbSummary);
 
 /*-------*\
   EXPORTS

@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const dbWrapper = require('sqlite');
 
 const dbFile = require('path').resolve('./.data/title-suggestions.db');
-const migrationsPath = './database/migrations/title-suggestions';
+const migrationsPath = './database/migrations/public';
 let db;
 
 /*---------*\
@@ -39,22 +39,16 @@ const printDbSummary = async () => {
   DB INIT
 \*-------*/
 const initDB = async () => {
-    console.log('SQLite');
-    db = await dbWrapper.open({
-        filename: dbFile,
-        driver: sqlite3.cached.Database,
-    });
-    console.log('Migrating title-suggestions...');
-    await db.migrate({migrationsPath});
-    await printDbSummary();
+    const public = require('./public');
+    db = await public;
 };
-initDB();
+initDB().then(printDbSummary);
 
 /*-------*\
   EPISODE
 \*-------*/
 const getCurrentEpisode = () =>
-    db.get('SELECT * FROM Episodes ORDER BY created_at DESC;');
+    db.get('SELECT * FROM Episodes ORDER BY created_at DESC LIMIT 1;');
 
 module.exports.getCurrentEpNum = async () => {
     const currentEp = await getCurrentEpisode();

@@ -60,7 +60,7 @@ module.exports.getAdminByCredentials = async (username, password) => {
         request.log.info(`Non-existent admin ${username}.`);
         return false;
     }
-    
+
     // Check password
     const passwordValid = await bcrypt.compare(password, admin.hashedPassword);
     if (passwordValid) return admin;

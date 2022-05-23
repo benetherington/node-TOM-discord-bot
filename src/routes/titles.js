@@ -24,6 +24,7 @@ module.exports = (fastify, opts, done) => {
     // API: get suggestions
     fastify.get(
         '/api/titles/:epNum',
+        {preHandler: adminPreHandler, logLevel: 'warn'},
         async (request, reply) => {
             const epNum = request.params.epNum;
             const countedSuggestions = await getSuggestionsWithCountedVotes({

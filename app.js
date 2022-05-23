@@ -41,7 +41,7 @@ fastify.register(require('@fastify/cookie'), {
 fastify.register(require('@fastify/formbody'));
 fastify.register(require('./src/routes/static'));
 fastify.register(require('./src/routes/login'));
-fastify.register(require('./src/routes/monitor'));
+fastify.register(require('./src/routes/titles'));
 fastify.register(require('./src/routes/twsf'));
 
 // Start server

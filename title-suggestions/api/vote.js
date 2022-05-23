@@ -1,7 +1,5 @@
 const {client} = require('../../bot');
-const {
-    getVoteMessages,
-} = require('../../title-suggestions/slash/utilities/vote-utilities');
+const {getVoteMessages} = require('../slash/utilities/vote-utilities');
 const ID = require('../../config/discord-id.json');
 
 module.exports.startNewVoteFromApi = async () => {

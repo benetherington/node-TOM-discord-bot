@@ -7,17 +7,17 @@ const ID = require('../../config/discord-id.json');
 
 const fetchMessage = async (messageId) => {
     // Fetch message from #ground_control
-    let channel = await client.channels.fetch(ID.channel.groundControl);
     try {
+        const channel = await client.channels.fetch(ID.channel.groundControl);
         return await channel.messages.fetch(messageId);
     } catch {}
 
     // Try again in #bot_control
-    channel = await client.channels.fetch(ID.channel.botTest);
     try {
+        const channel = await client.channels.fetch(ID.channel.botTest);
         return await channel.messages.fetch(messageId);
     } catch {
-        console.log('Could not add unknown message as a title suggestion.');
+        throw 'Could not add unknown message as a title suggestion.';
     }
 };
 const fetchMemberFromDiscordAuthor = (author) => {
@@ -40,7 +40,7 @@ const createSuggestionFromMessage = (message) => {
 };
 
 module.exports.addNewSuggestionFromApi = async (messageId) => {
-    console.log(`API creating ${messageId}`);
+    console.log(`API creating suggestion from message ${messageId}`);
 
     const message = await fetchMessage(messageId);
     const author = await createAuthorFromMessage(message);
@@ -48,7 +48,7 @@ module.exports.addNewSuggestionFromApi = async (messageId) => {
     addNewSuggestion(author, suggestion);
 };
 module.exports.removeSuggestionFromApi = async (messageId) => {
-    console.log(`API deleting ${messageId}`);
+    console.log(`API deleting suggestion from message ${messageId}`);
 
     const suggestion = {suggestionId: messageId};
     deleteSuggestion(suggestion);

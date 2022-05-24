@@ -14,10 +14,13 @@ const storeNewTwsfDirectMessages = require('./twsf/twitter/direct-messages');
 // schedule this at the start of the show. Twitter allows us to search the last
 // thirty days of tweets, so we don't need to check more than once a week. We
 // should check just before the show begins. Glitch server is in UTC.
-const twitterJob = schedule.scheduleJob('0 16 * * 0', () => {
-    storeNewTwsfTweets();
-    storeNewTwsfDirectMessages();
-});
+
+// Quota renews May 26
+
+// const twitterJob = schedule.scheduleJob('35 10 24 5 *', ()=>{//'0 16 * * 0', () => {
+//     storeNewTwsfTweets();
+//     storeNewTwsfDirectMessages();
+// });
 
 /*------*\
   SERVER
@@ -49,6 +52,7 @@ fastify.listen(3000, (err, address) => {
     console.log(`Listening on ${address}`);
     if (err) {
         console.error(err);
+        twitterJob.gracefulShutdown();
         process.exit(1);
     }
 });

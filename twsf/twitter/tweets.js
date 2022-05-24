@@ -29,7 +29,13 @@ const client = {
             },
         );
         const jsn = await response.json();
-        jsn.all = () => this._next(jsn, query);
+        
+        if (jsn.error) {
+            console.error(error.message);
+            jsn.all = ()=> [];
+        } else {
+            jsn.all = () => this._next(jsn, query);
+        }
         return jsn;
     },
     _next: async function (response, query) {

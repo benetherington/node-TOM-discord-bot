@@ -4,7 +4,7 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const Twitter = require('twitter');
-const {addNewTwsfGuess} = require('../../database/twsf');
+const {addNewGuess, guessTypes} = require('../../database/twsf');
 
 const ID = require('../../config/twitter-id.json');
 const client = new Twitter({
@@ -37,7 +37,7 @@ const authorAndGuessFromDm = async (event) => {
 
     return {
         author: {twitterId, twitterDisplayName, twitterUsername},
-        guess: {type: 'twitter dm', tweetId, text},
+        guess: {type: guessTypes.TWITTER_DM, tweetId, text},
     };
 };
 const fetchDMs = async () => {
@@ -97,7 +97,7 @@ module.exports = async () => {
 
     // Store new DMs
     const storageResults = await Promise.allSettled(
-        twsfDms.map(addNewTwsfGuess),
+        twsfDms.map(addNewGuess),
     );
     const errors = storageResults.filter((p) => p.status === 'rejected');
 

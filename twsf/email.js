@@ -1,4 +1,4 @@
-const {addNewTwsfGuess, addTwsfError} = require('../database/twsf');
+const {addNewGuess, addTwsfError, guessTypes} = require('../database/twsf');
 
 // Glitch handles its own env
 try {
@@ -118,7 +118,7 @@ const parseTextContent = (textContent) => {
 const guessAndAuthorFromEmail = ({parsedElements, errors}) => {
     const subject = parsedElements.subject;
     const text = parsedElements.body;
-    const guess = {type: 'email', subject, text, errors};
+    const guess = {type: guessTypes.EMAIL, subject, text, errors};
 
     const emailAddress = parsedElements.email;
     const emailName = parsedElements.nick;
@@ -140,7 +140,7 @@ module.exports = (textContent) => {
             throw 'Something went wrong while preparing to store TWSF email...';
 
         // Store email
-        const successfullyStored = addNewTwsfGuess(guessAndAuthor);
+        const successfullyStored = addNewGuess(guessAndAuthor);
         if (!successfullyStored)
             throw 'Something went wrong while storing TWSF email...';
 

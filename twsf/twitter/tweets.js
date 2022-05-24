@@ -4,7 +4,7 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const fetch = require('node-fetch');
-const {addNewTwsfGuess} = require('../../database/twsf');
+const {addNewGuess, guessTypes} = require('../../database/twsf');
 
 const client = {
     _base: 'https://api.twitter.com/1.1/',
@@ -94,7 +94,7 @@ const guessAndAuthorFromTweet = async (status) => {
     const textReplies = await fetchSelfReplies(status);
     const text = [textInitial, ...textReplies].join(' ');
     const guess = {
-        type: 'tweet',
+        type: guessTypes.TWEET,
         tweetId,
         text,
     };
@@ -124,13 +124,13 @@ module.exports = async () => {
 
     // Store new tweets
     const storageResults = await Promise.allSettled(
-        guessesAndAuthors.map(addNewTwsfGuess),
+        guessesAndAuthors.map(addNewGuess),
     );
     const errors = storageResults.filter((p) => p.status === 'rejected');
 
     if (errors.length) {
         console.error('There was an issue storing #ThisWeekSF tweets.');
-        console.error({errors});
+        console.table(errors);
     } else {
         console.log('Done storing new #ThisWeekSF tweets!');
     }

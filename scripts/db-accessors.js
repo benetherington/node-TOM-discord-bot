@@ -14,9 +14,9 @@ module.exports.admin = async () => {
     return db;
 };
 
-module.exports.suggestions = async () => {
+module.exports.public = async () => {
     const dbFile = require('path').resolve('./.data/title-suggestions.db');
-    const migrationsPath = './database/migrations/title-suggestions';
+    const migrationsPath = './database/migrations/public';
     db = await dbWrapper.open({
         filename: dbFile,
         driver: sqlite3.cached.Database,

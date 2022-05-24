@@ -167,6 +167,10 @@ const insertGuessByType = (authorId, guess) => {
         );
     }
 };
+const isIdConstraintError = (message) =>
+    message.match(
+        /SQLITE_CONSTRAINT: UNIQUE constraint failed: Guesses\.[discordId|twitterId|twitterUsername|emailAddress]/,
+    );
 
 module.exports.getUnscoredGuesses = () =>
     db.all(
@@ -207,23 +211,32 @@ module.exports.addNewGuess = async ({guess, author}) => {
     }
 
     // INSERT AND ASSOCIATE Guess
-    const guessInsert = await insertGuessByType(selectedAuthor.authorId, guess);
-    return guessInsert;
+    try {
+        const guessInsert = await insertGuessByType(
+            selectedAuthor.authorId,
+            guess,
+        );
+        return guessInsert;
+    } catch (error) {
+        if (isIdConstraintError(error.message)) {
+            console.log('This TWSF guess is a duplicate');
+        } else throw error;
+    }
 };
 module.exports.addEmailParseError = async (error) => {
     await db.run(
-        `INSERT OR IGNORE INTO Authors (discordId, username) VALUES (0, 'error')`
-    )
+        `INSERT OR IGNORE INTO Authors (discordId, username) VALUES (0, 'error')`,
+    );
     const errorAuthor = await db.get(
-        `SELECT authorId FROM Authors WHERE discordId = 0 AND username = 'error';`
-    )
+        `SELECT authorId FROM Authors WHERE discordId = 0 AND username = 'error';`,
+    );
     db.run(
         `INSERT INTO Guesses (authorId, type, text) VALUES (?, ?);`,
         errorAuthor.authorId,
         types.EMAIL,
-        error
-    )
-}
+        error,
+    );
+};
 module.exports.updateGuessDiscordReply = (guess) => {
     // Used by TWSF Discord integration. Guesses arriving in "hidden" slash
     // commands don't ever get a replyId. ReplyId points to the bot's response,

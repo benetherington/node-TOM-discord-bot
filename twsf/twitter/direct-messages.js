@@ -79,7 +79,7 @@ const fetchDMs = async () => {
     }
 
     // Done!
-    console.log('Done processing #ThisWeekSF direct messsages!');
+    console.log('Done fetching #ThisWeekSF direct messsages.');
     return guessesAndAuthors;
 };
 
@@ -96,15 +96,9 @@ module.exports = async () => {
     }
 
     // Store new DMs
-    const storageResults = await Promise.allSettled(
-        twsfDms.map(addNewGuess),
+    const storageResults = await Promise.all(twsfDms.map(addNewGuess));
+    const newGuessesCount = storageResults.reduce((prev, curr) => prev + curr);
+    console.log(
+        `Done storing ${newGuessesCount} new #ThisWeekSF direct messages!`,
     );
-    const errors = storageResults.filter((p) => p.status === 'rejected');
-
-    if (errors.length) {
-        console.error('There was an issue storing #ThisWeekSF DMs.');
-        console.error({errors});
-    } else {
-        console.log('Done storing new #ThisWeekSF DMs!');
-    }
 };

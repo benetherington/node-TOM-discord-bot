@@ -138,11 +138,12 @@ const insertAuthorByGuessType = (guessType, author) => {
 /*-------*\
   GUESSES
 \*-------*/
-const insertGuessByType = (authorId, guess) => {
+const insertOrIgnoreGuessByType = (authorId, guess) => {
     if ([types.TWEET, types.TWITTER_DM].includes(guess.type)) {
         return db.run(
-            `INSERT INTO Guesses (authorId, type, text, tweetId)
-                VALUES (?, ?, ?, ?);`,
+            `INSERT OR IGNORE INTO Guesses
+                (authorId, type, text, tweetId)
+            VALUES (?, ?, ?, ?);`,
             authorId,
             guess.type,
             guess.text,
@@ -150,16 +151,18 @@ const insertGuessByType = (authorId, guess) => {
         );
     } else if (guess.type === types.EMAIL) {
         return db.run(
-            `INSERT INTO Guesses (authorId, type, text)
-                VALUES (?, ?, ?);`,
+            `INSERT OR IGNORE INTO Guesses
+                (authorId, type, text)
+            VALUES (?, ?, ?);`,
             authorId,
             guess.type,
             guess.text,
         );
     } else if (guess.type === types.DISCORD) {
         return db.run(
-            `INSERT INTO Guesses (authorId, type, text)
-                VALUES (?, ?, ?);`,
+            `INSERT OR IGNORE INTO Guesses
+                (authorId, type, text)
+            VALUES (?, ?, ?);`,
             authorId,
             guess.type,
             guess.text,
@@ -167,10 +170,6 @@ const insertGuessByType = (authorId, guess) => {
         );
     }
 };
-const isIdConstraintError = (message) =>
-    message.match(
-        /SQLITE_CONSTRAINT: UNIQUE constraint failed: Guesses\.[discordId|twitterId|twitterUsername|emailAddress]/,
-    );
 
 module.exports.getUnscoredGuesses = () =>
     db.all(
@@ -197,8 +196,9 @@ module.exports.getCorrectGuesses = () =>
             );`,
     );
 module.exports.addNewGuess = async ({guess, author}) => {
-    console.log('add new twsf guess');
-    console.table({author, guess});
+    // Inserts or updates Author, then inserts Guess and associates it to
+    // Author. Returns 1 or 0, indicating whether the guess was a duplicate or
+    // not.
 
     // SELECT existing (?) Author based on guess type
     let selectedAuthor = await getAuthorByGuessType(guess.type, author);
@@ -211,17 +211,11 @@ module.exports.addNewGuess = async ({guess, author}) => {
     }
 
     // INSERT AND ASSOCIATE Guess
-    try {
-        const guessInsert = await insertGuessByType(
-            selectedAuthor.authorId,
-            guess,
-        );
-        return guessInsert;
-    } catch (error) {
-        if (isIdConstraintError(error.message)) {
-            console.log('This TWSF guess is a duplicate');
-        } else throw error;
-    }
+    const guessInsert = await insertOrIgnoreGuessByType(
+        selectedAuthor.authorId,
+        guess,
+    );
+    return guessInsert.changes;
 };
 module.exports.addEmailParseError = async (error) => {
     await db.run(

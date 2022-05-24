@@ -120,18 +120,11 @@ module.exports = async () => {
     const guessesAndAuthors = await Promise.all(
         twsfTweets.map(guessAndAuthorFromTweet),
     );
-    console.log(guessesAndAuthors);
 
     // Store new tweets
-    const storageResults = await Promise.allSettled(
+    const storageResults = await Promise.all(
         guessesAndAuthors.map(addNewGuess),
     );
-    const errors = storageResults.filter((p) => p.status === 'rejected');
-
-    if (errors.length) {
-        console.error('There was an issue storing #ThisWeekSF tweets.');
-        console.table(errors);
-    } else {
-        console.log('Done storing new #ThisWeekSF tweets!');
-    }
+    const newGuessesCount = storageResults.reduce((prev, curr) => prev + curr);
+    console.log(`Done storing ${newGuessesCount} new #ThisWeekSF tweets!`);
 };

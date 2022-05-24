@@ -64,12 +64,12 @@ const getAuthorByGuessType = (guessType, author) => {
             'SELECT * FROM Authors WHERE twitterId = ?;',
             author.twitterId,
         );
-    } else if (guess.type === types.EMAIL) {
+    } else if (guessType === types.EMAIL) {
         return db.get(
             'SELECT * FROM Authors WHERE emailAddress = ?;',
             author.emailAddress,
         );
-    } else if (guess.type === types.DISCORD) {
+    } else if (guessType === types.DISCORD) {
         return db.get(
             'SELECT * FROM Authors WHERE discordId = ?;',
             author.discordId,
@@ -139,7 +139,7 @@ const insertAuthorByGuessType = (guessType, author) => {
   GUESSES
 \*-------*/
 const insertGuessByType = (authorId, guess) => {
-    if (guess.type == types.TWEET || guess.type == types.TWITTER_DM) {
+    if ([types.TWEET, types.TWITTER_DM].includes(guess.type)) {
         return db.run(
             `INSERT INTO Guesses (authorId, type, text, tweetId)
                 VALUES (?, ?, ?, ?);`,
@@ -197,11 +197,14 @@ module.exports.addNewGuess = async ({guess, author}) => {
     console.table({author, guess});
 
     // SELECT existing (?) Author based on guess type
-    const selectedAuthor = await getAuthorByGuessType(guess.type, author);
+    let selectedAuthor = await getAuthorByGuessType(guess.type, author);
 
     // UPDATE or INSERT Author with incoming values
     if (selectedAuthor) await updateAuthorByGuessType(guess.type, author);
-    else selectedAuthor = await insertAuthorByGuessType(guess.type, author);
+    else {
+        const authorInsert = await insertAuthorByGuessType(guess.type, author);
+        selectedAuthor = {authorId: authorInsert.lastID};
+    }
 
     // INSERT AND ASSOCIATE Guess
     const guessInsert = await insertGuessByType(selectedAuthor.authorId, guess);

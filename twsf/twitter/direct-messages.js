@@ -75,7 +75,7 @@ const fetchDMs = async () => {
         const thisPageGuessesAuthors = await Promise.all(
             hashtagMessages.map(authorAndGuessFromDm),
         );
-        guessesAndAuthors.push(thisPageGuessesAuthors);
+        guessesAndAuthors = guessesAndAuthors.concat(thisPageGuessesAuthors);
     }
 
     // Done!

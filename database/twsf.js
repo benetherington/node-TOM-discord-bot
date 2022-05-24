@@ -231,21 +231,17 @@ module.exports.addEmailParseError = async (error) => {
         error,
     );
 };
-module.exports.updateGuessDiscordReply = (guess) => {
+module.exports.updateGuessDiscordReply = (guess) =>
     // Used by TWSF Discord integration. Guesses arriving in "hidden" slash
     // commands don't ever get a replyId. ReplyId points to the bot's response,
     // so we have to wait until after the initial submission.
-    console.log('update twsf guess');
-    console.table({guess, messageId});
-
-    return db.run(
+    db.run(
         `UPDATE Guesses
             SET discordReplyId = ?
             WHERE guessId = ?;`,
         guess.discordReplyId,
         guess.guessId,
     );
-};
 module.exports.scoreGuess = async (guess) => {
     const currentEpisode = await db.get(
         'SELECT episodeId FROM Episodes ORDER BY created_at DESC LIMIT 1;',

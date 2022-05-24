@@ -210,6 +210,20 @@ module.exports.addNewGuess = async ({guess, author}) => {
     const guessInsert = await insertGuessByType(selectedAuthor.authorId, guess);
     return guessInsert;
 };
+module.exports.addEmailParseError = async (error) => {
+    await db.run(
+        `INSERT OR IGNORE INTO Authors (discordId, username) VALUES (0, 'error')`
+    )
+    const errorAuthor = await db.get(
+        `SELECT authorId FROM Authors WHERE discordId = 0 AND username = 'error';`
+    )
+    db.run(
+        `INSERT INTO Guesses (authorId, type, text) VALUES (?, ?);`,
+        errorAuthor.authorId,
+        types.EMAIL,
+        error
+    )
+}
 module.exports.updateGuessDiscordReply = (guess) => {
     // Used by TWSF Discord integration. Guesses arriving in "hidden" slash
     // commands don't ever get a replyId. ReplyId points to the bot's response,
@@ -239,13 +253,3 @@ module.exports.scoreGuess = async (guess) => {
         guess.guessId,
     );
 };
-
-module.exports.updateTwsfGuess = (guess, messageId) => {
-    console.log('update twsf guess');
-    console.table({guess, messageId});
-    return guess;
-};
-
-module.exports.addTwsfError = (breadCrumbs) => {
-    console.table(breadCrumbs);
-}

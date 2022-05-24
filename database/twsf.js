@@ -220,6 +220,24 @@ module.exports.addNewGuess = async ({guess, author}) => {
     );
     return guessInsert.changes;
 };
+module.exports.scoreGuess = async (guess) => {
+    const currentEpisode = await db.get(
+        'SELECT episodeId FROM Episodes ORDER BY created_at DESC LIMIT 1;',
+    );
+    return db.run(
+        `UPDATE Guesses
+            SET episodeId = COALESCE(episodeId, ?), correct = ?, bonusPoint = ?
+            WHERE guessId = ?;`,
+        currentEpisode.episodeId,
+        guess.correct,
+        guess.bonusPoint,
+        guess.guessId,
+    );
+};
+
+/*----------------*\
+  SERVICE-SPECIFIC
+\*----------------*/
 module.exports.addEmailParseError = async (error) => {
     await db.run(
         `INSERT OR IGNORE INTO Authors (discordId, username) VALUES (0, 'error')`,
@@ -245,17 +263,3 @@ module.exports.updateGuessDiscordReply = (guess) =>
         guess.discordReplyId,
         guess.guessId,
     );
-module.exports.scoreGuess = async (guess) => {
-    const currentEpisode = await db.get(
-        'SELECT episodeId FROM Episodes ORDER BY created_at DESC LIMIT 1;',
-    );
-    return db.run(
-        `UPDATE Guesses
-            SET episodeId = COALESCE(episodeId, ?), correct = ?, bonusPoint = ?
-            WHERE guessId = ?;`,
-        currentEpisode.episodeId,
-        guess.correct,
-        guess.bonusPoint,
-        guess.guessId,
-    );
-};

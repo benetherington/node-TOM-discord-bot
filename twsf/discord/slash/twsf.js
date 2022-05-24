@@ -1,6 +1,10 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {responses} = require('../../../config/discord-interaction.json');
-const {addNewGuess, updateGuessDiscordReply, guessTypes} = require('../../../database/twsf');
+const {
+    addNewGuess,
+    updateGuessDiscordReply,
+    guessTypes,
+} = require('../../../database/twsf');
 const {responses: config} = require('../../../config/discord-interaction.json');
 const ID = require('../../../config/discord-id.json');
 

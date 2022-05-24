@@ -204,11 +204,10 @@ module.exports.addNewGuess = async ({guess, author}) => {
     let selectedAuthor = await getAuthorByGuessType(guess.type, author);
 
     // UPDATE or INSERT Author with incoming values. Ensure we have an authorId.
-    if (selectedAuthor){
+    if (selectedAuthor) {
         author.authorId = selectedAuthor.authorId;
         await updateAuthorByGuessType(guess.type, author);
-    }
-    else {
+    } else {
         const authorInsert = await insertAuthorByGuessType(guess.type, author);
         selectedAuthor = {authorId: authorInsert.lastID};
     }

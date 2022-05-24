@@ -29,10 +29,10 @@ const client = {
             },
         );
         const jsn = await response.json();
-        
+
         if (jsn.error) {
             console.error(error.message);
-            jsn.all = ()=> [];
+            jsn.all = () => [];
         } else {
             jsn.all = () => this._next(jsn, query);
         }

@@ -36,26 +36,17 @@ const guessTypeNames = Object.getOwnPropertyNames(guessTypes).map((name) =>
 //         "displayName": "The Very 0th",
 //         "emailName": null
 //     },
-
 // ]
-const getUnscored = () => fetch('/api/twsf/unscored').then((r) => r.json());
-const getCorrect = () => fetch('/api/twsf/correct').then((r) => r.json());
-const postScore = (guess) =>
-    fetch('/api/twsf/score', {
-        method: 'POST',
-        headers: {'content-type': 'application/json'},
-        body: JSON.stringify(guess),
-    });
-const getGuessName = (typeNo) =>
-    Object.getOwnPropertyNames(guessTypes)
-        [guess.type].toLowerCase()
-        .replace('_', '-');
 
-/*--------------------*\
-  ELEMENT CONSTRUCTORS
-\*--------------------*/
-const guessCard = document.getElementById('guesses');
-const currentMode = document.querySelector('#filter input:checked').value;
+/*---------------*\
+  ELEMENT HELPERS
+\*---------------*/
+const currentMode = () => document.querySelector('#filter input:checked').value;
+let guessCard;
+document.addEventListener('DOMContentLoaded', () => {
+    guessCard = document.getElementById('guesses');
+});
+
 const sanitizeInput = (text) =>
     text.replace('javascript', '').replace('<', '[');
 const getLinkHref = (guess) => {
@@ -72,20 +63,19 @@ const getLinkHref = (guess) => {
 };
 const createGuessRow = (guess) => {
     // Assemble and sanitize variables to display
-    const type = getGuessName(guess.type);
-    const authorName = sanitizeInput(
+    const type = guessTypeNames[guess.type];
+    const unsanitizedName =
         guess.callsign ||
-            guess.displayName ||
-            guess.twitterDisplayName ||
-            guess.emailName,
-    );
+        guess.displayName ||
+        guess.twitterDisplayName ||
+        guess.emailName;
+    const authorName = sanitizeInput(unsanitizedName);
     const guessText = sanitizeInput(guess.text);
     const linkHref = getLinkHref(guess);
 
     // Build element to put on the page
     const rowContainer = document.createElement('div');
     rowContainer.classList.add('row-container');
-    rowContainer.dataset.guess = guess;
     rowContainer.innerHTML = `
         <div class="author">
             <h3 class="callsign">${authorName}</h3>
@@ -117,8 +107,8 @@ const createGuessRow = (guess) => {
                 <div class="slider"></div>
             </div>
         </div>
-        <div class="text">${guessText}</div>
-        <button class="link ${type}"></button>`;
+        <button class="link ${type}"></button>
+        <div class="text">${guessText}</div>`;
 
     rowContainer
         .querySelector('button')
@@ -129,6 +119,17 @@ const createGuessRow = (guess) => {
     return rowContainer;
 };
 const setGuessPoints = (row, guess) => {
+    if (guess.bonusPoint) value = 'bonus';
+    else if (guess.correct) value = 'correct';
+    else value = 'none';
+    console.log(value)
+    row.querySelector(`input[value=${value}]`).checked = true;
+};
+const setPointsStyle = ({row, input}) => {
+    if (!input) input = row.querySelector('input:checked');
+    const dotPoints = input.closest('.points');
+    dotPoints.classList.remove('bonus', 'correct', 'none');
+    dotPoints.classList.add(input.value);
 };
 const updateEpNum = (epNum) => {
     document.getElementById('episode-number').innerText = epNum;
@@ -137,7 +138,9 @@ const updateEpNum = (epNum) => {
 /*-------------*\
   EVENT HELPERS
 \*-------------*/
-const clearGuesses = () => {};
+const clearGuesses = () => {
+    while ((child = guessCard.firstChild)) child.remove();
+};
 const addUnscoredGuesses = async () => {
     const guesses = await getUnscored();
     for (guess of guesses) {
@@ -150,10 +153,23 @@ const addCorrectGuesses = async () => {
     for (guess of guesses) {
         const row = createGuessRow(guess);
         setGuessPoints(row, guess);
+        setPointsStyle({row});
         guessCard.append(row);
     }
 };
+
+/*------------------*\
+  GUI EVENT HANDLERS
+\*------------------*/
+const updateGuessList = async () => {
+    clearGuesses();
+    await addUnscoredGuesses();
+    if (currentMode() === 'week') addCorrectGuesses();
+};
 const newScore = async (event) => {
+    // Set points style to loading
+    setPointsStyle({input: event.target});
+
     // Build request data
     const sliderValue = event.target.value;
     const guessId = event.target.id.match(/\d+/)[0];
@@ -169,12 +185,6 @@ const newScore = async (event) => {
         // TODO: add error feedback for user
     }
 };
-
-/*------------------*\
-  GUI EVENT HANDLERS
-\*------------------*/
-document.addEventListener('DOMContentLoaded', async () => {
-    clearGuesses();
-    await addUnscoredGuesses();
-    if (currentMode === 'week') addCorrectGuesses();
+document.addEventListener('DOMContentLoaded', () => {
+    updateGuessList();
 });

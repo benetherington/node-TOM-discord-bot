@@ -31,11 +31,11 @@ module.exports = (fastify, opts, done) => {
         '/api/titles/:epNum',
         {preHandler: adminPreHandler, logLevel: 'warn'},
         async (request, reply) => {
-            const epNum = request.params.epNum; // getSuggestionsWCV defaults to current
-            const countedSuggestions = await getSuggestionsWithCountedVotes({
-                epNum,
+            let requestedEpNum = request.params.epNum; // getSuggestionsWCV defaults to current
+            const [epNum, titles] = await getSuggestionsWithCountedVotes({
+                requestedEpNum,
             });
-            return reply.send(countedSuggestions);
+            return reply.send({epNum, titles});
         },
     );
 

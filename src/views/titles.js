@@ -38,14 +38,14 @@ const createRow = ({suggestion, author, voteCount}) => {
     row.append(createVoteCountGridItem(suggestion, voteCount));
     row.append(createDeleteGridItem(suggestion));
 
-    document.querySelector('#suggestions').append(row);
+    document.getElementById('suggestion-grid').append(row);
 };
 
 /*-----------------------*\
   Suggestion row updation
 \*-----------------------*/
 const updateRowVoteCount = ({suggestion, voteCount}) => {
-    document.querySelector(`#votes-${suggestion.suggestionId}`).textContent =
+    document.getElementById('votes-' + suggestion.suggestionId).textContent =
         voteCount;
 };
 const createOrUpdateRow = (countedSuggestion) => {
@@ -61,11 +61,20 @@ const removeRow = (element) => {
     rowContainer.addEventListener('transitionend', rowContainer.remove);
     rowContainer.classList.add('deleted');
 };
+// oh also episode number updation
+const updateEpNum = (epNum) => {
+    document.getElementById("episode-number").textContent = epNum;
+}
 
 /*---*\
   API
 \*---*/
-const getSuggestions = () => fetch('/api/titles/').then((r) => r.json());
+const getSuggestions = () => fetch('/api/titles/').then(
+    async(r) => {
+        const {epNum, titles} = await r.json()
+        updateEpNum(epNum);
+        return titles;
+    });
 const deleteSuggestion = (id) => fetch(`/api/titles/${id}`, {method: 'DELETE'});
 const postVoteRequest = () => fetch('/api/vote', {method: 'POST'});
 const postSuggestion = (id) => fetch(`/api/titles/${id}`, {method: 'POST'});
@@ -101,8 +110,8 @@ async function removeSuggestion(e) {
 }
 // bottom toolbar
 var updateIntervalId;
-const autoButton = document.querySelector('button#autoUpdate');
 const autoUpdate = () => {
+    const autoButton = document.querySelector('button#autoUpdate');
     if (autoButton.classList.toggle('depressed')) {
         updateSuggestions();
         updateIntervalId = setInterval(updateSuggestions, 1000);
@@ -117,7 +126,6 @@ const updateSuggestions = async () => {
 };
 const handleGetSuggestionFailure = (error) => {
     console.log(error);
-
     autoUpdate();
 };
 const addSuggestion = () => {

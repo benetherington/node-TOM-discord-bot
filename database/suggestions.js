@@ -97,7 +97,7 @@ module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
                 INNER JOIN Episodes USING(episodeId)
         WHERE epNum = ?
         GROUP BY
-            Suggestion_voters.suggestionId;`,
+            Suggestion_Voters.suggestionId;`,
         episode.epNum,
     );
     const formattedCountedSuggestions = countedSuggestions.map((suggestion) => {
@@ -111,7 +111,7 @@ module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
             voteCount,
         };
     });
-    return formattedCountedSuggestions;
+    return [episode.epNum, formattedCountedSuggestions];
 };
 
 module.exports.addNewSuggestion = async (author, suggestion) => {

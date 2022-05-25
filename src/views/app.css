@@ -117,8 +117,16 @@ input:focus {
 .slide-radio.two { grid-template-columns: 50% 50%; }
 .slide-radio.three { grid-template-columns: 33% 33% 33%; }
 
-.slide-radio.loading {
-    animation: loading-stripes 4s linear infinite;
+.slide-radio.loading::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    animation:
+        loading-stripes 4s linear infinite,
+        fade-in 0.5s linear;
     background-image:
         linear-gradient(
             90deg,
@@ -131,6 +139,11 @@ input:focus {
 @keyframes loading-stripes {
     0% { background-position-x: 0%; }
     100% { background-position-x: 33%; }
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 .slide-radio .slider {

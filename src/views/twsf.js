@@ -122,14 +122,13 @@ const setGuessPoints = (row, guess) => {
     if (guess.bonusPoint) value = 'bonus';
     else if (guess.correct) value = 'correct';
     else value = 'none';
-    console.log(value)
     row.querySelector(`input[value=${value}]`).checked = true;
 };
-const setPointsStyle = ({row, input}) => {
+const setPointsStyle = ({row, input, override}) => {
     if (!input) input = row.querySelector('input:checked');
     const dotPoints = input.closest('.points');
-    dotPoints.classList.remove('bonus', 'correct', 'none');
-    dotPoints.classList.add(input.value);
+    dotPoints.classList.remove('bonus', 'correct', 'none', 'error', 'loading');
+    dotPoints.classList.add(override || input.value);
 };
 const updateEpNum = (epNum) => {
     document.getElementById('episode-number').innerText = epNum;
@@ -168,7 +167,7 @@ const updateGuessList = async () => {
 };
 const newScore = async (event) => {
     // Set points style to loading
-    setPointsStyle({input: event.target});
+    setPointsStyle({input: event.target, override: 'loading'});
 
     // Build request data
     const sliderValue = event.target.value;
@@ -179,10 +178,12 @@ const newScore = async (event) => {
 
     // Send update request
     const response = await postScore(guess);
-    if (!response.ok) {
+    if (response.ok) {
+        setPointsStyle({input: event.target});
+    } else {
         // Deselect the slider
         event.target.checked = false;
-        // TODO: add error feedback for user
+        setPointsStyle({input: event.target, override: 'error'});
     }
 };
 document.addEventListener('DOMContentLoaded', () => {

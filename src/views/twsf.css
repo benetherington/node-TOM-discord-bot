@@ -61,34 +61,36 @@
     align-self: end;
 }
 
-#guesses .points.loading {
-    /* pickup: animated loading bar */
-}
-
-#guesses .points.none {
-    background-color: var(--secondary-light);
-}
-
-#guesses .points.bonus {
-    background-color: var(--primary);
-}
-
-#guesses .points:not(.none):not(.correct):not(.bonus) {
-    background-color: lightslategrey;
-}
-
 #guesses .toggle-option + label {
     aspect-ratio: 1/1;
     height: 25px;
     background-size: contain;
 }
 
+/* NONE */
+#guesses .points.none .slider {
+    background-color: var(--secondary-light);
+}
+
 #guesses .toggle-option[value="none"] + label {
     background-image: url("/icons/hand-thumbs-down.svg");
 }
 
+/* CORRECT */
 #guesses .toggle-option[value="correct"] + label {
     background-image: url("/icons/hand-thumbs-up.svg");
+}
+
+/* BONUS */
+#guesses .points.bonus .slider {
+    background:
+        linear-gradient(
+            114deg,
+            rgb(221 192 36 / 100%) 0%,
+            rgb(252 255 78 / 100%) 28%,
+            rgb(221 192 36 / 100%) 37%,
+            rgb(252 255 78 / 100%) 100%
+        );
 }
 
 #guesses .toggle-option[value="bonus"] + label {

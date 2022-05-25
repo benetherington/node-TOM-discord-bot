@@ -176,7 +176,8 @@ const updateScore = (guessId, episodeId, correct, bonusPoint) =>
         guessId,
     );
 const createGuesses = async () => {
-    for (let idx = 0; idx < GUESSES; idx++) {
+    // Insert a set of guess types for GUESSES number of sets, then do one more
+    for (let idx = 0; idx < GUESSES+1; idx++) {
         const authId = Math.round(Math.random() * AUTHORS);
         await insertTweetGuess(authId);
         await insertTwitterDMGuess(authId);
@@ -184,8 +185,9 @@ const createGuesses = async () => {
         await insertDiscordGuess(authId);
     }
 
+    // Assign assorted scores for GUESSES number of sets, leaving the extra set unscored
     const guessesPerEpisode = (EPISODES / GUESSES) * 4;
-    for (let guessIdx = 0; guessIdx < GUESSES * 4; guessIdx++) {
+    for (let guessIdx = 0; guessIdx < (GUESSES - 1) * 4; guessIdx++) {
         const [correct, bonusPoint] = ['00', '10', '11'][guessIdx % 3];
         const guessId = guessIdx + 1;
         const episodeId = Math.floor(guessIdx / guessesPerEpisode) + 1;

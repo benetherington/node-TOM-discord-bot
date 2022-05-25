@@ -16,9 +16,8 @@
 /* ------------ *\
    GUESSES CARD
 \* ------------ */
-#guesses:empty {
-    min-height: 150px;
-}
+#guesses { margin: 8px 50px; }
+#guesses:empty { min-height: 150px; }
 
 /* Each guess row */
 #guesses .row-container {

@@ -15,7 +15,7 @@ module.exports = (fastify, opts, done) => {
         '/titles',
         {preHandler: adminPreHandler},
         async (request, reply) => {
-            return reply.view('src/views/monitor', {
+            return reply.view('src/views/titles', {
                 username: request.admin.username,
             });
         },

@@ -7,15 +7,19 @@ const {
     guessTypes,
 } = require('../../database/twsf');
 
+const {getCurrentEpNum} = require("../../database/suggestions")
+
 module.exports = (fastify, opts, done) => {
     // Guess viewer
     fastify.get(
         '/twsf',
         {preHandler: adminPreHandler},
         async (request, reply) => {
-            reply.locals = {guessTypes: JSON.stringify(guessTypes)};
+            const epNum = await getCurrentEpNum();
             return reply.view('src/views/twsf', {
                 username: request.admin.username,
+                guessTypes: JSON.stringify(guessTypes),
+                epNum
             });
         },
     );
@@ -26,9 +30,10 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const guesses = await getUnscoredGuesses();
+            const epNum = await getCurrentEpNum();
             request.log.info(`Found ${guesses.length} unscored TWSF guesses.`);
 
-            reply.send(guesses);
+            reply.send({guesses, epNum});
         },
     );
     fastify.get(
@@ -36,11 +41,12 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const guesses = await getCorrectGuesses();
+            const epNum = await getCurrentEpNum();
             request.log.info(
                 `Found ${guesses.length} correct guesses for this episode.`,
             );
 
-            reply.send(guesses);
+            reply.send({guesses, epNum});
         },
     );
 

@@ -1,4 +1,7 @@
-const {getSuggestionsWithCountedVotes} = require('../../database/suggestions');
+const {
+    getSuggestionsWithCountedVotes,
+    getCurrentEpNum,
+} = require('../../database/suggestions');
 const {startNewVoteFromApi} = require('../../title-suggestions/api/vote');
 const {
     addNewSuggestionFromApi,
@@ -15,8 +18,10 @@ module.exports = (fastify, opts, done) => {
         '/titles',
         {preHandler: adminPreHandler},
         async (request, reply) => {
+            const epNum = await getCurrentEpNum();
             return reply.view('src/views/titles', {
                 username: request.admin.username,
+                epNum,
             });
         },
     );
@@ -26,7 +31,7 @@ module.exports = (fastify, opts, done) => {
         '/api/titles/:epNum',
         {preHandler: adminPreHandler, logLevel: 'warn'},
         async (request, reply) => {
-            const epNum = request.params.epNum;
+            const epNum = request.params.epNum; // getSuggestionsWCV defaults to current
             const countedSuggestions = await getSuggestionsWithCountedVotes({
                 epNum,
             });

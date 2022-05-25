@@ -1,6 +1,30 @@
 /*---*\
   API
 \*---*/
+const getUnscored = () =>
+    fetch('/api/twsf/unscored')
+        .then((r) => r.json())
+        .then((jsn) => {
+            updateEpNum(jsn.epNum);
+            return jsn.guesses;
+        });
+const getCorrect = () =>
+    fetch('/api/twsf/correct')
+        .then((r) => r.json())
+        .then((jsn) => {
+            updateEpNum(jsn.epNum);
+            return jsn.guesses;
+        });
+const postScore = (guess) =>
+    fetch('/api/twsf/score', {
+        method: 'POST',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify(guess),
+    });
+const guessTypeNames = Object.getOwnPropertyNames(guessTypes).map((name) =>
+    name.toLowerCase().replace('_', '-'),
+);
+// GET calls return {guesses, epNum}, where guesses looks like:
 // [
 //     {
 //         "type": 0,
@@ -105,13 +129,9 @@ const createGuessRow = (guess) => {
     return rowContainer;
 };
 const setGuessPoints = (row, guess) => {
-    if (guess.bonusPoint) {
-        row.querySelector('input[value=bonus]').checked = true;
-    } else if (guess.correct) {
-        row.querySelector('input[value=correct]').checked = true;
-    } else {
-        row.querySelector('input[value=none]').checked = true;
-    }
+};
+const updateEpNum = (epNum) => {
+    document.getElementById('episode-number').innerText = epNum;
 };
 
 /*-------------*\

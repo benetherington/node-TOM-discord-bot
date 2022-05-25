@@ -32,9 +32,10 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler, logLevel: 'warn'},
         async (request, reply) => {
             let requestedEpNum = request.params.epNum; // getSuggestionsWCV defaults to current
-            const [epNum, titles] = await getSuggestionsWithCountedVotes({
-                requestedEpNum,
-            });
+            const [epNum, titles] = await getSuggestionsWithCountedVotes(
+                {requestedEpNum},
+                true,
+            );
             return reply.send({epNum, titles});
         },
     );

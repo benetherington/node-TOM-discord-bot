@@ -74,7 +74,7 @@ module.exports.getSuggestion = (suggestion) => {
     );
 };
 
-module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
+module.exports.getSuggestionsWithCountedVotes = async (episode = {}, getEpNum) => {
     // default to current episode
     if (!episode.epNum) {
         episode = await getCurrentEpisode();
@@ -111,7 +111,8 @@ module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
             voteCount,
         };
     });
-    return [episode.epNum, formattedCountedSuggestions];
+    if (getEpNum) return [episode.epNum, formattedCountedSuggestions];
+    else return formattedCountedSuggestions;
 };
 
 module.exports.addNewSuggestion = async (author, suggestion) => {

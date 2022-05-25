@@ -110,12 +110,13 @@ async function removeSuggestion(e) {
 }
 // bottom toolbar
 var updateIntervalId;
-const autoUpdate = () => {
+const autoUpdate = (doToggle) => {
     const autoButton = document.querySelector('button#autoUpdate');
-    if (autoButton.classList.toggle('depressed')) {
+    if (doToggle && autoButton.classList.toggle('depressed')) {
         updateSuggestions();
         updateIntervalId = setInterval(updateSuggestions, 1000);
     } else {
+        autoButton.classList.remove('depressed')
         clearInterval(updateIntervalId);
     }
 };

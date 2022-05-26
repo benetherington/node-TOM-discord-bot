@@ -22,9 +22,8 @@
 /* Each guess row */
 #guesses .row-container {
     display: grid;
-    grid-template:
-        "author link text"
-        / 15% 10% 75%;
+    grid-template-columns: [info] min-content [text];
+    align-items: center;
     box-shadow:
         0 1px 3px rgb(0 0 0 / 12%),
         0 1px 2px rgb(0 0 0 / 24%);
@@ -34,30 +33,37 @@
     background-color: aliceblue;
 }
 
-/* Author box */
-#guesses .author {
-    grid-area: author;
-    justify-self: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 10px;
-    gap: 3px;
+/* INFO BOX */
+#guesses .info {
+    grid-area: info;
+    position: relative;
+    left: -10px;
+    height: 60px;
+    width: min-content;
+    border: 2px solid var(--secondary-dark);
+    background-color: white;
+    display: grid;
+    grid-template:
+        "call   link" auto
+        "points link" auto
+        / min-content 60px;
 }
 
-/* Author box -- callsign */
+/* INFO BOX -- callsign */
 #guesses .callsign {
+    grid-area: call;
     margin: 0;
     text-align: center;
+    z-index: 0; /* allow link shadow above */
 }
 
-/* Author box -- scoring slider */
+/* INFO BOX -- scoring slider */
 #guesses .points {
-    width: 150px;
     grid-area: points;
+    width: 150px;
     justify-self: center;
     align-self: end;
+    z-index: 0; /* allow link shadow above */
 }
 
 #guesses .toggle-option + label {
@@ -66,7 +72,7 @@
     background-size: contain;
 }
 
-/* NONE */
+/* None */
 #guesses .points.none .slider {
     background-color: var(--secondary-light);
 }
@@ -75,12 +81,12 @@
     background-image: url("/icons/hand-thumbs-down.svg");
 }
 
-/* CORRECT */
+/* Correct */
 #guesses .toggle-option[value="correct"] + label {
     background-image: url("/icons/hand-thumbs-up.svg");
 }
 
-/* BONUS */
+/* Bonus */
 #guesses .points.bonus .slider {
     background:
         linear-gradient(
@@ -96,30 +102,26 @@
     background-image: url("/icons/award.svg");
 }
 
-/* Link buttons */
+/* INFO BOX -- Link buttons */
 #guesses .link {
     grid-area: link;
-    align-self: center;
-    justify-self: center;
-    height: 60px;
-    width: 60px;
     background-repeat: no-repeat;
-    background-size: 50px;
+    background-size: 80%, 40%;
     background-position: center;
     background-color: var(--primary-light);
-    border: none;
     box-shadow:
-        0 1px 3px rgb(0 0 0 / 12%),
-        0 1px 2px rgb(0 0 0 / 24%);
+        0 0 1px 1px rgb(0 0 0 / 12%),
+        -2px 0 3px 0 rgb(0 0 0 / 24%);
+    border-radius: 0 2px 2px 0;
     cursor: pointer;
+    z-index: 1; /* Shadow above points/callsign */
 }
 
 #guesses .link.tweet { background-image: url("/icons/twitter.svg"); }
 
 #guesses .link.twitter-dm {
     background-image: url("/icons/envelope-paper.svg"), url("/icons/twitter.svg");
-    background-position: center, 18px 6px;
-    background-size: 50px, 27px;
+    background-position: center, 50% 22%;
 }
 
 #guesses .link.email {
@@ -135,11 +137,11 @@
 
 #guesses .link.discord { background-image: url("/icons/discord.svg"); }
 
-/* Guess text */
+/* GUESS TEXT */
 #guesses .text {
     grid-area: text;
     align-self: center;
     border-left: 3px solid #626262;
-    padding-left: 11px;
+    padding: 0 11px;
     margin: 8px 0;
 }

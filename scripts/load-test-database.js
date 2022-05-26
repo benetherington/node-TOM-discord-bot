@@ -3,7 +3,6 @@ const public = require('../database/public');
 const EPISODES = 5;
 const AUTHORS = 20;
 const SUGGESTIONS = 10;
-const TOTAL_SUGGESTIONS = EPISODES * SUGGESTIONS;
 const VOTES = 10;
 const GUESSES = 5;
 
@@ -34,7 +33,7 @@ const createEpisodes = async () => {
   AUTHORS
 \*-------*/
 const createAuthors = async () => {
-    for (let authId = 0; authId <= AUTHORS; authId++) {
+    for (let authId = 1; authId <= AUTHORS; authId++) {
         await db.run(
             `INSERT INTO Authors
                 (discordId, username, displayName)
@@ -50,19 +49,10 @@ const createAuthors = async () => {
 /*-----------------*\
   SUGGESTIONS&VOTES
 \*-----------------*/
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
+const TOTAL_SUGGESTIONS = EPISODES * SUGGESTIONS;
+function randomId(max) {
+    return Math.ceil(Math.random() * max);
 }
-function bound(min, int, max) {
-    return Math.min(max, Math.max(int, min));
-}
-const wobble = (int) => {
-    const boundMin = 0;
-    const boundMax = TOTAL_SUGGESTIONS;
-    const wobbleMax = 5;
-    const wobble = getRandomInt(wobbleMax * 2) - wobbleMax;
-    return bound(boundMin, int + wobble, boundMax);
-};
 
 const insertSuggestion = (epId, authId) => {
     return db.run(
@@ -76,29 +66,34 @@ const insertSuggestion = (epId, authId) => {
         777777 + epId * authId,
     );
 };
-const insertVote = (epId, voterId) => {
-    let sugId = epId * AUTHORS + voterId;
-    sugId = wobble(sugId);
-    return db.run(
+const insertVote = (voterId, sugId) =>
+    db.run(
         `INSERT OR IGNORE INTO Suggestion_Voters
             (voterId, suggestionId)
-        VALUES
-            (?, ?)`,
+        VALUES (?, ?)`,
         voterId,
         sugId,
     );
+const insertVotes = (epId, authId, sugId) => {
+    // Insert the author's initial vote
+    insertVote(authId, sugId);
+    // Insert VOTES number of votes for this suggestion from random other authors
+    for (voteIdx = 0; voteIdx < VOTES; voteIdx++) {
+        let voterId;
+        while (!voterId || voterId === authId) {
+            voterId = randomId(AUTHORS);
+        }
+        insertVote(voterId, sugId);
+    }
 };
 const createSuggestions = async () => {
-    for (let epId = 0; epId <= 5; epId++) {
+    for (let epId = 1; epId <= EPISODES; epId++) {
         // iterate over episodes
         console.log(`... for Ep #${epId}...`);
-        for (let authId = 0; authId <= 10; authId++) {
+        for (let authId = 1; authId <= AUTHORS; authId++) {
             // insert suggestions per episode
-            await insertSuggestion(epId, authId);
-            for (let sugIdx = 0; sugIdx <= VOTES; sugIdx++) {
-                // insert votes per suggestion
-                await insertVote(epId, authId);
-            }
+            const {lastID: sugId} = await insertSuggestion(epId, authId);
+            await insertVotes(epId, authId, sugId);
         }
     }
 };
@@ -176,7 +171,8 @@ const updateScore = (guessId, episodeId, correct, bonusPoint) =>
         guessId,
     );
 const createGuesses = async () => {
-    for (let idx = 0; idx < GUESSES; idx++) {
+    // Insert a set of guess types for GUESSES number of sets, then do one more
+    for (let idx = 0; idx < GUESSES + 1; idx++) {
         const authId = Math.round(Math.random() * AUTHORS);
         await insertTweetGuess(authId);
         await insertTwitterDMGuess(authId);
@@ -184,8 +180,9 @@ const createGuesses = async () => {
         await insertDiscordGuess(authId);
     }
 
+    // Assign assorted scores for GUESSES number of sets, leaving the extra set unscored
     const guessesPerEpisode = (EPISODES / GUESSES) * 4;
-    for (let guessIdx = 0; guessIdx < GUESSES * 4; guessIdx++) {
+    for (let guessIdx = 0; guessIdx < (GUESSES - 1) * 4; guessIdx++) {
         const [correct, bonusPoint] = ['00', '10', '11'][guessIdx % 3];
         const guessId = guessIdx + 1;
         const episodeId = Math.floor(guessIdx / guessesPerEpisode) + 1;
@@ -193,7 +190,7 @@ const createGuesses = async () => {
     }
 };
 
-(async () => {
+const load = async () => {
     console.log('Getting database...');
     await fetchDb();
 
@@ -210,4 +207,6 @@ const createGuesses = async () => {
     await createGuesses();
 
     console.log('Done!');
-})();
+};
+
+load();

@@ -1,0 +1,24 @@
+extends layout.pug
+
+append style
+    include titles.css
+
+block script
+    include titles.js
+
+block content
+    div#suggestions.card
+        div#headers
+            h3.author Author
+            h3.suggestion Suggestion
+            h3.votes Votes
+        div#suggestion-grid
+            //- div.row-container
+                //- p.author
+                //- p.suggestion
+                //- p.votes
+                //- button.suggestion-delete
+    div#controls.card
+        button#autoUpdate(onclick="autoUpdate(true)") Auto-update
+        button(onclick="addSuggestion()") Add Suggestion
+        button(onclick="callVote()") Call Vote

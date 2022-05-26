@@ -49,7 +49,7 @@ PRAGMA foreign_keys=off;
 CREATE TABLE AuthorsAddColumns (
     authorId        INTEGER PRIMARY KEY,
     
-    discordId       INTEGER NOT NULL UNIQUE,
+    discordId       INTEGER UNIQUE,
     username        TEXT,
     displayName     TEXT,
     

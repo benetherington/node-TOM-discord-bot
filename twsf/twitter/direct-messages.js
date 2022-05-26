@@ -4,7 +4,7 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const Twitter = require('twitter');
-const {addNewTwsfGuess} = require('../../database/twsf');
+const {addNewGuess, guessTypes} = require('../../database/twsf');
 
 const ID = require('../../config/twitter-id.json');
 const client = new Twitter({
@@ -23,7 +23,7 @@ const isIncomingHashtag = (event) =>
     event.message_create.message_data.entities.hashtags.some(
         (ht) => ht.text.toLowerCase() === 'thisweeksf',
     );
-const authorAndGuessFromDm = async (event) => {
+const guessAndAuthorFromDm = async (event) => {
     const tweetId = event.id,
         twitterId = event.message_create.sender_id,
         text = event.message_create.message_data.text;
@@ -37,13 +37,13 @@ const authorAndGuessFromDm = async (event) => {
 
     return {
         author: {twitterId, twitterDisplayName, twitterUsername},
-        guess: {type: 'twitter dm', tweetId, text},
+        guess: {type: guessTypes.TWITTER_DM, tweetId, text},
     };
 };
 const fetchDMs = async () => {
     let doneFetching = false;
     let cursor = undefined;
-    let guessesAndAuthors = [];
+    let messagesToReturn = [];
 
     while (!doneFetching) {
         // Fetch direct message events
@@ -51,36 +51,25 @@ const fetchDMs = async () => {
             cursor,
         });
 
-        // Check for another page
-        if (response.nextCursor) {
-            // We'll do an additional loop
-            cursor = response.nextCursor;
-            console.log(
-                `Found ${response.events.length} direct messsages and another page.`,
-            );
-        } else {
-            doneFetching = true;
-            console.log(
-                `Found ${response.events.length} direct messsages and no more pages.`,
-            );
-        }
+        console.log(`Found ${response.events.length} direct messsages...`);
 
         // Find the message we want
         const hashtagMessages = response.events.filter(isIncomingHashtag);
         console.log(
-            `${hashtagMessages.length} of them are #ThisWeekSF direct messsages.`,
+            `... ${hashtagMessages.length} of them are #ThisWeekSF direct messsages.`,
         );
+        messagesToReturn = messagesToReturn.concat(hashtagMessages);
 
-        // Format data to send to the DB
-        const thisPageGuessesAuthors = await Promise.all(
-            hashtagMessages.map(authorAndGuessFromDm),
-        );
-        guessesAndAuthors.push(thisPageGuessesAuthors);
+        // Check for another page
+        if (response.nextCursor) {
+            // We'll do an additional loop
+            cursor = response.nextCursor;
+            console.log('Next page...');
+        } else doneFetching = true;
     }
 
     // Done!
-    console.log('Done processing #ThisWeekSF direct messsages!');
-    return guessesAndAuthors;
+    return messagesToReturn;
 };
 
 module.exports = async () => {
@@ -95,16 +84,21 @@ module.exports = async () => {
         return;
     }
 
-    // Store new DMs
-    const storageResults = await Promise.allSettled(
-        twsfDms.map(addNewTwsfGuess),
+    // Format for the DB
+    const guessesAndAuthors = await Promise.all(
+        twsfDms.map(guessAndAuthorFromDm),
     );
-    const errors = storageResults.filter((p) => p.status === 'rejected');
 
-    if (errors.length) {
-        console.error('There was an issue storing #ThisWeekSF DMs.');
-        console.error({errors});
-    } else {
-        console.log('Done storing new #ThisWeekSF DMs!');
-    }
+    // Store new DMs
+    const newGuessesCount = await guessesAndAuthors.reduce(
+        async (prevPromise, guessAndAuthor) => {
+            const prevCount = await prevPromise;
+            const changedRowCount = await addNewGuess(guessAndAuthor);
+            return prevCount + changedRowCount;
+        },
+        0,
+    );
+    console.log(
+        `Done storing ${newGuessesCount} new #ThisWeekSF direct messages!`,
+    );
 };

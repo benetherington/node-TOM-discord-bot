@@ -4,7 +4,7 @@ try {
     console.log('oh hey we must be running on Glitch');
 }
 const fetch = require('node-fetch');
-const {addNewTwsfGuess} = require('../../database/twsf');
+const {addNewGuess, guessTypes} = require('../../database/twsf');
 
 const client = {
     _base: 'https://api.twitter.com/1.1/',
@@ -29,7 +29,13 @@ const client = {
             },
         );
         const jsn = await response.json();
-        jsn.all = () => this._next(jsn, query);
+
+        if (jsn.error) {
+            console.error(error.message);
+            jsn.all = () => [];
+        } else {
+            jsn.all = () => this._next(jsn, query);
+        }
         return jsn;
     },
     _next: async function (response, query) {
@@ -94,7 +100,7 @@ const guessAndAuthorFromTweet = async (status) => {
     const textReplies = await fetchSelfReplies(status);
     const text = [textInitial, ...textReplies].join(' ');
     const guess = {
-        type: 'tweet',
+        type: guessTypes.TWEET,
         tweetId,
         text,
     };
@@ -120,18 +126,15 @@ module.exports = async () => {
     const guessesAndAuthors = await Promise.all(
         twsfTweets.map(guessAndAuthorFromTweet),
     );
-    console.log(guessesAndAuthors);
 
     // Store new tweets
-    const storageResults = await Promise.allSettled(
-        guessesAndAuthors.map(addNewTwsfGuess),
+    const newGuessesCount = await guessesAndAuthors.reduce(
+        async (prevPromise, guessAndAuthor) => {
+            const prevCount = await prevPromise;
+            const changedRowCount = await addNewGuess(guessAndAuthor);
+            return prevCount + changedRowCount;
+        },
+        0,
     );
-    const errors = storageResults.filter((p) => p.status === 'rejected');
-
-    if (errors.length) {
-        console.error('There was an issue storing #ThisWeekSF tweets.');
-        console.error({errors});
-    } else {
-        console.log('Done storing new #ThisWeekSF tweets!');
-    }
+    console.log(`Done storing ${newGuessesCount} new #ThisWeekSF tweets!`);
 };

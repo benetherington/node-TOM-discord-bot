@@ -1,6 +1,10 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {responses} = require('../../../config/discord-interaction.json');
-const {addNewTwsfGuess, updateTwsfGuess} = require('../../../database/twsf');
+const {
+    addNewGuess,
+    updateGuessDiscordReply,
+    guessTypes,
+} = require('../../../database/twsf');
 const {responses: config} = require('../../../config/discord-interaction.json');
 const ID = require('../../../config/discord-id.json');
 
@@ -33,7 +37,7 @@ const guessAndAuthorFromInteraction = (interaction) => {
     };
 
     const guess = {
-        type: 'discord',
+        type: guessTypes.DISCORD,
         text: interaction.options.getString('guess'),
     };
 
@@ -49,7 +53,7 @@ const handleNewGuess = async (interaction) => {
     if (!guess || !author) throw 'Unable to construct guess or author.';
 
     // Store this guess
-    const storedGuess = addNewTwsfGuess({guess, author});
+    const storedGuess = addNewGuess({guess, author});
     if (!storedGuess) {
         console.table({guess, author});
         throw 'Unable to store guess and author.';
@@ -60,7 +64,7 @@ const handleNewGuess = async (interaction) => {
     const commandReply = await interaction.reply(responseOptions);
 
     // If the reply wasn't hidden, store its ID
-    if (commandReply) updateTwsfGuess(guess, commandReply.id);
+    if (commandReply) updateGuessDiscordReply(guess, commandReply.id);
 };
 const handleClueRequest = async (interaction) => {
     await interaction.deferReply({ephemeral: true});

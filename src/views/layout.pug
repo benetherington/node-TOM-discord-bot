@@ -1,0 +1,32 @@
+doctype html
+html
+    head
+        title TOMbot
+        style
+            block style
+                    include app.css
+                    include header.css
+        script
+            block script
+    body
+        div#header
+            div#nav.container
+                if username
+                    form(action="/titles").grouped
+                        button#nav-title(type="submit") Title Suggestions
+                    form(action="/twsf").grouped
+                        button#nav-twsf(type="submit") TWSF
+            div#login.container
+                if username
+                    b #{username}
+                    form(action="/logout" method="post")
+                        button(type="submit") Log out
+                else
+                    b Guest
+                    form(action="/login")
+                        button(type="submit") Log in
+        div#title-bar
+            block title-bar
+                h2#title.card This Week in Spaceflight History
+                h2#episode-number.card #{epNum||999}
+        block content

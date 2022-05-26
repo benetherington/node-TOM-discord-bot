@@ -74,7 +74,10 @@ module.exports.getSuggestion = (suggestion) => {
     );
 };
 
-module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
+module.exports.getSuggestionsWithCountedVotes = async (
+    episode = {},
+    getEpNum,
+) => {
     // default to current episode
     if (!episode.epNum) {
         episode = await getCurrentEpisode();
@@ -97,7 +100,7 @@ module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
                 INNER JOIN Episodes USING(episodeId)
         WHERE epNum = ?
         GROUP BY
-            Suggestion_voters.suggestionId;`,
+            Suggestion_Voters.suggestionId;`,
         episode.epNum,
     );
     const formattedCountedSuggestions = countedSuggestions.map((suggestion) => {
@@ -111,7 +114,8 @@ module.exports.getSuggestionsWithCountedVotes = async (episode = {}) => {
             voteCount,
         };
     });
-    return formattedCountedSuggestions;
+    if (getEpNum) return [episode.epNum, formattedCountedSuggestions];
+    else return formattedCountedSuggestions;
 };
 
 module.exports.addNewSuggestion = async (author, suggestion) => {

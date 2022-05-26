@@ -17,8 +17,8 @@ const storeNewTwsfDirectMessages = require('./twsf/twitter/direct-messages');
 // then we should check again just before the show begins. Glitch server is in
 // UTC.
 const twitterJob = schedule.scheduleJob('0 13,16 * * 0', () => {
-  storeNewTwsfTweets();
-  storeNewTwsfDirectMessages();
+    storeNewTwsfTweets();
+    storeNewTwsfDirectMessages();
 });
 
 /*------*\

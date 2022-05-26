@@ -7,7 +7,7 @@ const {
     guessTypes,
 } = require('../../database/twsf');
 
-const {getCurrentEpNum} = require("../../database/suggestions")
+const {getCurrentEpNum} = require('../../database/suggestions');
 
 module.exports = (fastify, opts, done) => {
     // Guess viewer
@@ -19,7 +19,7 @@ module.exports = (fastify, opts, done) => {
             return reply.view('src/views/twsf', {
                 username: request.admin.username,
                 guessTypes: JSON.stringify(guessTypes),
-                epNum
+                epNum,
             });
         },
     );

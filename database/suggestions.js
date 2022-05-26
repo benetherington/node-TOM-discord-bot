@@ -74,7 +74,10 @@ module.exports.getSuggestion = (suggestion) => {
     );
 };
 
-module.exports.getSuggestionsWithCountedVotes = async (episode = {}, getEpNum) => {
+module.exports.getSuggestionsWithCountedVotes = async (
+    episode = {},
+    getEpNum,
+) => {
     // default to current episode
     if (!episode.epNum) {
         episode = await getCurrentEpisode();

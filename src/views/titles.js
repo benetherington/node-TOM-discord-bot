@@ -63,15 +63,15 @@ const removeRow = (element) => {
 };
 // oh also episode number updation
 const updateEpNum = (epNum) => {
-    document.getElementById("episode-number").textContent = epNum;
-}
+    document.getElementById('episode-number').textContent = epNum;
+};
 
 /*---*\
   API
 \*---*/
-const getSuggestions = () => fetch('/api/titles/').then(
-    async(r) => {
-        const {epNum, titles} = await r.json()
+const getSuggestions = () =>
+    fetch('/api/titles/').then(async (r) => {
+        const {epNum, titles} = await r.json();
         updateEpNum(epNum);
         return titles;
     });
@@ -116,7 +116,7 @@ const autoUpdate = (doToggle) => {
         updateSuggestions();
         updateIntervalId = setInterval(updateSuggestions, 1000);
     } else {
-        autoButton.classList.remove('depressed')
+        autoButton.classList.remove('depressed');
         clearInterval(updateIntervalId);
     }
 };

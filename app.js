@@ -10,17 +10,16 @@ const schedule = require('node-schedule');
 const storeNewTwsfTweets = require('./twsf/twitter/tweets');
 const storeNewTwsfDirectMessages = require('./twsf/twitter/direct-messages');
 
-// Schedule twitter checks Sunday and Thursday at 12pm EST. The intention is to
-// schedule this at the start of the show. Twitter allows us to search the last
-// thirty days of tweets, so we don't need to check more than once a week. We
-// should check just before the show begins. Glitch server is in UTC.
-
-// Quota renews May 26
-
-// const twitterJob = schedule.scheduleJob('35 10 24 5 *', ()=>{//'0 16 * * 0', () => {
-//     storeNewTwsfTweets();
-//     storeNewTwsfDirectMessages();
-// });
+// Schedule twitter checks Sunday at 12pm EST. The intention is to schedule this
+// at the start of the show. Twitter allows us to search the last thirty days of
+// tweets, so we don't need to check more than once a week, but we want guesses
+// available before the crew begins finalizing the show notes Sunday morning,
+// then we should check again just before the show begins. Glitch server is in
+// UTC.
+const twitterJob = schedule.scheduleJob('0 13,16 * * 0', () => {
+  storeNewTwsfTweets();
+  storeNewTwsfDirectMessages();
+});
 
 /*------*\
   SERVER

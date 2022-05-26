@@ -128,9 +128,13 @@ module.exports = async () => {
     );
 
     // Store new tweets
-    const storageResults = await Promise.all(
-        guessesAndAuthors.map(addNewGuess),
+    const newGuessesCount = await guessesAndAuthors.reduce(
+        async (prevPromise, guessAndAuthor) => {
+            const prevCount = await prevPromise;
+            const changedRowCount = await addNewGuess(guessAndAuthor);
+            return prevCount + changedRowCount;
+        },
+        0,
     );
-    const newGuessesCount = storageResults.reduce((prev, curr) => prev + curr);
     console.log(`Done storing ${newGuessesCount} new #ThisWeekSF tweets!`);
 };

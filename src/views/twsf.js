@@ -78,6 +78,7 @@ const createGuessRow = (guess) => {
     rowContainer.classList.add('row-container');
     rowContainer.innerHTML = `
         <div class="info card">
+            <div class="link ${type}"></div>
             <h3 class="callsign">${authorName}</h3>
             <div class="points slide-radio three">
                 <input
@@ -106,7 +107,6 @@ const createGuessRow = (guess) => {
                 <label for="bonus-${guess.guessId}"></label>
                 <div class="slider"></div>
             </div>
-            <div class="link ${type}"></div>
         </div>
         <div class="text">${guessText}</div>`;
 

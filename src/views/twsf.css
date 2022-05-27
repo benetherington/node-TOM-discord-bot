@@ -40,7 +40,7 @@
     left: -10px;
     height: 60px;
     width: min-content;
-    border: 2px solid var(--secondary-dark);
+    border: 1px solid var(--primary-light);
     background-color: white;
     display: grid;
     grid-template:
@@ -49,12 +49,57 @@
         / min-content 60px;
 }
 
+/* INFO BOX -- Link buttons */
+#guesses .link {
+    grid-area: link;
+    background-repeat: no-repeat;
+    background-size: 80%, 40%;
+    background-position: center;
+    border-radius: 0 2px 2px 0; /* Round right corners */
+
+    /* Most of these will be akchul links and will blend with points */
+    transition: 0.2s;
+    background-color: var(--primary-light);
+    cursor: pointer;
+}
+#guesses .link:hover { background-color: var(--primary-dark); }
+
+#guesses .link.tweet { background-image: url("/icons/twitter.svg"); }
+
+#guesses .link.twitter-dm {
+    background-image: url("/icons/envelope-paper.svg"), url("/icons/twitter.svg");
+    background-position: center, 50% 22%;
+}
+
+#guesses .link.discord { background-image: url("/icons/discord.svg"); }
+
+#guesses .link.email {
+    /* Not linked: blend with callsign */
+    background-image: url("/icons/envelope-paper.svg");
+    background-color: white;
+    cursor: default;
+}
+#guesses .link.email:hover { background-color: white; } /* Don't hover-highlight */
+
 /* INFO BOX -- callsign */
 #guesses .callsign {
     grid-area: call;
     margin: 0;
     text-align: center;
-    z-index: 0; /* allow link shadow above */
+
+    /* If link is clickable, we'll cast a shadow from points and link.
+    This is a weird invert from the .card styling: a negative spread allows us
+    to push the top and right sides out of view. First, X and Y are inverted so
+    that the shadow is upside-down, then -1px is added to X, Y and spread.
+    Originally, these were "0 1 3 (0)" and "0 1 2 (0)". */
+    box-shadow:
+        inset -1px -2px 3px -1px rgb(0 0 0 / 12%),
+        inset -1px -2px 2px -1px rgb(0 0 0 / 24%);
+}
+
+#guesses .link.email ~ .callsign {
+    /* If link is not clickable, points will cast shadow on us and link */
+    box-shadow: none;
 }
 
 /* INFO BOX -- scoring slider */
@@ -63,13 +108,24 @@
     width: 150px;
     justify-self: center;
     align-self: end;
-    z-index: 0; /* allow link shadow above */
+    box-shadow: none;
+}
+
+#guesses .link.email ~ .points {
+    /* if link is not clickable, we will cast a shawow on link and callsign */
+    box-shadow:
+        0 0 1px 1px rgb(0 0 0 / 12%),
+        2px 0 3px 0 rgb(0 0 0 / 24%);
 }
 
 #guesses .toggle-option + label {
     aspect-ratio: 1/1;
     height: 25px;
     background-size: contain;
+}
+
+#guesses .toggle-option + label:hover {
+    background-color: var(--primary-dark);
 }
 
 /* None */
@@ -101,41 +157,6 @@
 #guesses .toggle-option[value="bonus"] + label {
     background-image: url("/icons/award.svg");
 }
-
-/* INFO BOX -- Link buttons */
-#guesses .link {
-    grid-area: link;
-    background-repeat: no-repeat;
-    background-size: 80%, 40%;
-    background-position: center;
-    background-color: var(--primary-light);
-    box-shadow:
-        0 0 1px 1px rgb(0 0 0 / 12%),
-        -2px 0 3px 0 rgb(0 0 0 / 24%);
-    border-radius: 0 2px 2px 0;
-    cursor: pointer;
-    z-index: 1; /* Shadow above points/callsign */
-}
-
-#guesses .link.tweet { background-image: url("/icons/twitter.svg"); }
-
-#guesses .link.twitter-dm {
-    background-image: url("/icons/envelope-paper.svg"), url("/icons/twitter.svg");
-    background-position: center, 50% 22%;
-}
-
-#guesses .link.email {
-    background-image: url("/icons/envelope-paper.svg");
-    box-shadow: none;
-    filter: brightness(118%) saturate(37%);
-    cursor: default;
-}
-
-#guesses .link.email:hover {
-    background-color: var(--primary-light);
-}
-
-#guesses .link.discord { background-image: url("/icons/discord.svg"); }
 
 /* GUESS TEXT */
 #guesses .text {

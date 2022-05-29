@@ -128,21 +128,20 @@
     background-size: contain;
 }
 
-#guesses .toggle-option + label:hover {
-    background-color: var(--primary-dark);
-}
+#guesses .toggle-option:not(:checked) + label:hover { background-color: var(--primary-dark); }
 
-/* None */
+/* Slider colors for each score
+// None */
 #guesses .points.none .slider {
     background-color: var(--secondary-light);
 }
 
-#guesses .toggle-option[value="none"] + label {
+#guesses .toggle-option[value="none"] + label { /* stylelint-disable-line no-descending-specificity */
     background-image: url("/icons/hand-thumbs-down.svg");
 }
 
 /* Correct */
-#guesses .toggle-option[value="correct"] + label {
+#guesses .toggle-option[value="correct"] + label { /* stylelint-disable-line no-descending-specificity */
     background-image: url("/icons/hand-thumbs-up.svg");
 }
 
@@ -158,7 +157,7 @@
         );
 }
 
-#guesses .toggle-option[value="bonus"] + label {
+#guesses .toggle-option[value="bonus"] + label { /* stylelint-disable-line no-descending-specificity */
     background-image: url("/icons/award.svg");
 }
 

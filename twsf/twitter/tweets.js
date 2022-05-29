@@ -48,7 +48,8 @@ const client = {
         return searchResults;
     },
 };
-
+const getFullText = (status) =>
+    status.truncated ? status.extended_tweet.full_text : status.text;
 const fetchSelfReplies = async (status) => {
     const twitterUsername = status.user.screen_name;
     const tweetId = status.id_str;
@@ -60,7 +61,7 @@ const fetchSelfReplies = async (status) => {
     const selfReplies = await response.all();
 
     // Assemble a chain of replies
-    const replyTexts = [status.extended_tweet.full_text];
+    const replyTexts = [getFullText(status)];
     let stillSearching = selfReplies.length; // Don't start if no replies!
     while (stillSearching) {
         // Find a tweet replying to the starting tweet
@@ -69,7 +70,7 @@ const fetchSelfReplies = async (status) => {
         );
         if (reply) {
             // Prepend the text, and look for a reply to the reply
-            replyTexts.unshift(reply.extended_tweet.full_text);
+            replyTexts.unshift(getFullText(reply));
             tweetId = reply.id;
         } else {
             stillSearching = false;

@@ -7,7 +7,9 @@ try {
 const {Client, Intents, Collection} = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+
 const {receiveButton} = require('./title-suggestions/interactions/buttons');
+const {onVoiceStateUpdate} = require("./twsf/discord/event");
 const ID = require('./config/discord-id.json');
 
 /*----*\
@@ -18,6 +20,7 @@ intents.add(
     Intents.FLAGS.GUILD_PRESENCES,
     Intents.FLAGS.GUILD_MESSAGES,
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    Intents.FLAGS.GUILD_VOICE_STATES,
 );
 const client = new Client({intents});
 
@@ -93,6 +96,7 @@ client.on('interactionCreate', (interaction) => {
         console.error(error);
     }
 });
+client.on("voiceStateUpdate", onVoiceStateUpdate);
 
 client.login(process.env.DISCORD_TOKEN);
 

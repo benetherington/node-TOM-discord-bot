@@ -170,3 +170,35 @@
     padding: 0 11px;
     margin: 8px 0;
 }
+
+/* ------------- *\
+   SUMMARY CARDS
+\* ------------- */
+#summaries {
+    display: grid;
+    margin: 50px;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#summaries h4 {
+    padding: 4px 8px;
+
+    /* Blend in with card below */
+    margin-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 1px dotted lightgrey;
+}
+
+#summaries div.card {
+    cursor: pointer;
+    padding: 5px;
+    white-space: pre-wrap; /* get textContent newlines to work */
+
+    /* Blend in with title above */
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+#summaries div.card:hover { background-color: aliceblue; }
+#summaries div.card:active { background-color: var(--primary-light); }

@@ -15,6 +15,7 @@ const getCorrect = () =>
             updateEpNum(jsn.epNum);
             return jsn.guesses;
         });
+const getThankYous = () => fetch('/api/twsf/thankyou').then((r) => r.json());
 const postScore = (guess) =>
     fetch('/api/twsf/score', {
         method: 'POST',
@@ -47,6 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
     guessCard = document.getElementById('guesses');
 });
 
+// Episode number
+const updateEpNum = (epNum) => {
+    document.getElementById('episode-number').innerText = epNum;
+};
+
+// Guess rows
 const sanitizeInput = (text) =>
     text.replace('javascript', '').replace('<', '[');
 const getLinkHref = (guess) => {
@@ -78,7 +85,8 @@ const createGuessRow = (guess) => {
     rowContainer.classList.add('row-container');
     rowContainer.innerHTML = `
         <div class="info card">
-            <h3 class="callsign">${authorName}</h3>
+            <div class="link ${type}"></div>
+            <h3 class="callsign" title="${authorName}">${authorName}</h3>
             <div class="points slide-radio three">
                 <input
                     class="toggle-option"
@@ -106,7 +114,6 @@ const createGuessRow = (guess) => {
                 <label for="bonus-${guess.guessId}"></label>
                 <div class="slider"></div>
             </div>
-            <div class="link ${type}"></div>
         </div>
         <div class="text">${guessText}</div>`;
 
@@ -130,8 +137,75 @@ const setPointsStyle = ({row, input, override}) => {
     dotPoints.classList.remove('bonus', 'correct', 'none', 'error', 'loading');
     dotPoints.classList.add(override || input.value);
 };
-const updateEpNum = (epNum) => {
-    document.getElementById('episode-number').innerText = epNum;
+
+// Summary boxes
+const setNextWeekBox = () => {
+    document.getElementById('next-week').textContent = getNextWeekStrings();
+};
+const getNextWeekStrings = () => {
+    // Find when the next episode airs, next Tuesday.
+    const today = new Date();
+    const todayDate = today.getDate();
+    const daysTillTuesday = (9 - today.getDay()) % 7;
+
+    // The week following next Tues is "this week", the week after is "next
+    // week." This period starts on the second tuesday and ends on the following
+    // Monday.
+    const start = new Date(today);
+    start.setDate(todayDate + daysTillTuesday + 7);
+    const end = new Date(today);
+    end.setDate(todayDate + daysTillTuesday + 13);
+
+    sDate = start.getDate();
+    sMonth = start.getMonth();
+    eDate = end.getDate();
+    eMonth = end.getMonth();
+
+    return (
+        `Next week is the ${sDate}${ordinals[sDate]} of ${months[sMonth]} to ` +
+        `the ${eDate}${ordinals[eMonth]} of ${months[eMonth]}. Do you have a clue` +
+        ` for us?\r\nNext week (${sMonth + 1}/${sDate} - ${
+            eMonth + 1
+        }/${eDate}) in`
+    );
+};
+const setWinnersBox = () => {
+    const {correctCallsigns, bonusCallsigns} = getWinnersCallsigns();
+    document.getElementById('winners').textContent =
+        `Correct: ${correctCallsigns.join(', ')}\r\n` +
+        `Bonus points: ${bonusCallsigns.join(', ')}`;
+};
+const getWinnersCallsigns = () => {
+    // Find checked input elements
+    const checkedCorrect = document.querySelectorAll(
+        "#guesses .toggle-option[value='correct']:checked",
+    );
+    const checkedBonus = document.querySelectorAll(
+        "#guesses .toggle-option[value='bonus']:checked",
+    );
+
+    // From input elements, back up to info card
+    const correctInfos = Array.from(checkedCorrect).map((el) =>
+        el.closest('.info'),
+    );
+    const bonusInfos = Array.from(checkedBonus).map((el) =>
+        el.closest('.info'),
+    );
+
+    // From info card, get .callsign content
+    const correctCallsigns = Array.from(correctInfos).map(
+        (el) => el.querySelector('.callsign').textContent,
+    );
+    const bonusCallsigns = Array.from(bonusInfos).map(
+        (el) => el.querySelector('.callsign').textContent,
+    );
+
+    // Done!
+    return {correctCallsigns, bonusCallsigns};
+};
+const setThankYouBox = async () => {
+    const thankYous = await getThankYous();
+    document.getElementById('thank-you').textContent = thankYous.join(', ');
 };
 
 /*-------------*\
@@ -163,7 +237,8 @@ const addCorrectGuesses = async () => {
 const updateGuessList = async () => {
     clearGuesses();
     await addUnscoredGuesses();
-    if (currentMode() === 'week') addCorrectGuesses();
+    if (currentMode() === 'week') await addCorrectGuesses();
+    setWinnersBox();
 };
 const newScore = async (event) => {
     // Set points style to loading
@@ -185,7 +260,73 @@ const newScore = async (event) => {
         event.target.checked = false;
         setPointsStyle({input: event.target, override: 'error'});
     }
+    setWinnersBox();
 };
+const copyElementTextContent = (event) =>
+    navigator.clipboard.writeText(event.target.textContent);
+
+/*-----*\
+  SETUP
+\*-----*/
 document.addEventListener('DOMContentLoaded', () => {
     updateGuessList();
+    setNextWeekBox();
+    setThankYouBox();
+    document
+        .getElementById('winners')
+        .addEventListener('click', copyElementTextContent);
+    document
+        .getElementById('next-week')
+        .addEventListener('click', copyElementTextContent);
+    document
+        .getElementById('thank-you')
+        .addEventListener('click', copyElementTextContent);
 });
+
+const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+];
+const ordinals = [
+    'st',
+    'nd',
+    'rd',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'st',
+    'nd',
+    'rd',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'st',
+];

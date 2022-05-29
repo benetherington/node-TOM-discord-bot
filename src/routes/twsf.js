@@ -6,8 +6,8 @@ const {
     getCorrectGuesses,
     guessTypes,
 } = require('../../database/twsf');
-
 const {getCurrentEpNum} = require('../../database/suggestions');
+const {getChatThankYous} = require('../../twsf/discord/event');
 
 module.exports = (fastify, opts, done) => {
     // Guess viewer
@@ -47,6 +47,15 @@ module.exports = (fastify, opts, done) => {
             );
 
             reply.send({guesses, epNum});
+        },
+    );
+
+    // API: get outro chat thank-yous
+    fastify.get(
+        '/api/twsf/thankyou',
+        {preHandler: adminPreHandler},
+        async (request, reply) => {
+            reply.send(getChatThankYous());
         },
     );
 

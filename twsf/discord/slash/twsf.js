@@ -29,11 +29,11 @@ const guessAndAuthorFromInteraction = (interaction) => {
     // interactions within a guild, but if someone DMs the bot, their member
     // object will be null.
     const member = interaction.member || {};
-    const discordDisplayName = member.nickname || member.displayName || '';
+    const displayName = member.nickname || member.displayName || '';
     const author = {
         discordId: interaction.user.id,
-        discordUsername: interaction.user.username,
-        discordDisplayName,
+        username: interaction.user.username,
+        displayName,
     };
 
     const guess = {

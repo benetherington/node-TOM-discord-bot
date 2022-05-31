@@ -14,8 +14,8 @@ const formatVoteButton = ({author, suggestion, voteCount = 1}) => {
     // Turns a countedSuggestion into a button.
 
     // limit label length
-    // prettier-ignore
-    let label = `(${voteCount}) ${author.displayName || author.username}: ${suggestion.text}`;
+    const name = author.displayName || author.username;
+    let label = `(${voteCount}) ${name}: ${suggestion.text}`;
     if (label.length > 81) {
         label = label.slice(0, 77);
         label += '...';
@@ -40,6 +40,7 @@ const getVoteMessage = (countedSuggestionMessageChunk) => {
     const components = countedSuggestionRowChunks.map(formatVoteRow);
     return {content: 'Title suggestions so far:', components};
 };
+
 module.exports.getVoteMessages = async () => {
     // Gets the current suggestions and returns an array of ReplyOptions.
 

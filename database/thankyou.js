@@ -24,7 +24,6 @@ const initDB = async () => {
 initDB().then(printDbSummary);
 
 module.exports.updateAuthorThank = (author, chatThank = true) => {
-    console.table(author);
     db.run(
         `INSERT INTO Authors
             (discordId, username, displayName, chatThank)

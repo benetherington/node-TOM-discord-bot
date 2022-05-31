@@ -24,19 +24,20 @@ const isIncomingHashtag = (event) =>
         (ht) => ht.text.toLowerCase() === 'thisweeksf',
     );
 const guessAndAuthorFromDm = async (event) => {
-    const tweetId = event.id,
-        twitterId = event.message_create.sender_id,
-        text = event.message_create.message_data.text;
+    const tweetId = event.id;
+    const twitterId = event.message_create.sender_id;
+    const text = event.message_create.message_data.text;
 
     const authorData = await client.get('users/show.json', {
         user_id: twitterId,
     });
 
-    const twitterDisplayName = authorData.name,
-        twitterUsername = authorData.screen_name;
+    const twitterDisplayName = authorData.name;
+    const twitterUsername = authorData.screen_name;
+    const callsign = twitterDisplayName;
 
     return {
-        author: {twitterId, twitterDisplayName, twitterUsername},
+        author: {twitterId, twitterDisplayName, twitterUsername, callsign},
         guess: {type: guessTypes.TWITTER_DM, tweetId, text},
     };
 };

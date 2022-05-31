@@ -81,19 +81,21 @@ const fetchSelfReplies = async (status) => {
     return replyTexts;
 };
 const guessAndAuthorFromTweet = async (status) => {
-    const tweetId = status.id_str,
-        textInitial = status.extended_tweet
-            ? status.extended_tweet.full_text
-            : status.full_text,
-        twitterId = status.user.id_str,
-        twitterDisplayName = status.user.name,
-        twitterUsername = status.user.screen_name;
+    const tweetId = status.id_str;
+    const textInitial = status.extended_tweet
+        ? status.extended_tweet.full_text
+        : status.full_text;
+    const twitterId = status.user.id_str;
+    const twitterDisplayName = status.user.name;
+    const twitterUsername = status.user.screen_name;
+    const callsign = twitterDisplayName;
 
     // Construct author for DB
     const author = {
         twitterId,
         twitterDisplayName,
         twitterUsername,
+        callsign
     };
 
     // Construct guess for DB

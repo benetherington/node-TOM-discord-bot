@@ -102,10 +102,10 @@ const suggestionEscape = (e) => {
 \*----------*/
 // suggestion rows
 async function removeSuggestion(e) {
-    const id = e.target.id.match(/\d+/)[0];
-    if (!id) console.error(e);
+    const suggestionId = e.target.id.match(/\d+/)[0];
+    if (!suggestionId) console.error(e);
 
-    const apiCall = await deleteSuggestion(id);
+    const apiCall = await deleteSuggestion(suggestionId);
     if (apiCall.ok) removeRow(e.target);
 }
 // bottom toolbar

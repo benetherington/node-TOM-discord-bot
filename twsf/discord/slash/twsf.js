@@ -1,11 +1,14 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
-const {responses} = require('../../../config/discord-interaction.json');
 const {
     addNewGuess,
     updateGuessDiscordReply,
     guessTypes,
 } = require('../../../database/twsf');
-const {responses: config} = require('../../../config/discord-interaction.json');
+const {
+    createAuthorFromInteraction,
+} = require('../../../title-suggestions/slash/utilities/title-utilities');
+
+const {responses} = require('../../../config/discord-interaction.json');
 const ID = require('../../../config/discord-id.json');
 
 /*---------*\
@@ -24,39 +27,37 @@ const getInteractionResponse = (interaction) => {
         return responseOptions;
     }
 };
-const guessAndAuthorFromInteraction = (interaction) => {
-    // DisplayNames are only available within a guild. We should mostly be doing
-    // interactions within a guild, but if someone DMs the bot, their member
-    // object will be null.
-    const member = interaction.member || {};
-    const displayName = member.nickname || member.displayName || '';
-    const author = {
-        discordId: interaction.user.id,
-        username: interaction.user.username,
-        displayName,
-    };
-
-    const guess = {
-        type: guessTypes.DISCORD,
-        text: interaction.options.getString('guess'),
-    };
-
-    return {author, guess};
-};
+const createGuessFromInteraction = (interaction) => ({
+    type: guessTypes.DISCORD,
+    text: interaction.options.getString('guess'),
+});
 
 /*-------------------*\
   Subcommand handlers
 \*-------------------*/
 const handleNewGuess = async (interaction) => {
     // Format for the DB
-    const {guess, author} = guessAndAuthorFromInteraction(interaction);
-    if (!guess || !author) throw 'Unable to construct guess or author.';
+    const guess = createGuessFromInteraction(interaction);
+    const author = createAuthorFromInteraction(interaction);
+
+    // Validate
+    if (!guess.text || !author) {
+        console.error(
+            'Failed to create TWSF guess or author from slash command!',
+        );
+        console.error(interaction.toString());
+        interaction.reply(responses.error);
+        return;
+    }
 
     // Store this guess
     const storedGuess = addNewGuess({guess, author});
     if (!storedGuess) {
-        console.table({guess, author});
-        throw 'Unable to store guess and author.';
+        console.error('Failed to store TWSF guess from slash command!');
+        console.error(interaction.toString());
+        console.error(guess);
+        console.error(author);
+        interaction.reply(responses.failure);
     }
 
     // Build and send reply

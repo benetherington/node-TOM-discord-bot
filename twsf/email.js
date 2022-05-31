@@ -122,7 +122,8 @@ const guessAndAuthorFromEmail = ({parsedElements, errors}) => {
 
     const emailAddress = parsedElements.email;
     const emailName = parsedElements.nick;
-    const author = {emailAddress, emailName};
+    const callsign = emailName;
+    const author = {emailAddress, emailName, callsign};
 
     return {guess, author};
 };

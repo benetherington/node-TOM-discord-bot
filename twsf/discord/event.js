@@ -4,12 +4,13 @@ const {updateAuthorThank} = require('../../database/thankyou');
 const authorFromVoiceState = (state) => {
     const discordId = state.id;
     const username = state.member.user.username;
-    const displayName =
-        state.member.nickname || state.member.displayName || '';
+    const displayName = state.member.displayName || '';
+    const callsign = state.member.nickname || displayName || username;
     return {
         discordId,
         username,
         displayName,
+        callsign
     };
 };
 

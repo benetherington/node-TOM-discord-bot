@@ -20,20 +20,18 @@ data.permissions = [
     },
 ];
 
+// TODO: silly. Welcome everyone to City [epNum] https://static.wikia.nocookie.net/half-life/images/c/cb/Breencast_first.jpg/revision/latest/top-crop/width/360/height/360?cb=20091026102502&path-prefix=en
 let execute = async (interaction) => {
-    let epNum = interaction.options.getInteger('ep_num');
+    // Extract requested new episode number
+    const epNum = interaction.options.getInteger('ep_num');
     console.log(`Starting new episode ${epNum}.`);
     try {
-        let success = await addNewEpisode(epNum);
-        if (success) {
-            interaction.reply(config.acknowledge);
-            // TODO: silly. Welcome everyone to City [epNum] https://static.wikia.nocookie.net/half-life/images/c/cb/Breencast_first.jpg/revision/latest/top-crop/width/360/height/360?cb=20091026102502&path-prefix=en
-        } else {
-            interaction.reply(config.error);
-            console.error(
-                `sqlite.addNewEpisode returned false. epNum ${epNum}`,
-            );
-        }
+        // Add new episode
+        const {changes: episodeCreated} = await addNewEpisode(epNum);
+
+        // Reply
+        if (episodeCreated) interaction.reply(config.acknowledge);
+        else interaction.reply(config.titleSuggestions.notNewEpisode);
     } catch (error) {
         interaction.reply(config.failure);
         console.error('slash/new failed in an unexpected way.');

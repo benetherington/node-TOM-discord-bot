@@ -20,23 +20,26 @@ const fetchMessage = async (messageId) => {
         throw 'Could not add unknown message as a title suggestion.';
     }
 };
-const fetchMemberFromDiscordAuthor = (author) => {
-    const tomCastGuild = client.guilds.cache.get(ID.guild.tomCast);
-    return tomCastGuild.members.fetch(author.id);
+const fetchMemberFromDiscordAuthor = async (author) => {
+    const guild = await client.guilds.fetch(ID.guild.tomCast);
+    return guild.members.fetch(author.id);
 };
-
 const createAuthorFromMessage = async (message) => {
+    // User properties will always be available
     const discordId = message.author.id;
     const username = message.author.username;
+
+    // Member properties will never be available when we start from a messageId.
     const member = await fetchMemberFromDiscordAuthor(message.author);
-    const displayName = member.nickname || '';
-    return {discordId, username, displayName};
+    const displayName = member.displayName || '';
+
+    const callsign = member.nickname || displayName || username;
+    return {discordId, username, displayName, callsign};
 };
 const createSuggestionFromMessage = (message) => {
     const text = message.content;
-    const token = message.token;
     const messageId = message.id;
-    return {text, token, messageId};
+    return {text, messageId};
 };
 
 module.exports.addNewSuggestionFromApi = async (messageId) => {
@@ -47,9 +50,7 @@ module.exports.addNewSuggestionFromApi = async (messageId) => {
     const suggestion = createSuggestionFromMessage(message);
     addNewSuggestion(author, suggestion);
 };
-module.exports.removeSuggestionFromApi = async (messageId) => {
-    console.log(`API deleting suggestion from message ${messageId}`);
-
-    const suggestion = {suggestionId: messageId};
-    deleteSuggestion(suggestion);
+module.exports.removeSuggestionFromApi = async (suggestionId) => {
+    console.log(`API deleting suggestion ${suggestionId}`);
+    deleteSuggestion({suggestionId});
 };

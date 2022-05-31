@@ -49,20 +49,12 @@ initDB().then(printDbSummary);
 \*-------*/
 const getCurrentEpisode = () =>
     db.get('SELECT * FROM Episodes ORDER BY created_at DESC LIMIT 1;');
-
 module.exports.getCurrentEpNum = async () => {
     const currentEp = await getCurrentEpisode();
     return currentEp.epNum;
 };
-
-module.exports.addNewEpisode = async (epNum) => {
-    await db.run('INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);', epNum);
-    const episode = await db.get(
-        'SELECT * FROM Episodes WHERE epNum = ?;',
-        epNum,
-    );
-    return episode;
-};
+module.exports.addNewEpisode = (epNum) =>
+    db.run('INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);', epNum);
 
 /*-----------*\
   SUGGESTIONS
@@ -73,11 +65,11 @@ module.exports.getSuggestion = (suggestion) => {
         suggestion.suggestionId,
     );
 };
-
 module.exports.getSuggestionsWithCountedVotes = async (
     episode = {},
     getEpNum,
 ) => {
+    // TODO: simplify this per comment on #48
     // default to current episode
     if (!episode.epNum) {
         episode = await getCurrentEpisode();
@@ -119,42 +111,47 @@ module.exports.getSuggestionsWithCountedVotes = async (
 };
 
 module.exports.addNewSuggestion = async (author, suggestion) => {
-    // SELECT episode
+    // SELECT Episode
     const episode = await getCurrentEpisode();
 
-    // INSECT author
-    await db.run(
-        'INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);',
+    // UPSERT Author
+    const {lastID: authorId} = await db.run(
+        `INSERT INTO Authors (
+            discordId,
+            username,
+            displayName,
+            callsign
+        ) VALUES (?, ?, ?, ?)
+        ON CONFLICT (discordId)
+        DO UPDATE SET
+            username = excluded.username,
+            displayName = excluded.displayName,
+            callsign = excluded.callsign;`,
         author.discordId,
         author.username,
         author.displayName,
-    );
-    const selectedAuthor = await db.get(
-        'SELECT * FROM Authors WHERE discordId = ?;',
-        author.discordId,
+        author.callsign
     );
 
-    // INSERT suggestion
-    const suggestionsInsert = await db.run(
-        'INSERT INTO Suggestions (episodeId, authorId, token, text) ' +
-            'VALUES (?, ?, ?, ?);',
+    // INSERT Suggestion
+    const {lastID: suggestionId} = await db.run(
+        `INSERT INTO Suggestions
+            (episodeId, authorId, text)
+        VALUES (?, ?, ?, ?);`,
         episode.episodeId,
-        selectedAuthor.authorId,
-        suggestion.token,
+        authorId,
         suggestion.text,
     );
+    
+    // INSERT vote
     await db.run(
-        'INSERT INTO Suggestion_Voters (suggestionId, voterId) VALUES (?, ?);',
-        suggestionsInsert.lastID,
-        selectedAuthor.authorId,
+        `INSERT INTO Suggestion_Voters (suggestionId, voterId)
+        VALUES (?, ?);`,
+        suggestionId,
+        authorId,
     );
 
-    // SELECT suggestion
-    const newSuggestion = await db.get(
-        'SELECT * FROM Suggestions WHERE suggestionId = ?;',
-        suggestionsInsert.lastID,
-    );
-    return newSuggestion;
+    return suggestionId;
 };
 
 module.exports.deleteSuggestion = (suggestion) => {
@@ -174,8 +171,46 @@ module.exports.countVotesOnSuggestion = async (suggestion) => {
     );
     return voteCount['COUNT(*)'];
 };
+module.exports.toggleVoter = async (voter, suggestion) => {
+    // UPSERT voter
+    const {lastID: voterId} = await db.run(
+        `INSERT INTO Authors (
+            discordId,
+            username,
+            displayName,
+            callsign
+        ) VALUES (?, ?, ?, ?)
+        ON CONFLICT (discordId)
+        DO UPDATE SET
+            username = excluded.username,
+            displayName = excluded.displayName,
+            callsign = excluded.callsign;`,
+        voter.discordId,
+        voter.username,
+        voter.displayName,
+        voter.callsign,
+    );
+    
+    // Attempt to INSERT vote
+    const {changes} = await db.run(
+        `INSERT OR IGNORE INTO Suggestion_Voters
+            (suggestionId, voterId)
+        VALUES (?, ?);`,
+        voterId,
+        suggestion.suggestionId,
+    )
+    
+    // DELETE vote if insert ignored
+    if (!changes) db.run(
+        `DELETE FROM Suggestion_Voters
+        WHERE suggestionId = ? AND voterId = ?;`
+    )
+    
+    // Return 1 if added, 0 if deleted
+    return changes;
+}
 
-module.exports.hasVotedForSuggestion = (voter, suggestion) => {
+hasVotedForSuggestion = (voter, suggestion) => {
     return db.get(
         `SELECT voterId FROM Suggestion_Voters
         INNER JOIN Authors ON authorId = voterId
@@ -185,7 +220,7 @@ module.exports.hasVotedForSuggestion = (voter, suggestion) => {
     );
 };
 
-module.exports.addVoterToSuggestion = async (voter, suggestion) => {
+addVoterToSuggestion = async (voter, suggestion) => {
     await db.run(
         'INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);',
         voter.discordId,
@@ -203,7 +238,7 @@ module.exports.addVoterToSuggestion = async (voter, suggestion) => {
     );
 };
 
-module.exports.removeVoterFromSuggestion = (voter, suggestion) => {
+removeVoterFromSuggestion = (voter, suggestion) => {
     return db.run(
         `DELETE FROM Suggestion_Voters
         WHERE suggestionId = (?)

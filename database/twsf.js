@@ -58,82 +58,128 @@ module.exports.guessTypes = types;
 /*-------*\
   AUTHORS
 \*-------*/
-const getAuthorByGuessType = (guessType, author) => {
-    if ([types.TWEET, types.TWITTER_DM].includes(guessType)) {
-        return db.get(
-            'SELECT * FROM Authors WHERE twitterId = ?;',
-            author.twitterId,
-        );
-    } else if (guessType === types.EMAIL) {
-        return db.get(
-            'SELECT * FROM Authors WHERE emailAddress = ?;',
-            author.emailAddress,
-        );
-    } else if (guessType === types.DISCORD) {
-        return db.get(
-            'SELECT * FROM Authors WHERE discordId = ?;',
-            author.discordId,
-        );
-    }
-};
-const updateAuthorByGuessType = (guessType, author) => {
+// const getAuthorByGuessType = (guessType, author) => {
+//     if ([types.TWEET, types.TWITTER_DM].includes(guessType)) {
+//         return db.get(
+//             'SELECT * FROM Authors WHERE twitterId = ?;',
+//             author.twitterId,
+//         );
+//     } else if (guessType === types.EMAIL) {
+//         return db.get(
+//             'SELECT * FROM Authors WHERE emailAddress = ?;',
+//             author.emailAddress,
+//         );
+//     } else if (guessType === types.DISCORD) {
+//         return db.get(
+//             'SELECT * FROM Authors WHERE discordId = ?;',
+//             author.discordId,
+//         );
+//     }
+// };
+const upsertAuthorByGuessType = (guessType, author) => {
     if (guessType == types.TWEET || guessType == types.TWITTER_DM) {
         return db.run(
-            `UPDATE Authors
-                SET twitterId=?, twitterUsername=?, twitterDisplayName=?
-                WHERE authorId = ?;`,
+            `INSERT INTO Authors
+                (twitterId, twitterUsername, twitterDisplayName, callsign)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT (twitterId)
+            DO UPDATE SET
+                twitterUsername = excluded.twitterUsername,
+                twitterDisplayName = excluded.twitterDisplayName,
+                callsign = excluded.callsign;`,
             author.twitterId,
             author.twitterUsername,
             author.twitterDisplayName,
-            author.authorId,
+            author.callsign,
         );
     } else if (guessType === types.EMAIL) {
         return db.run(
-            `UPDATE Authors
-                SET emailAddress=?, emailName=?
-                WHERE authorId = ?;`,
+            `INSERT INTO Authors
+                (emailAddress, emailName, callsign)
+            VALUES (?, ?, ?)
+            ON CONFLICT (emailAddress)
+            DO UPDATE SET
+                emailName = excluded.emailName,
+                callsign = excluded.callsign;`,
             author.emailAddress,
             author.emailName,
-            author.authorId,
+            author.callsign,
         );
     } else if (guessType === types.DISCORD) {
         return db.run(
-            `UPDATE Authors
-                SET discordId=?, username=?, displayName=?
-                WHERE authorId = ?;`,
+            `INSERT INTO Authors
+                (discordId, username, displayName, callsign)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT (discordId)
+            DO UPDATE SET
+                username = excluded.username,
+                displayName = excluded.displayName,
+                callsign = excluded.callsign;`,
             author.discordId,
             author.username,
             author.displayName,
-            author.authorId,
+            author.callsign,
         );
     }
 };
-const insertAuthorByGuessType = (guessType, author) => {
-    if (guessType == types.TWEET || guessType == types.TWITTER_DM) {
-        return db.run(
-            `INSERT INTO Authors (twitterId, twitterUsername, twitterDisplayName)
-                VALUES (?, ?, ?);`,
-            author.twitterId,
-            author.twitterUsername,
-            author.twitterDisplayName,
-        );
-    } else if (guessType === types.EMAIL) {
-        return db.run(
-            `INSERT INTO Authors (emailAddress, emailName)
-                VALUES (?, ?);`,
-            author.emailAddress,
-            author.emailName,
-        );
-    } else if (guessType === types.DISCORD) {
-        return db.run(
-            `INSERT INTO Authors (discordId, username, displayName)
-                VALUES (?, ?, ?);`,
-            author.discordId,
-            author.username,
-            author.displayName,
-        );
-    }
-};
+// const updateAuthorByGuessType = (guessType, author) => {
+//     if (guessType == types.TWEET || guessType == types.TWITTER_DM) {
+//         return db.run(
+//             `UPDATE Authors
+//                 SET twitterId=?, twitterUsername=?, twitterDisplayName=?
+//                 WHERE authorId = ?;`,
+//             author.twitterId,
+//             author.twitterUsername,
+//             author.twitterDisplayName,
+//             author.authorId,
+//         );
+//     } else if (guessType === types.EMAIL) {
+//         return db.run(
+//             `UPDATE Authors
+//                 SET emailAddress=?, emailName=?
+//                 WHERE authorId = ?;`,
+//             author.emailAddress,
+//             author.emailName,
+//             author.authorId,
+//         );
+//     } else if (guessType === types.DISCORD) {
+//         return db.run(
+//             `UPDATE Authors
+//                 SET discordId=?, username=?, displayName=?
+//                 WHERE authorId = ?;`,
+//             author.discordId,
+//             author.username,
+//             author.displayName,
+//             author.authorId,
+//         );
+//     }
+// };
+// const insertAuthorByGuessType = (guessType, author) => {
+//     if (guessType == types.TWEET || guessType == types.TWITTER_DM) {
+//         return db.run(
+//             `INSERT INTO Authors (twitterId, twitterUsername, twitterDisplayName)
+//                 VALUES (?, ?, ?);`,
+//             author.twitterId,
+//             author.twitterUsername,
+//             author.twitterDisplayName,
+//         );
+//     } else if (guessType === types.EMAIL) {
+//         return db.run(
+//             `INSERT INTO Authors (emailAddress, emailName)
+//                 VALUES (?, ?);`,
+//             author.emailAddress,
+//             author.emailName,
+//         );
+//     } else if (guessType === types.DISCORD) {
+//         return db.run(
+//             `INSERT INTO Authors (discordId, username, displayName)
+//                 VALUES (?, ?, ?);`,
+//             author.discordId,
+//             author.username,
+//             author.displayName,
+//         );
+//     }
+// };
 
 /*-------*\
   GUESSES
@@ -176,7 +222,7 @@ module.exports.getUnscoredGuesses = () =>
         `SELECT
             guessId, type, text, correct, bonusPoint,
             tweetId, discordReplyId,
-            callsign, twitterDisplayName, displayName, emailName
+            callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
         WHERE episodeId IS NULL;`,
@@ -186,7 +232,7 @@ module.exports.getCorrectGuesses = () =>
         `SELECT
             guessId, type, text, correct, bonusPoint,
             tweetId, discordReplyId,
-            callsign, twitterDisplayName, displayName, emailName
+            callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
         WHERE correct
@@ -200,24 +246,12 @@ module.exports.addNewGuess = async ({guess, author}) => {
     // Author. Returns 1 or 0, indicating whether the guess was a duplicate or
     // not.
 
-    // SELECT existing (?) Author based on guess type
-    let selectedAuthor = await getAuthorByGuessType(guess.type, author);
-
-    // UPDATE or INSERT Author with incoming values. Ensure we have an authorId.
-    if (selectedAuthor) {
-        author.authorId = selectedAuthor.authorId;
-        await updateAuthorByGuessType(guess.type, author);
-    } else {
-        const authorInsert = await insertAuthorByGuessType(guess.type, author);
-        selectedAuthor = {authorId: authorInsert.lastID};
-    }
+    // UPSERT Author with incoming values.
+    const {lastID:authorId} = await upsertAuthorByGuessType(guess.type, author);
 
     // INSERT AND ASSOCIATE Guess
-    const guessInsert = await insertOrIgnoreGuessByType(
-        selectedAuthor.authorId,
-        guess,
-    );
-    return guessInsert.changes;
+    const {changes} = await insertOrIgnoreGuessByType(authorId, guess);
+    return changes;
 };
 module.exports.scoreGuess = async (guess) => {
     const currentEpisode = await db.get(
@@ -225,8 +259,12 @@ module.exports.scoreGuess = async (guess) => {
     );
     return db.run(
         `UPDATE Guesses
-            SET episodeId = COALESCE(episodeId, ?), correct = ?, bonusPoint = ?
-            WHERE guessId = ?;`,
+        SET
+            /* Don't update episodeId if already set */
+            episodeId = COALESCE(episodeId, ?),
+            correct = ?,
+            bonusPoint = ?
+        WHERE guessId = ?;`,
         currentEpisode.episodeId,
         guess.correct,
         guess.bonusPoint,
@@ -238,8 +276,12 @@ module.exports.scoreGuess = async (guess) => {
   SERVICE-SPECIFIC
 \*----------------*/
 module.exports.addEmailParseError = async (error) => {
+    // This is really bad, but shouldn't be invoked too often.
+    // TODO: make this less really bad.
+    
+    // Create and fetch a placeholder Author for errors
     await db.run(
-        `INSERT OR IGNORE INTO Authors (discordId, username) VALUES (0, 'error')`,
+        `INSERT OR IGNORE INTO Authors (discordId, username) VALUES (0, 'error');`,
     );
     const errorAuthor = await db.get(
         `SELECT authorId FROM Authors WHERE discordId = 0 AND username = 'error';`,

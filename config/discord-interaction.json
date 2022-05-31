@@ -4,6 +4,10 @@
             "nothingToVoteOn": {
                 "content": "No title suggestions yet!",
                 "ephemeral": true
+            },
+            "notNewEpisode": {
+                "content": "Looks like we've already done that one.",
+                "ephemeral": true
             }
         },
         "twsf": {
@@ -29,7 +33,7 @@
             "ephemeral": true
         },
         "error": {
-            "content": "Hmmm, something went wrong, but not too badly?",
+            "content": "Hmmm, something went wrong.",
             "ephemeral": true
         },
         "failure": {

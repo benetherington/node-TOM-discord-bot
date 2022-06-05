@@ -27,10 +27,15 @@ const getInteractionResponse = (interaction) => {
         return responseOptions;
     }
 };
-const createGuessFromInteraction = (interaction) => ({
-    type: guessTypes.DISCORD,
-    text: interaction.options.getString('guess'),
-});
+const createGuessFromInteraction = (interaction) => {
+    const type = guessTypes.DISCORD;
+    const rawText = interaction.options.getString('guess');
+    // If the user tried to spoiler their submission, delete the spoiler
+    // formatting: || at the beginning and end.
+    const text = rawText.replace(/(^\|\|)(.*)(\|\|$)/, "$2");
+    
+    return {type, text}
+};
 
 /*-------------------*\
   Subcommand handlers

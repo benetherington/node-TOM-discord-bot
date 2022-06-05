@@ -109,7 +109,6 @@ module.exports.getSuggestionsWithCountedVotes = async (
     if (getEpNum) return [episode.epNum, formattedCountedSuggestions];
     else return formattedCountedSuggestions;
 };
-
 module.exports.addNewSuggestion = async (author, suggestion) => {
     // SELECT Episode
     const episode = await getCurrentEpisode();
@@ -130,7 +129,7 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
         author.discordId,
         author.username,
         author.displayName,
-        author.callsign
+        author.callsign,
     );
 
     // INSERT Suggestion
@@ -142,7 +141,7 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
         authorId,
         suggestion.text,
     );
-    
+
     // INSERT vote
     await db.run(
         `INSERT INTO Suggestion_Voters (suggestionId, voterId)
@@ -153,7 +152,6 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
 
     return suggestionId;
 };
-
 module.exports.deleteSuggestion = (suggestion) => {
     return db.run(
         `DELETE FROM Suggestions WHERE suggestionId = ?;`,
@@ -190,7 +188,7 @@ module.exports.toggleVoter = async (voter, suggestion) => {
         voter.displayName,
         voter.callsign,
     );
-    
+
     // Attempt to INSERT vote
     const {changes} = await db.run(
         `INSERT OR IGNORE INTO Suggestion_Voters
@@ -198,14 +196,15 @@ module.exports.toggleVoter = async (voter, suggestion) => {
         VALUES (?, ?);`,
         voterId,
         suggestion.suggestionId,
-    )
-    
+    );
+
     // DELETE vote if insert ignored
-    if (!changes) db.run(
-        `DELETE FROM Suggestion_Voters
-        WHERE suggestionId = ? AND voterId = ?;`
-    )
-    
+    if (!changes)
+        db.run(
+            `DELETE FROM Suggestion_Voters
+            WHERE suggestionId = ? AND voterId = ?;`,
+        );
+
     // Return 1 if added, 0 if deleted
     return changes;
 }

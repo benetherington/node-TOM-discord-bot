@@ -10,7 +10,7 @@ const authorFromVoiceState = (state) => {
         discordId,
         username,
         displayName,
-        callsign
+        callsign,
     };
 };
 

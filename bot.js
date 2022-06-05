@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const {receiveButton} = require('./title-suggestions/interactions/buttons');
-const {onVoiceStateUpdate} = require("./twsf/discord/event");
+const {onVoiceStateUpdate} = require('./twsf/discord/event');
 const ID = require('./config/discord-id.json');
 
 /*----*\
@@ -96,7 +96,7 @@ client.on('interactionCreate', (interaction) => {
         console.error(error);
     }
 });
-client.on("voiceStateUpdate", onVoiceStateUpdate);
+client.on('voiceStateUpdate', onVoiceStateUpdate);
 
 client.login(process.env.DISCORD_TOKEN);
 

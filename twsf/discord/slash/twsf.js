@@ -84,7 +84,7 @@ const handleClueRequest = async (interaction) => {
 /*-------*\
   Exports
 \*-------*/
-module.exports.data = new SlashCommandBuilder()
+const data = new SlashCommandBuilder()
     .setName('twsf')
     .setDescription('This Week in Spaceflight History')
     .addSubcommand((subcommand) =>
@@ -109,7 +109,7 @@ module.exports.data = new SlashCommandBuilder()
         subcommand.setName('clue').setDescription("View this week's clue."),
     )
     .toJSON();
-module.exports.execute = async (interaction) => {
+const execute = async (interaction) => {
     const username = interaction.user.username;
     const subCommand = interaction.options.getSubcommand();
     console.log(`${username} used /twsf ${subCommand}`);
@@ -126,3 +126,5 @@ module.exports.execute = async (interaction) => {
         console.error(error);
     }
 };
+
+module.exports = {data, execute};

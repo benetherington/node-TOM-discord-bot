@@ -95,7 +95,7 @@ const guessAndAuthorFromTweet = async (status) => {
         twitterId,
         twitterDisplayName,
         twitterUsername,
-        callsign
+        callsign,
     };
 
     // Construct guess for DB

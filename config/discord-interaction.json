@@ -22,6 +22,15 @@
                 "fetchReply": true
             }
         },
+        "stats": [
+            "This Week in Spaceflight History:",
+            "    <bonusPoints> bonus points",
+            "    <score> points total",
+            "Episode title suggestions:",
+            "    <submissions> titles suggested",
+            "    <cast> votes cast",
+            "    <earned> votes earned"
+        ],
         "help": {
             "content": [
                 "Hey there! I'm Jukebox. I got this name when Ben thought it",

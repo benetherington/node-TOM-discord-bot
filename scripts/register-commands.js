@@ -37,6 +37,16 @@ for (const fileName of twsfFileNames) {
     const slashData = require(filePath).data;
     slashes.push(slashData);
 }
+// Stats
+const statsFolder = './stats/slash/';
+const statsFileNames = fs
+    .readdirSync(statsFolder)
+    .filter((fn) => fn.endsWith('.js'));
+for (const fileName of statsFileNames) {
+    const filePath = path.resolve(statsFolder, fileName);
+    const slashData = require(filePath).data;
+    slashes.push(slashData);
+}
 
 // Init our REST API object. We don't need the full Client right now.
 const rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN);

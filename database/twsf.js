@@ -107,64 +107,28 @@ const upsertAuthorByGuessType = (guessType, author) => {
         );
     }
 };
-// const updateAuthorByGuessType = (guessType, author) => {
-//     if (guessType == types.TWEET || guessType == types.TWITTER_DM) {
-//         return db.run(
-//             `UPDATE Authors
-//                 SET twitterId=?, twitterUsername=?, twitterDisplayName=?
-//                 WHERE authorId = ?;`,
-//             author.twitterId,
-//             author.twitterUsername,
-//             author.twitterDisplayName,
-//             author.authorId,
-//         );
-//     } else if (guessType === types.EMAIL) {
-//         return db.run(
-//             `UPDATE Authors
-//                 SET emailAddress=?, emailName=?
-//                 WHERE authorId = ?;`,
-//             author.emailAddress,
-//             author.emailName,
-//             author.authorId,
-//         );
-//     } else if (guessType === types.DISCORD) {
-//         return db.run(
-//             `UPDATE Authors
-//                 SET discordId=?, username=?, displayName=?
-//                 WHERE authorId = ?;`,
-//             author.discordId,
-//             author.username,
-//             author.displayName,
-//             author.authorId,
-//         );
-//     }
-// };
-// const insertAuthorByGuessType = (guessType, author) => {
-//     if (guessType == types.TWEET || guessType == types.TWITTER_DM) {
-//         return db.run(
-//             `INSERT INTO Authors (twitterId, twitterUsername, twitterDisplayName)
-//                 VALUES (?, ?, ?);`,
-//             author.twitterId,
-//             author.twitterUsername,
-//             author.twitterDisplayName,
-//         );
-//     } else if (guessType === types.EMAIL) {
-//         return db.run(
-//             `INSERT INTO Authors (emailAddress, emailName)
-//                 VALUES (?, ?);`,
-//             author.emailAddress,
-//             author.emailName,
-//         );
-//     } else if (guessType === types.DISCORD) {
-//         return db.run(
-//             `INSERT INTO Authors (discordId, username, displayName)
-//                 VALUES (?, ?, ?);`,
-//             author.discordId,
-//             author.username,
-//             author.displayName,
-//         );
-//     }
-// };
+module.exports.getAuthorTwsfScore = (discordId) =>
+    db.get(
+        `SELECT
+            SUM(correct) + SUM(bonusPoint) AS points,
+            SUM(bonusPoint) AS bonusPoints
+        FROM Guesses
+        LEFT JOIN Authors USING(authorId)
+        WHERE discordId = ?`,
+        discordId,
+    );
+module.exports.getTwsfHighScores = () =>
+    db.all(
+        `SELECT
+            SUM(correct) + SUM(bonusPoint) AS points,
+            callsign,
+            discordId
+        FROM Guesses
+        LEFT JOIN Authors USING(authorId)
+        GROUP BY authorId
+        ORDER BY points DESC
+        LIMIT 5;`,
+    );
 
 /*-------*\
   GUESSES

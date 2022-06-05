@@ -158,6 +158,27 @@ module.exports.deleteSuggestion = (suggestion) => {
         suggestion.suggestionId,
     );
 };
+module.exports.getAuthorSubmissionCount = (discordId) =>
+    db.get(
+        `SELECT
+            COUNT(*) as points
+        FROM Suggestions
+        LEFT JOIN Authors USING(authorId)
+        WHERE discordId = ?;`,
+        discordId,
+    );
+module.exports.getSubmissionHighScores = () =>
+    db.all(
+        `SELECT
+            COUNT(*) AS points,
+            discordId,
+            displayName
+        FROM Suggestions
+        LEFT JOIN Authors USING(authorId)
+        GROUP BY authorId
+        ORDER BY points DESC
+        LIMIT 5;`,
+    );
 
 /*------*\
   VOTING
@@ -207,42 +228,49 @@ module.exports.toggleVoter = async (voter, suggestion) => {
 
     // Return 1 if added, 0 if deleted
     return changes;
-}
-
-hasVotedForSuggestion = (voter, suggestion) => {
-    return db.get(
-        `SELECT voterId FROM Suggestion_Voters
-        INNER JOIN Authors ON authorId = voterId
-        WHERE suggestionId = ? AND discordId = ?;`,
-        suggestion.suggestionId,
-        voter.discordId,
-    );
 };
-
-addVoterToSuggestion = async (voter, suggestion) => {
-    await db.run(
-        'INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);',
-        voter.discordId,
-        voter.username,
-        voter.displayName,
+module.exports.getAuthorVotesCast = (discordId) =>
+    db.get(
+        `SELECT
+            COUNT(*) as points
+        FROM Suggestion_Voters
+        LEFT JOIN Authors ON authorId = voterId
+        WHERE discordId = ?;`,
+        discordId,
     );
-    return db.run(
-        `INSERT INTO Suggestion_Voters (suggestionId, voterId)
-        VALUES (
-            (?),
-            (SELECT authorId FROM Authors WHERE discordId = ?)
-        );`,
-        suggestion.suggestionId,
-        voter.discordId,
+module.exports.getVotesCastHighScores = () =>
+    db.all(
+        `SELECT
+            COUNT(*) AS points,
+            discordId
+        FROM Suggestion_Voters
+        LEFT JOIN Authors ON (authorId = voterId)
+        GROUP BY voterId
+        ORDER BY points DESC
+        LIMIT 5;`,
     );
-};
-
-removeVoterFromSuggestion = (voter, suggestion) => {
-    return db.run(
-        `DELETE FROM Suggestion_Voters
-        WHERE suggestionId = (?)
-        AND voterId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
-        suggestion.suggestionId,
-        voter.discordId,
+module.exports.getAuthorVotesEarned = (discordId) =>
+    db.get(
+        `SELECT
+            COUNT(*) AS points
+        FROM Suggestion_Voters
+        LEFT JOIN Suggestions USING(suggestionId)
+        LEFT JOIN Authors USING(authorId)
+        WHERE
+            discordId = 888900
+            AND voterId != authorId;`,
+        discordId,
     );
-};
+module.exports.getVotesEarnedHighScores = () =>
+    db.all(
+        `SELECT
+            COUNT(*) AS points,
+            discordId
+        FROM Suggestion_voters
+        LEFT JOIN Suggestions USING(suggestionId)
+        LEFT JOIN Authors USING(authorId)
+        WHERE voterId != authorId
+        GROUP BY authorId
+        ORDER BY points DESC
+        LIMIT 5;`,
+    );

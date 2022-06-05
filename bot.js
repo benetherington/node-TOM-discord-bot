@@ -17,6 +17,7 @@ const ID = require('./config/discord-id.json');
 \*----*/
 const intents = new Intents();
 intents.add(
+    Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_PRESENCES,
     Intents.FLAGS.GUILD_MESSAGES,
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
@@ -59,6 +60,17 @@ const twsfFileNames = fs
     .filter((fn) => fn.endsWith('.js'));
 for (const fileName of twsfFileNames) {
     const filePath = path.resolve(twsfFolder, fileName);
+    let slash = require(filePath);
+    client.slashes.set(slash.data.name, slash);
+}
+
+// Stats
+const statsFolder = './stats/slash/';
+const statsFileNames = fs
+    .readdirSync(statsFolder)
+    .filter((fn) => fn.endsWith('.js'));
+for (const fileName of statsFileNames) {
+    const filePath = path.resolve(statsFolder, fileName);
     let slash = require(filePath);
     client.slashes.set(slash.data.name, slash);
 }

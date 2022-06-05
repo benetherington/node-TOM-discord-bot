@@ -1,7 +1,7 @@
 const fs = require('fs');
 const {parse} = require('csv-parse/sync');
-const public = require('../database/public');
-const {guessTypes} = require('../database/twsf');
+const public = require('../../database/public');
+const {guessTypes} = require('../../database/twsf');
 
 /*---------*\
   UTILITIES

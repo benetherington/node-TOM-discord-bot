@@ -58,24 +58,6 @@ module.exports.guessTypes = types;
 /*-------*\
   AUTHORS
 \*-------*/
-// const getAuthorByGuessType = (guessType, author) => {
-//     if ([types.TWEET, types.TWITTER_DM].includes(guessType)) {
-//         return db.get(
-//             'SELECT * FROM Authors WHERE twitterId = ?;',
-//             author.twitterId,
-//         );
-//     } else if (guessType === types.EMAIL) {
-//         return db.get(
-//             'SELECT * FROM Authors WHERE emailAddress = ?;',
-//             author.emailAddress,
-//         );
-//     } else if (guessType === types.DISCORD) {
-//         return db.get(
-//             'SELECT * FROM Authors WHERE discordId = ?;',
-//             author.discordId,
-//         );
-//     }
-// };
 const upsertAuthorByGuessType = (guessType, author) => {
     if (guessType == types.TWEET || guessType == types.TWITTER_DM) {
         return db.run(
@@ -84,7 +66,10 @@ const upsertAuthorByGuessType = (guessType, author) => {
             VALUES (?, ?, ?, ?)
             ON CONFLICT (twitterId)
             DO UPDATE SET
-                twitterUsername = excluded.twitterUsername,
+                twitterDisplayName = excluded.twitterDisplayName,
+                callsign = excluded.callsign
+            ON CONFLICT (twitterUsername)
+            DO UPDATE SET
                 twitterDisplayName = excluded.twitterDisplayName,
                 callsign = excluded.callsign;`,
             author.twitterId,
@@ -247,7 +232,10 @@ module.exports.addNewGuess = async ({guess, author}) => {
     // not.
 
     // UPSERT Author with incoming values.
-    const {lastID:authorId} = await upsertAuthorByGuessType(guess.type, author);
+    const {lastID: authorId} = await upsertAuthorByGuessType(
+        guess.type,
+        author,
+    );
 
     // INSERT AND ASSOCIATE Guess
     const {changes} = await insertOrIgnoreGuessByType(authorId, guess);
@@ -278,7 +266,7 @@ module.exports.scoreGuess = async (guess) => {
 module.exports.addEmailParseError = async (error) => {
     // This is really bad, but shouldn't be invoked too often.
     // TODO: make this less really bad.
-    
+
     // Create and fetch a placeholder Author for errors
     await db.run(
         `INSERT OR IGNORE INTO Authors (discordId, username) VALUES (0, 'error');`,

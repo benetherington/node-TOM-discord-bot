@@ -1,7 +1,7 @@
 const fs = require('fs');
 const {parse} = require('csv-parse/sync');
-let db;
-const {public} = require('./db-accessors');
+const public = require('../database/public');
+const {guessTypes} = require('../database/twsf');
 
 /*---------*\
   UTILITIES
@@ -14,279 +14,295 @@ const loadCSV = (path) => {
 /*----*\
   MAIN
 \*----*/
-let archiveEpisodeId;
+let db;
 const importAll = async () => {
-    db = await public();
+    db = await public;
 
-    const episodeInsert = await db.run(
-        `INSERT INTO Episodes (epNum) VALUES (88);`,
+    // Update discord callsigns
+    await db.run(
+        `UPDATE Authors
+        SET callsign = displayName
+        WHERE callsign IS NULL;`,
     );
-    archiveEpisodeId = episodeInsert.lastID;
 
-    const audienceIds = await importAudience();
-    await importTwitterGuesses(audienceIds);
-    await importEmailGuesses(audienceIds);
+    // Do Anvil imports
+    const audiences = importAudience();
+    const tweets = importTwitterGuesses();
+    const emails = importEmailGuesses().filter((e) => e);
 
-    let theDebugging = 'start';
+    enrichAuthors(audiences, tweets);
+    enrichAuthors(audiences, emails);
+
+    emails.forEach(addImportedEmail);
+    tweets.forEach(addImportedTweet);
 };
 
-/*--------*\
-  AUDIENCE
-\*--------*/
-const twitterIdSkips = [
-    '891058134524936200',
-    '1324973233448300500',
-    '730127769468690400',
-];
-const importAudience = async () => {
-    const records = loadCSV('./.data/anvil-imports/audience.csv');
-    console.log(`Loaded ${records.length} audience_rows.`);
+/*---------*\
+  UTILITIES
+\*---------*/
+const enrichAuthors = (audiences, guessesAndAuthors) => {
+    const possibles = [];
+    for (guessAndAuthor of guessesAndAuthors) {
+        possibles.push(enrichAuthor(audiences, guessAndAuthor));
+    }
+    return possibles.filter((v) => v);
+};
+const enrichAuthor = (audiences, {guess, author}) => {
+    const {audience, possibleAudiences} = findAudience(audiences, author);
+    if (audience) {
+        author.twitterId ||= audience.twitterId;
+        author.twitterUsername ||= audience.twitterUsername;
+        author.emailAddress ||= audience.emailAddress;
+        author.callsign ||= audience.callsign;
 
-    const audienceIds = {};
-    const failures = [];
-
-    for (audience of records) {
-        if (twitterIdSkips.includes(audience.twitter_user_id)) continue;
-        if (!(audience.twitter_user_id || audience.email || audience.email)) {
-            continue;
-        }
-        try {
-            const authorInsert = await insertAuthor(audience);
-            audienceIds[audience.ID] = authorInsert.lastID;
-        } catch (error) {
-            console.error(error);
-            failures.push(audience.ID);
-        }
+        author.created_at = audience.created_at;
+        author.notes = audience.notes;
+        author.anvilScore = audience.anvilScore;
+    }
+    if (possibleAudiences) return {author, possibleAudiences};
+};
+const findAudience = (audiences, author) => {
+    // ANVIL ROW ID
+    if (author.audienceRowId) {
+        const audience = audiences.find(
+            (audience) => audience.rowId === author.audienceRowId,
+        );
+        if (audience) return {audience};
     }
 
-    // Do stome stats logging
-    console.log(`Encountered ${failures.length} errors:`);
-    console.log(failures);
-    const insertsCount = Object.getOwnPropertyNames(audienceIds).length;
-    console.log(`Added ${insertsCount} new Author records.\n`);
+    // TWITTER
+    if (author.twitterId) {
+        const audience = audiences.find(
+            (audience) => audience.twitterId === author.twitterId,
+        );
+        if (audience) return {audience};
+    }
+    if (author.twitterUsername) {
+        const audience = audiences.find(
+            (audience) => audience.twitterUsername === author.twitterUsername,
+        );
+        if (audience) return {audience};
+    }
 
-    return audienceIds;
+    // EMAIL
+    if (author.emailAddress) {
+        const audience = audiences.find(
+            (audience) => audience.emailAddress === author.emailAddress,
+        );
+        if (audience) return {audience};
+    }
+
+    // CALLSIGN
+    if (author.callsign) {
+        const audience = audiences.find(
+            (audience) => audience.callsign === author.callsign,
+        );
+        if (audience) return {audience};
+    }
+
+    // LAST DITCH: ALIASES
+    const possibleAudiences = audiences.filter((audience) =>
+        audience.aliases.includes(author.callsign),
+    );
+    if (possibleAudiences.length === 1) {
+        return {audience: possibleAudiences[0]};
+    } else return {possibleAudiences};
 };
-const insertAuthor = (audience) => {
-    twitterId = audience.twitter_user_id || undefined;
-    twitterUsername = audience.twitter_screen_name || undefined;
-    // twitterDisplayName  Not imported from Anvil
-    emailAddress = audience.email || undefined;
-    // emailName           Not imported from Anvil
-    callsign = audience.nickname || '';
-    notes = audience.notes;
-
-    return db.run(
+//                 2022-05-22A11:33:49.000207+0000
+const toDbDateTime = (anvil) =>
+    anvil.slice(0, 10) + // 2022-05-22
+    ' ' + // Skip the A
+    anvil.slice(11, 19); // 11:33:49
+const addImportedEmail = async ({guess, author}) => {
+    const {lastID: authorId} = await db.run(
         `INSERT INTO Authors
-        (twitterId, twitterUsername, emailAddress, callsign, notes)
-        VALUES (?, ?, ?, ?, ?);`,
-        twitterId,
-        twitterUsername,
-        emailAddress,
-        callsign.trim(),
-        notes,
+            (emailAddress, emailName, callsign)
+        VALUES (?, ?, ?)
+        ON CONFLICT (emailAddress)
+        DO UPDATE SET
+            emailName = excluded.emailName,
+            callsign = excluded.callsign;`,
+        author.emailAddress,
+        author.emailName,
+        author.callsign,
+    );
+    await db.run(
+        `INSERT OR IGNORE INTO Guesses (
+            episodeId,
+            authorId,
+            type,
+            text,
+            correct,
+            bonusPoint,
+            created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        0,
+        authorId,
+        guess.type,
+        guess.text,
+        guess.correct,
+        guess.bonusPoint,
+        guess.created_at,
+    );
+};
+const addImportedTweet = async ({guess, author}) => {
+    const {lastID: authorId} = await db.run(
+        `INSERT INTO Authors
+            (twitterId, twitterUsername, twitterDisplayName, callsign)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT (twitterId)
+        DO UPDATE SET
+            twitterDisplayName = excluded.twitterDisplayName,
+            callsign = excluded.callsign
+        ON CONFLICT (twitterUsername)
+        DO UPDATE SET
+            twitterDisplayName = excluded.twitterDisplayName,
+            callsign = excluded.callsign;`,
+        author.twitterId,
+        author.twitterUsername,
+        author.twitterDisplayName,
+        author.callsign,
+    );
+    await db.run(
+        `INSERT OR IGNORE INTO Guesses (
+            episodeId,
+            authorId,
+            type,
+            text,
+            tweetId,
+            correct,
+            bonusPoint,
+            created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+        0,
+        authorId,
+        guess.type,
+        guess.text,
+        guess.tweetId,
+        guess.correct,
+        guess.bonusPoint,
+        guess.created_at,
     );
 };
 
 /*---------------*\
-  TWITTER GUESSES
+  AUDIENCE IMPORT
 \*---------------*/
 const twitterIdFixes = {
     891058134524936200: '891058134524936193',
     1324973233448300500: '1324973233448300545',
     730127769468690400: '730127769468690432',
 };
-const importTwitterGuesses = async (audienceIds) => {
+const importAudience = () => {
+    const records = loadCSV('./.data/anvil-imports/audience.csv');
+    console.log(`Loaded ${records.length} audience_rows.`);
+
+    return records.map(createAudience);
+};
+const createAudience = (audience) => {
+    const rowId = audience.ID;
+    const twitterId =
+        twitterIdFixes[audience.twitter_user_id] ||
+        audience.twitter_user_id ||
+        undefined;
+    const twitterUsername = audience.twitter_screen_name || undefined;
+    const emailAddress = audience.email || undefined;
+    const callsign = audience.nickname || twitterUsername || '';
+    const notes = audience.notes;
+    const anvilScore = [audience.correct, audience.bonus_points];
+    const aliases = audience.aliases;
+
+    return {
+        rowId,
+        twitterId,
+        twitterUsername,
+        emailAddress,
+        callsign,
+        notes,
+        anvilScore,
+        aliases,
+    };
+};
+
+/*--------------*\
+  TWITTER IMPORT
+\*--------------*/
+const importTwitterGuesses = (audiencesAndRowIds) => {
     const records = loadCSV('./.data/anvil-imports/guess-twitter.csv');
     console.log(`Loaded ${records.length} tweet_guess_rows`);
 
-    let audienceIdLookupCount = 0;
-    let twitterIdLookupCount = 0;
-    let guessInsertCount = 0;
-    const errors = [];
-
-    for (guess of records) {
-        let authorId;
-        // Look up by Anvil row id
-        if (guess.audience) {
-            const rowId = guess.audience.slice(4); // Remove "#ROW"
-            authorId = audienceIds[rowId];
-            audienceIdLookupCount++;
-        }
-        // Look up by Twitter user ID
-        if (!authorId && guess.twitter_user_id) {
-            // Cure bad IDs
-            let curedTwitterUserId =
-                twitterIdFixes[guess.twitter_user_id] || guess.twitter_user_id;
-            // Check the DB
-            const authorSelect = await getAuthorByTwitterId(curedTwitterUserId);
-            // Nothing's worked so far, skip this guess.
-            if (!authorSelect) {
-                errors.push(guess);
-                continue;
-            }
-            authorId = authorSelect.authorId;
-            twitterIdLookupCount++;
-        }
-
-        try {
-            await insertTwitterGuess(authorId, guess);
-            guessInsertCount++;
-        } catch (error) {
-            console.error(guess.text);
-            console.error(error);
-        }
-    }
-
-    console.log(`Encountered ${errors.length} bad tweet_guess_rows:`);
-    console.log(errors);
-    console.log(`Added ${guessInsertCount} new Guess records.`);
-    const audienceIdMatchCount = guessInsertCount - twitterIdLookupCount;
-    console.log(`Did ~${audienceIdMatchCount} successful row ID lookups.`);
-    const twitterIdMatchCount = audienceIdLookupCount - audienceIdMatchCount;
-    console.log(`Did ~${twitterIdMatchCount} successful twitterID lookups.\n`);
+    return records.map(formatTwitterGuess);
 };
-const getAuthorByTwitterId = (twitterId) =>
-    db.get(`SELECT authorId FROM Authors WHERE twitterId = ?`, twitterId);
-const insertTwitterGuess = (authorId, guess) => {
-    const type = guess.url === 'direct-message' ? 1 : 0;
-    const text = guess.text;
-    const correct = guess.correct === '1';
-    const bonusPoint = guess.bonus_points === '1';
-    const tweetId = guess.url.match(/\d*$/)[0] || undefined;
-
-    return db.run(
-        `INSERT INTO Guesses
-        (authorId, episodeId, type, text, correct, bonusPoint, tweetId)
-        VALUES (?, ?, ?, ?, ?, ?, ?);`,
-        authorId,
-        archiveEpisodeId,
+const formatTwitterGuess = (anvilGuess) => {
+    const type =
+        anvilGuess.url === 'direct-message'
+            ? guessTypes.TWITTER_DM
+            : guessTypes.TWEET;
+    const tweetId = anvilGuess.url.match(/\d*$/)[0] || undefined;
+    const text = anvilGuess.text;
+    const correct = anvilGuess.correct === '1';
+    const bonusPoint = anvilGuess.bonus_points === '1';
+    const created_at = toDbDateTime(anvilGuess.retrieved_on);
+    const guess = {
         type,
+        tweetId,
         text,
         correct,
         bonusPoint,
-        tweetId,
-    );
+        created_at,
+    };
+
+    const audienceRowId = anvilGuess.audience.slice(4);
+    const twitterId =
+        twitterIdFixes[anvilGuess.twitter_user_id] ||
+        anvilGuess.twitter_user_id ||
+        undefined;
+    const twitterUsername = anvilGuess.twitter_screen_name || undefined;
+    const callsign = anvilGuess.nickname || twitterUsername || '';
+    const author = {
+        audienceRowId,
+        twitterId,
+        twitterUsername,
+        callsign,
+    };
+
+    return {guess, author};
 };
 
-/*-------------*\
-  EMAIL GUESSES
-\*-------------*/
-const importEmailGuesses = async (audienceIds) => {
+/*------------*\
+  EMAIL IMPORT
+\*------------*/
+const importEmailGuesses = (audiencesAndRowIds) => {
     const records = loadCSV('./.data/anvil-imports/guess-email.csv');
     console.log(`Loaded ${records.length} email_guess_rows.`);
 
-    let emailLookupFailCount = 0;
-    const errors = [];
-    let guessInsertCount = 0;
-    let authorInsertCount = 0;
-    let authorUpdateCount = 0;
-
-    for (guess of records) {
-        // Parse the body of the email
-        const {parsedElements, errors: parseErrors} = parseTextContent(
-            guess.text,
-        );
-        if (parseErrors) continue;
-
-        let authorId;
-        // Look up by email address
-        if (parsedElements.email) {
-            const authorSelect = await getAuthorByEmailAddress(
-                parsedElements.email,
-            );
-            if (authorSelect) {
-                authorId = authorSelect.lastID;
-            } else emailLookupFailCount++;
-        }
-        // Look up by Anvil row id
-        if (!authorId && guess.audience) {
-            const rowId = guess.audience.slice(4); // Remove "#ROW"
-            authorId = audienceIds[rowId];
-        }
-        // Insert new Author
-        if (!authorId) {
-            const authorInsert = await insertEmailAuthor(parsedElements);
-            authorId = authorInsert.lastID;
-            authorInsertCount++;
-        }
-
-        try {
-            // insert guess
-            await insertEmailGuess(authorId, guess);
-            guessInsertCount++;
-
-            // Update email
-            const authorEmailUpdate = await updateAuthorEmail(
-                authorId,
-                parsedElements,
-            );
-            authorUpdateCount += authorEmailUpdate.changes;
-
-            // Update nick
-            const authorNickUpdate = await updateAuthorEmailNick(
-                authorId,
-                parsedElements,
-            );
-            authorUpdateCount += authorNickUpdate.changes;
-        } catch (error) {
-            console.error(guess.text);
-            console.error(error);
-        }
-    }
-
-    console.log(`Encountered ${errors.length} bad email guesses`);
-    console.log(errors);
-    console.log(`Added ${guessInsertCount} new Guess records.`);
-    console.log(`Email lookup failed ${emailLookupFailCount} times.`);
-    console.log(`Updated ${authorUpdateCount} Author records.\n`);
+    return records.map(formatEmailGuess);
 };
-const getAuthorByEmailAddress = (emailAddress) =>
-    db.get(
-        `SELECT authorId FROM Authors WHERE emailAddress = ?;`,
-        emailAddress,
+const formatEmailGuess = (anvilGuess) => {
+    const {parsedElements, errors: parseErrors} = parseTextContent(
+        anvilGuess.text,
     );
-const insertEmailGuess = (authorId, guess) => {
-    const text = guess.text;
-    const correct = guess.correct === '1';
-    const bonusPoint = guess.bonus_points === '1';
-
-    return db.run(
-        `INSERT INTO Guesses
-        (authorId, episodeId, type, text, correct, bonusPoint)
-        VALUES (?, ?, ?, ?, ?, ?);`,
-        authorId,
-        archiveEpisodeId,
-        2,
+    if (parseErrors) return;
+    const text = anvilGuess.text;
+    const correct = anvilGuess.correct === '1';
+    const bonusPoint = anvilGuess.bonus_points === '1';
+    const created_at = toDbDateTime(anvilGuess.recieved_on);
+    const guess = {
+        type: guessTypes.EMAIL,
         text,
         correct,
         bonusPoint,
-    );
+        created_at,
+    };
+
+    const audienceRowId = anvilGuess.audience.slice(4);
+    const emailAddress = parsedElements.email;
+    const emailName = parsedElements.nick;
+    const callsign = emailName;
+    const author = {audienceRowId, emailAddress, emailName, callsign};
+
+    return {guess, author};
 };
-const insertEmailAuthor = (parsedElements) =>
-    db.run(
-        `INSERT INTO Authors
-        (emailAddress, callsign)
-        VALUES (?, ?);`,
-        parsedElements.email,
-        parsedElements.nick.trim(),
-    );
-const updateAuthorEmail = (authorId, parsedElements) =>
-    db.run(
-        `UPDATE OR IGNORE Authors
-        SET emailAddress = ?
-        WHERE authorId = ?;`,
-        parsedElements.email,
-        authorId,
-    );
-const updateAuthorEmailNick = (authorId, parsedElements) =>
-    db.run(
-        `UPDATE Authors
-        SET callsign = ?
-        WHERE authorId = ?;`,
-        parsedElements.nick,
-        authorId,
-    );
 
 /*-----------------------*\
   EMAIL PARSING UTILITIES
@@ -423,10 +439,6 @@ DUPLICATES IN ANVIL AUDIENCES:
 }
 
 
-
-
-
-
 {
     ID: '[105119,143440248]',
     nickname: 'Wedemark Space Agency',
@@ -445,11 +457,6 @@ DUPLICATES IN ANVIL AUDIENCES:
     bonus_points: '7',
     aliases: '["Julien and Felix","WedemarkSpace","Wedemark Space Agency","Team Wedemark","Wedemark","Julien Marten"]',
 }
-
-
-
-
-
 
 
 {

@@ -14,18 +14,13 @@ const ID = require('../../../config/discord-id.json');
 /*---------*\
   Utilities
 \*---------*/
-const getInteractionResponse = (interaction) => {
-    const hideReply = interaction.options.getBoolean('hidden');
-    if (hideReply) {
-        return config.twsf.hiddenReply;
-    } else {
-        const responseOptions = config.twsf.publicReply;
-        responseOptions.content = responseOptions.content
-            .replace('id', interaction.user.id)
-            .replace('txt', interaction.options.getString('guess'));
+const getTwsfChannelMessage = (interaction) => {
+    const messageOptions = responses.twsf.twsfChannelMessage;
+    messageOptions.content = messageOptions.content
+        .replace('id', interaction.user.id)
+        .replace('txt', interaction.options.getString('guess'));
 
-        return responseOptions;
-    }
+    return messageOptions;
 };
 const createGuessFromInteraction = (interaction) => {
     const type = guessTypes.DISCORD;
@@ -51,8 +46,7 @@ const handleNewGuess = async (interaction) => {
             'Failed to create TWSF guess or author from slash command!',
             interaction.toString(),
         );
-        interaction.reply(responses.error);
-        return;
+        return interaction.reply(responses.error);
     }
 
     // Store this guess
@@ -63,15 +57,21 @@ const handleNewGuess = async (interaction) => {
             interaction.toString(),
             {guess, author},
         );
-        interaction.reply(responses.failure);
+        return interaction.reply(responses.failure);
     }
 
-    // Build and send reply
-    const responseOptions = getInteractionResponse(interaction);
-    const commandReply = await interaction.reply(responseOptions);
+    // Send acknowledgement
+    await interaction.reply(responses.twsf.guessAccepted);
 
     // If the reply wasn't hidden, store its ID
-    if (commandReply) updateGuessDiscordReply(guess, commandReply.id);
+    const hiddenOption = interaction.options.getBoolean('hidden');
+    const postToTwsfChannel = hiddenOption || hiddenOption === null; // default True
+    if (postToTwsfChannel) {
+        const messageOptions = getTwsfChannelMessage(interaction);
+        const twsfChannel = await interaction.client.channels.fetch(ID.channel.thisweeksf);
+        const postedMessage = await twsfChannel.send(messageOptions);
+        updateGuessDiscordReply(guess, postedMessage.id);
+    }
 };
 const handleClueRequest = async (interaction) => {
     await interaction.deferReply({ephemeral: true});

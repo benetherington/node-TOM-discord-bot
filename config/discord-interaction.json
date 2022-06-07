@@ -11,15 +11,13 @@
             }
         },
         "twsf": {
-            "hiddenReply": {
+            "guessAccepted": {
                 "content": "Thank you! Your guess has been logged.",
                 "ephemeral": true
             },
-            "publicReply": {
+            "twsfChannelMessage": {
                 "content": "<@id> guessed: ||txt||",
-                "allowed_mentions": {"parse": []},
-                "ephemeral": false,
-                "fetchReply": true
+                "allowed_mentions": {"parse": []}
             }
         },
         "stats": [

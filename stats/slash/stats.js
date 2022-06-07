@@ -18,24 +18,26 @@ const {responses} = require('../../config/discord-interaction.json');
 const getStatsMessageContent = async (discordId) => {
     const {score, bonusPoints} = await getAuthorTwsfScore(discordId);
     const {submissions} = await getAuthorSubmissionCount(discordId);
-    const {votesCast: cast} = await getAuthorVotesCast(discordId);
-    const {earned} = await getAuthorVotesEarned(discordId);
+    const {votesCast} = await getAuthorVotesCast(discordId);
+    const {votesEarned} = await getAuthorVotesEarned(discordId);
 
     const message = responses.stats
         .join('\n')
         .replace('<bonusPoints>', bonusPoints || '0')
         .replace('<score>', score || '0')
         .replace('<submissions>', submissions || '0')
-        .replace('<cast>', cast || '0')
-        .replace('<earned>', earned || '0');
+        .replace('<cast>', votesCast || '0')
+        .replace('<earned>', votesEarned || '0');
 
     return codeBlock(message);
 };
 
-const buildLeaderboardString = ({points, discordId, callsign}) => {
-    const pointsStr = points.toString().padStart(5, ' ');
+const buildLeaderboardString = ({discordId, callsign, ...rest}) => {
+    const score =
+        rest.score || rest.submissions || rest.votesCast || rest.votesEarned;
+    const scoreStr = score.toString().padStart(5, ' ');
     const name = discordId ? `<@${discordId}>` : callsign;
-    return `${pointsStr} - ${name}`;
+    return `${scoreStr} - ${name}`;
 };
 const getLeaderboardMessage = async () => {
     const messageLines = [];

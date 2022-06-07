@@ -106,7 +106,7 @@ const upsertAuthorByGuessType = (guessType, author) => {
 module.exports.getAuthorTwsfScore = (discordId) =>
     db.get(
         `SELECT
-            SUM(correct) + SUM(bonusPoint) AS points,
+            SUM(correct) + SUM(bonusPoint) AS score,
             SUM(bonusPoint) AS bonusPoints
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
@@ -116,13 +116,13 @@ module.exports.getAuthorTwsfScore = (discordId) =>
 module.exports.getTwsfHighScores = () =>
     db.all(
         `SELECT
-            SUM(correct) + SUM(bonusPoint) AS points,
+            SUM(correct) + SUM(bonusPoint) AS score,
             callsign,
             discordId
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
         GROUP BY authorId
-        ORDER BY points DESC
+        ORDER BY score DESC
         LIMIT 5;`,
     );
 

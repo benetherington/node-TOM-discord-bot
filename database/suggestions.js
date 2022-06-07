@@ -157,7 +157,7 @@ module.exports.deleteSuggestion = (suggestion) => {
 module.exports.getAuthorSubmissionCount = (discordId) =>
     db.get(
         `SELECT
-            COUNT(*) as points
+            COUNT(*) as submissions
         FROM Suggestions
         LEFT JOIN Authors USING(authorId)
         WHERE discordId = ?;`,
@@ -166,13 +166,12 @@ module.exports.getAuthorSubmissionCount = (discordId) =>
 module.exports.getSubmissionHighScores = () =>
     db.all(
         `SELECT
-            COUNT(*) AS points,
-            discordId,
-            displayName
+            COUNT(*) AS submissions,
+            discordId
         FROM Suggestions
         LEFT JOIN Authors USING(authorId)
         GROUP BY authorId
-        ORDER BY points DESC
+        ORDER BY submissions DESC
         LIMIT 5;`,
     );
 
@@ -228,7 +227,7 @@ module.exports.toggleVoter = async (voter, suggestion) => {
 module.exports.getAuthorVotesCast = (discordId) =>
     db.get(
         `SELECT
-            COUNT(*) as points
+            COUNT(*) AS votesCast
         FROM Suggestion_Voters
         LEFT JOIN Authors ON authorId = voterId
         WHERE discordId = ?;`,
@@ -237,36 +236,36 @@ module.exports.getAuthorVotesCast = (discordId) =>
 module.exports.getVotesCastHighScores = () =>
     db.all(
         `SELECT
-            COUNT(*) AS points,
+            COUNT(*) AS votesCast,
             discordId
         FROM Suggestion_Voters
         LEFT JOIN Authors ON (authorId = voterId)
         GROUP BY voterId
-        ORDER BY points DESC
+        ORDER BY votesCast DESC
         LIMIT 5;`,
     );
 module.exports.getAuthorVotesEarned = (discordId) =>
     db.get(
         `SELECT
-            COUNT(*) AS points
+            COUNT(*) AS votesEarned
         FROM Suggestion_Voters
         LEFT JOIN Suggestions USING(suggestionId)
         LEFT JOIN Authors USING(authorId)
         WHERE
-            discordId = 888900
+            discordId = ?
             AND voterId != authorId;`,
         discordId,
     );
 module.exports.getVotesEarnedHighScores = () =>
     db.all(
         `SELECT
-            COUNT(*) AS points,
+            COUNT(*) AS votesEarned,
             discordId
         FROM Suggestion_voters
         LEFT JOIN Suggestions USING(suggestionId)
         LEFT JOIN Authors USING(authorId)
         WHERE voterId != authorId
         GROUP BY authorId
-        ORDER BY points DESC
+        ORDER BY votesEarned DESC
         LIMIT 5;`,
     );

@@ -67,6 +67,18 @@ const buildAuthor = (id, member) => {
         callsign,
     };
 };
+const findBestMatch = (newAuthor, likeAuthors) => {
+    const sameId = likeAuthors.find(
+        (a) => a.discordId.toString() === newAuthor.discordId,
+    );
+    if (sameId) return sameId;
+
+    const closeId = likeAuthors.find(
+        (a) =>
+            a.discordId.toString().slice(-4) === newAuthor.discordId.slice(-4),
+    );
+    if (closeId) return closeId;
+};
 
 client.once('ready', async () => {
     db = await public;
@@ -77,23 +89,28 @@ client.once('ready', async () => {
     const members = await guild.members.fetch();
 
     for (const [id, member] of members) {
-        const author = buildAuthor(id, member);
+        const newAuthor = buildAuthor(id, member);
 
-        if (author.username === 'stygarfield') continue;
         // Find matching Authors on username. DiscordId is malformed because
         // rounding errors.
-        const remainingLikeAuthors = await getLikeAuthors(author);
-        const firstLikeAuthor = remainingLikeAuthors.pop();
+        let likeAuthors = await getLikeAuthors(newAuthor);
 
-        // If we found more than one author that matches username or discordId,
-        // let a human make a decision.
-        if (remainingLikeAuthors.length) console.error(author);
+        // Non-ideal: pick which match to update
+        if (likeAuthors.length > 1) {
+            const bestMatch = findBestMatch(newAuthor, likeAuthors);
+            if (!bestMatch) continue;
+            newAuthor.authorId = bestMatch.authorId;
+            updateAuthorById(newAuthor);
+            continue;
+        }
 
-        if (firstLikeAuthor) {
-            author.discordId = firstLikeAuthor.discordId;
-            await updateAuthorById(author);
+        // Ideal: update or insert a single match
+        const likeAuthor = likeAuthors.pop();
+        if (likeAuthor) {
+            newAuthor.authorId = likeAuthor.authorId;
+            updateAuthorById(newAuthor);
         } else {
-            await upsertAuthor(author);
+            upsertAuthor(newAuthor);
         }
     }
     console.log('done!');

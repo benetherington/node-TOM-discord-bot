@@ -43,7 +43,7 @@ const createSuggestionFromMessage = (message) => {
 };
 
 module.exports.addNewSuggestionFromApi = async (messageId) => {
-    console.log(`API creating suggestion from message ${messageId}`);
+    client.logger.info(`API creating suggestion from message ${messageId}`);
 
     const message = await fetchMessage(messageId);
     const author = await createAuthorFromMessage(message);
@@ -51,6 +51,6 @@ module.exports.addNewSuggestionFromApi = async (messageId) => {
     addNewSuggestion(author, suggestion);
 };
 module.exports.removeSuggestionFromApi = async (suggestionId) => {
-    console.log(`API deleting suggestion ${suggestionId}`);
+    client.logger.info(`API deleting suggestion ${suggestionId}`);
     deleteSuggestion({suggestionId});
 };

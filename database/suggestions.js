@@ -1,20 +1,17 @@
-const sqlite3 = require('sqlite3').verbose();
-const dbWrapper = require('sqlite');
+const logger = require('../logger');
 
-const dbFile = require('path').resolve('./.data/title-suggestions.db');
-const migrationsPath = './database/migrations/public';
 let db;
 
 /*---------*\
   UTILITIES
 \*---------*/
-const printDbSummary = async () => {
+const printSuggestionsSummary = async () => {
     try {
         const selectTables = await db.all(
             "SELECT name FROM sqlite_master WHERE type='table'",
         );
         const exists = selectTables.map((row) => row.name).join(', ');
-        console.log(`Tables: ${exists}`);
+        logger.info(`Tables: ${exists}`);
 
         const suggestions = await db.all(
             `SELECT username, text
@@ -24,14 +21,13 @@ const printDbSummary = async () => {
             LIMIT 10`,
         );
         if (suggestions.length) {
-            console.log('Most recent suggestions:');
-            console.table(suggestions);
+            logger.info('Most recent suggestions:', suggestions);
         } else {
-            console.log('No suggestions have been made yet.');
+            logger.info('No suggestions have been made yet.');
         }
     } catch (error) {
-        console.error('There was an issue printing the db summary.');
-        console.error(error);
+        logger.error('There was an issue printing the db summary.');
+        logger.error(error);
     }
 };
 
@@ -42,7 +38,7 @@ const initDB = async () => {
     const public = require('./public');
     db = await public;
 };
-initDB().then(printDbSummary);
+initDB().then(printSuggestionsSummary);
 
 /*-------*\
   EPISODE

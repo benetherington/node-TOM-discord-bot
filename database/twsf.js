@@ -1,8 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
-const dbWrapper = require('sqlite');
-
-const dbFile = require('path').resolve('./.data/title-suggestions.db');
-const migrationsPath = './database/migrations/public';
+const logger = require('../logger');
 let db;
 
 /*---------*\
@@ -14,7 +10,7 @@ const printDbSummary = async () => {
             "SELECT name FROM sqlite_master WHERE type='table';",
         );
         const exists = selectTables.map((row) => row.name).join(', ');
-        console.log(`Tables: ${exists}`);
+        logger.info('Tables:', exists);
 
         const guesses = await db.all(
             `SELECT type, text
@@ -23,14 +19,14 @@ const printDbSummary = async () => {
             LIMIT 10`,
         );
         if (guesses.length) {
-            console.log('Most recent TWSF guesses:');
-            console.table(guesses);
+            logger.info('Most recent TWSF guesses:', guesses);
         } else {
-            console.log('No TWSF guesses have been made yet.');
+            logger.info('No TWSF guesses have been made yet.');
         }
     } catch (error) {
-        console.error('There was an issue printing the TWSF db summary.');
-        console.error(error);
+        logger.error('There was an issue printing the TWSF db summary.', {
+            error,
+        });
     }
 };
 

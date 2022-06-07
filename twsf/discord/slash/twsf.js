@@ -32,9 +32,9 @@ const createGuessFromInteraction = (interaction) => {
     const rawText = interaction.options.getString('guess');
     // If the user tried to spoiler their submission, delete the spoiler
     // formatting: || at the beginning and end.
-    const text = rawText.replace(/(^\|\|)(.*)(\|\|$)/, "$2");
-    
-    return {type, text}
+    const text = rawText.replace(/(^\|\|)(.*)(\|\|$)/, '$2');
+
+    return {type, text};
 };
 
 /*-------------------*\
@@ -47,10 +47,10 @@ const handleNewGuess = async (interaction) => {
 
     // Validate
     if (!guess.text || !author) {
-        console.error(
+        interaction.client.logger.error(
             'Failed to create TWSF guess or author from slash command!',
+            interaction.toString(),
         );
-        console.error(interaction.toString());
         interaction.reply(responses.error);
         return;
     }
@@ -58,10 +58,11 @@ const handleNewGuess = async (interaction) => {
     // Store this guess
     const storedGuess = addNewGuess({guess, author});
     if (!storedGuess) {
-        console.error('Failed to store TWSF guess from slash command!');
-        console.error(interaction.toString());
-        console.error(guess);
-        console.error(author);
+        interaction.client.logger.error(
+            'Failed to store TWSF guess from slash command!',
+            interaction.toString(),
+            {guess, author},
+        );
         interaction.reply(responses.failure);
     }
 
@@ -117,7 +118,7 @@ const data = new SlashCommandBuilder()
 const execute = async (interaction) => {
     const username = interaction.user.username;
     const subCommand = interaction.options.getSubcommand();
-    console.log(`${username} used /twsf ${subCommand}`);
+    interaction.client.logger.info(`${username} used /twsf ${subCommand}`);
 
     try {
         if (interaction.options.getSubcommand() === 'guess') {
@@ -126,9 +127,9 @@ const execute = async (interaction) => {
             await handleClueRequest(interaction);
         }
     } catch (error) {
+        interaction.client.logger.error(error);
         if (interaction.deferred) interaction.editReply(responses.failure);
         else interaction.reply(responses.failure);
-        console.error(error);
     }
 };
 

@@ -1,16 +1,17 @@
+const logger = require('../logger');
 let db;
 
 /*---------*\
   UTILITIES
 \*---------*/
-const printDbSummary = async () => {
+const printThankYouSummary = async () => {
     try {
         const chatThank = await db.get(
             `SELECT COUNT(*) AS count
             FROM Authors
             WHERE chatThank;`,
         );
-        console.log(`Chat thank-yous: ${chatThank.count}`);
+        logger.info(`Chat thank-yous: ${chatThank.count}`);
     } catch {}
 };
 
@@ -21,7 +22,7 @@ const initDB = async () => {
     const public = require('./public');
     db = await public;
 };
-initDB().then(printDbSummary);
+initDB().then(printThankYouSummary);
 
 module.exports.updateAuthorThank = (author, chatThank = true) => {
     db.run(

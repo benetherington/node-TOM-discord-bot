@@ -1,11 +1,8 @@
-// Glitch handles its own env
-try {
-    require('dotenv').config();
-} catch (ReferenceError) {
-    console.log('oh hey we must be running on Glitch');
-}
+require('dotenv').config();
 const sqlite3 = require('sqlite3').verbose();
 const dbWrapper = require('sqlite');
+
+const logger = require('../logger');
 
 const dbFile = require('path').resolve('./.data/admin.db');
 const migrationsPath = './database/migrations/admin';
@@ -20,32 +17,32 @@ const printDbSummary = async () => {
             "SELECT name FROM sqlite_master WHERE type='table'",
         );
         const exists = selectTables.map((row) => row.name).join(', ');
-        console.log(`Tables: ${exists}`);
+        logger.info(`Tables: ${exists}`);
 
         const administrators = await db.all(
             `SELECT COUNT (*)
             FROM Administrators`,
         );
         if (administrators.count) {
-            console.log(`There are ${administrators.count} admins.`);
+            logger.info(`There are ${administrators.count} admins.`);
         } else {
-            console.log('No admin users exist yet.');
+            logger.info('No admin users exist yet.');
         }
     } catch (error) {
-        console.error(
+        logger.error(
             'There was an issue initializing the administrators database.',
+            {error},
         );
-        console.error(error);
     }
 };
 
 const initDB = async () => {
-    console.log('SQLite');
+    logger.info('SQLite');
     db = await dbWrapper.open({
         filename: dbFile,
         driver: sqlite3.cached.Database,
     });
-    console.log('Migrating admin...');
+    logger.info('Migrating admin...');
     await db.migrate({migrationsPath});
 };
 initDB().then(printDbSummary);

@@ -24,7 +24,7 @@ data.permissions = [
 let execute = async (interaction) => {
     // Extract requested new episode number
     const epNum = interaction.options.getInteger('ep_num');
-    console.log(`Starting new episode ${epNum}.`);
+    interaction.client.logger.info(`Starting new episode ${epNum}.`);
     try {
         // Add new episode
         const {changes: episodeCreated} = await addNewEpisode(epNum);
@@ -34,8 +34,10 @@ let execute = async (interaction) => {
         else interaction.reply(config.titleSuggestions.notNewEpisode);
     } catch (error) {
         interaction.reply(config.failure);
-        console.error('slash/new failed in an unexpected way.');
-        console.error(error);
+        interaction.client.logger.error(
+            'slash/new failed in an unexpected way.',
+            {error},
+        );
     }
 };
 

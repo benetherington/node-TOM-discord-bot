@@ -1,12 +1,10 @@
-try {
-    require('dotenv').config();
-} catch (ReferenceError) {
-    console.log('oh hey we must be running on Glitch');
-}
-const Twitter = require('twitter');
-const {addNewGuess, guessTypes} = require('../../database/twsf');
+require('dotenv').config();
 
+const Twitter = require('twitter');
+const logger = require('../../logger');
+const {addNewGuess, guessTypes} = require('../../database/twsf');
 const ID = require('../../config/twitter-id.json');
+
 const client = new Twitter({
     consumer_key: process.env.TWITTER_API_KEY,
     consumer_secret: process.env.TWITTER_API_KEY_SECRET,
@@ -52,11 +50,11 @@ const fetchDMs = async () => {
             cursor,
         });
 
-        console.log(`Found ${response.events.length} direct messsages...`);
+        logger.info(`Found ${response.events.length} direct messsages...`);
 
         // Find the message we want
         const hashtagMessages = response.events.filter(isIncomingHashtag);
-        console.log(
+        logger.info(
             `... ${hashtagMessages.length} of them are #ThisWeekSF direct messsages.`,
         );
         messagesToReturn = messagesToReturn.concat(hashtagMessages);
@@ -65,7 +63,7 @@ const fetchDMs = async () => {
         if (response.nextCursor) {
             // We'll do an additional loop
             cursor = response.nextCursor;
-            console.log('Next page...');
+            logger.info('Next page...');
         } else doneFetching = true;
     }
 
@@ -74,14 +72,14 @@ const fetchDMs = async () => {
 };
 
 module.exports = async () => {
-    console.log('Storing #ThisWeekSF direct messages...');
+    logger.info('Storing #ThisWeekSF direct messages...');
 
     // Get new DMs
     const twsfDms = await fetchDMs();
 
     // Don't continue if there weren't any DMs
     if (!twsfDms.length) {
-        console.log('No #ThisWeekSF direct messages found.');
+        logger.info('No #ThisWeekSF direct messages found.');
         return;
     }
 
@@ -99,7 +97,7 @@ module.exports = async () => {
         },
         0,
     );
-    console.log(
+    logger.info(
         `Done storing ${newGuessesCount} new #ThisWeekSF direct messages!`,
     );
 };

@@ -1,11 +1,8 @@
-const {addNewGuess, addTwsfError, guessTypes} = require('../database/twsf');
+require('dotenv').config();
 
-// Glitch handles its own env
-try {
-    require('dotenv').config();
-} catch (ReferenceError) {
-    console.log('oh hey we must be running on Glitch');
-}
+const logger = require('../logger');
+
+const {addNewGuess, addTwsfError, guessTypes} = require('../database/twsf');
 
 const shiftFromLine = (textLines) => {
     let fromLine; // = "From: Damonjalis <fake_greek_email@gmail.com>"
@@ -105,8 +102,10 @@ const parseTextContent = (textContent) => {
 
     // Log any errors
     if (errors.length) {
-        console.log('Non-fatal error/s encountered while parsing TWSF email:');
-        console.log(errors);
+        logger.info(
+            'Non-fatal error/s encountered while parsing TWSF email:',
+            errors,
+        );
     } else {
         errors = null;
     }
@@ -146,10 +145,9 @@ module.exports = (textContent) => {
             throw 'Something went wrong while storing TWSF email...';
 
         // Done!
-        console.log('Done storing new TWSF email!');
+        logger.info('Done storing new TWSF email!');
     } catch (error) {
-        console.error(error);
-        console.error(textContent);
+        logger.error({error, textContent});
         addTwsfError(JSON.stringify({error, textContent}));
     }
 };

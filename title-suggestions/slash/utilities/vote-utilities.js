@@ -2,6 +2,7 @@ const {MessageActionRow, MessageButton} = require('discord.js');
 const {
     getSuggestionsWithCountedVotes,
 } = require('../../../database/suggestions');
+const logger = require('../../../logger');
 
 const chunkArray = (toChunk, chunkSize) => {
     let chunked = [];
@@ -46,7 +47,7 @@ module.exports.getVoteMessages = async () => {
 
     // SELECT Suggestions
     const allCountedSuggestions = await getSuggestionsWithCountedVotes();
-    console.log(
+    logger.info(
         `Found ${allCountedSuggestions.length} suggestions to vote on.`,
     );
     // SPLIT suggestions into chunks

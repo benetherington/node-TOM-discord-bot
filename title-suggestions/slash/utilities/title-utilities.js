@@ -31,7 +31,7 @@ module.exports.getNewSuggestionMessage = async (interaction) => {
     const author = createAuthorFromInteraction(interaction);
     const text = interaction.options.getString('suggestion');
 
-    console.log(`Adding suggstion: ${text}`);
+    interaction.client.logger.info(`Adding suggstion: ${text}`);
     const suggestionId = await addNewSuggestion(author, {text});
     return formatTitleReply(author, {text, suggestionId});
 };

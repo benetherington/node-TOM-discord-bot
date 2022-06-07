@@ -35,14 +35,14 @@ const updateButtonInMesssage = (originalMessage, searchId, newCount) => {
 };
 
 // DATABASE
-const toggleVote = async (voter, suggestion) => {
+const toggleVote = async (voter, suggestion, logger = console) => {
     const addedVote = await toggleVoter(voter, suggestion);
     if (addedVote) {
-        console.log(
+        logger.log(
             `Remove vote from ${voter.username} for <${suggestion.suggestionId}>.`,
         );
     } else {
-        console.log(
+        logger.log(
             `Add vote from ${voter.username} for <${suggestion.suggestionId}>.`,
         );
     }
@@ -57,7 +57,7 @@ module.exports.receiveButton = async (buttonInteraction) => {
     };
 
     // ASSOCIATE voter and suggestion in the DB
-    await toggleVote(voter, suggestion);
+    await toggleVote(voter, suggestion, buttonInteraction.client.logger);
 
     // Prepare to update the button's message
     const voteCount = await countVotesOnSuggestion(suggestion);

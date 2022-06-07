@@ -7,7 +7,7 @@ const data = new SlashCommandBuilder()
     .setDescription('Begin a new voting round')
     .toJSON();
 const execute = async (interaction) => {
-    console.log(`${interaction.user.username} used /vote`);
+    interaction.client.logger.info(`${interaction.user.username} used /vote`);
     await interaction.deferReply();
 
     try {
@@ -25,7 +25,7 @@ const execute = async (interaction) => {
         }
     } catch (error) {
         interaction.editReply(config.failure);
-        console.log(error);
+        interaction.client.logger.error(error);
     }
 };
 

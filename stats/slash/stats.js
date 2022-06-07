@@ -38,33 +38,31 @@ const buildLeaderboardString = ({points, discordId, callsign}) => {
     return `${pointsStr} - ${name}`;
 };
 const getLeaderboardMessage = async () => {
-    const message = [];
+    const messageLines = [];
 
     // Add TWSF stats
-    message.push('This Week in Spaceflight History total points:');
+    messageLines.push('This Week in Spaceflight History total points:');
     const twsf = await getTwsfHighScores();
     const twsfLines = twsf.map(buildLeaderboardString);
-    message.push(twsfLines.join('\n'));
+    messageLines.push(twsfLines.join('\n'));
 
     // Add title suggestion stats
-    message.push('Episode titles submitted:');
+    messageLines.push('Episode titles submitted:');
     const submissions = await getSubmissionHighScores();
     const submissionsLines = submissions.map(buildLeaderboardString);
-    message.push(submissionsLines.join('\n'));
+    messageLines.push(submissionsLines.join('\n'));
 
-    message.push('Episode title votes cast:');
+    messageLines.push('Episode title votes cast:');
     const cast = await getVotesCastHighScores();
     const castLines = cast.map(buildLeaderboardString);
-    message.push(castLines.join('\n'));
+    messageLines.push(castLines.join('\n'));
 
-    message.push('Episode title votes earned:');
+    messageLines.push('Episode title votes earned:');
     const earned = await getVotesEarnedHighScores();
     const earnedLines = earned.map(buildLeaderboardString);
-    message.push(earnedLines.join('\n'));
+    messageLines.push(earnedLines.join('\n'));
 
-    const messages = message.join('\n');
-    console.log(messages);
-    return messages;
+    return messageLines.join('\n');
 };
 
 /*--------*\
@@ -73,7 +71,7 @@ const getLeaderboardMessage = async () => {
 const handleUserRequest = async (interaction) => {
     // Who are we looking up?
     const query = interaction.options.getUser('query') || interaction.user;
-    console.log(`Query user is ${query.username}`);
+    interaction.client.logger.info(`Query user is ${query.username}`);
 
     // Build a response
     const stats = await getStatsMessageContent(query.id);
@@ -139,12 +137,14 @@ const data = new SlashCommandBuilder()
 
 const execute = async (interaction) => {
     const subCommand = interaction.options.getSubcommand();
-    console.log(`${interaction.user.username} used /stats ${subCommand}.`);
+    interaction.client.logger.info(
+        `${interaction.user.username} used /stats ${subCommand}.`,
+    );
     try {
         if (subCommand === 'leaderboard') handleLeaderboardRequest(interaction);
         else handleUserRequest(interaction);
     } catch (error) {
-        console.error(error);
+        interaction.client.logger.error(error);
         interaction.reply(responses.failure);
     }
 };

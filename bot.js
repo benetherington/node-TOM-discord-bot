@@ -51,7 +51,7 @@ const slashDirs = [
     './stats/slash/',
 ];
 
-// Fetch all the modules we'll need to require
+// Assemble all the module files we'll need to require
 const slashDirsAndFileNames = slashDirs.map((dir) => {
     let fileNames = fs.readdirSync(dir);
     fileNames = fileNames.filter((name) => name.endsWith('.js'));
@@ -78,7 +78,7 @@ const receiveSlash = async (interaction) => {
 
     slash.execute(interaction).catch((error) => {
         client.logger.error(error);
-        interaction.reply(responses.failure);
+        if (interaction.isRepliable()) interaction.reply(responses.failure);
     });
 };
 

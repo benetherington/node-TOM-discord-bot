@@ -23,15 +23,23 @@
                 "content": "Hmmm, I don't see the most recent clue. I'm only looking 20 messages back, but maybe you can find it yourself in #thisweeksf?"
             }
         },
-        "stats": [
-            "This Week in Spaceflight History:",
-            "    <bonusPoints> bonus points",
-            "    <score> points total",
-            "Episode title suggestions:",
-            "    <submissions> titles suggested",
-            "    <cast> votes cast",
-            "    <earned> votes earned"
-        ],
+        "stats": {
+            "user": [
+                "This Week in Spaceflight History:",
+                "    <bonusPoints> bonus points",
+                "    <score> points total",
+                "Episode title suggestions:",
+                "    <submissions> titles suggested",
+                "    <cast> votes cast",
+                "    <earned> votes earned"
+            ],
+            "leaderboard": {
+                "twsf": "This Week in Spaceflight History total points:",
+                "submissions": "Episode titles submitted:",
+                "cast": "Episode title votes cast:",
+                "earned": "Episode title votes earned:"
+            }
+        },
         "help": {
             "content": [
                 "Hey there! I'm Jukebox. I got this name when Ben thought it",

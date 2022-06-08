@@ -12,10 +12,10 @@ const {
 } = require('../../database/suggestions');
 const {responses} = require('../../config/discord-interaction.json');
 
-/*---------*\
-  UTILITIES
-\*---------*/
-const getStatsMessageContent = async (discordId) => {
+/*--------------------*\
+  USER MESSAGE BUILDER
+\*--------------------*/
+const buildUserMessage = async (discordId) => {
     const {score, bonusPoints} = await getAuthorTwsfScore(discordId);
     const {submissions} = await getAuthorSubmissionCount(discordId);
     const {votesCast} = await getAuthorVotesCast(discordId);
@@ -32,6 +32,9 @@ const getStatsMessageContent = async (discordId) => {
     return codeBlock(message);
 };
 
+/*---------------------------*\
+  LEADERBOARD MESSAGE BUILDER
+\*---------------------------*/
 const buildLeaderboardString = ({discordId, callsign, ...rest}) => {
     const score =
         rest.score || rest.submissions || rest.votesCast || rest.votesEarned;
@@ -39,31 +42,25 @@ const buildLeaderboardString = ({discordId, callsign, ...rest}) => {
     const name = discordId ? `<@${discordId}>` : callsign;
     return `${scoreStr} - ${name}`;
 };
-const getLeaderboardMessage = async () => {
+const buildLeaderboardMessage = async () => {
+    // Configure headers and the DB calls assocaited with them
+    const actionList = [
+        [responses.stats.leaderboard.twsf, getTwsfHighScores],
+        [responses.stats.leaderboard.submissions, getSubmissionHighScores],
+        [responses.stats.leaderboard.cast, getVotesCastHighScores],
+        [responses.stats.leaderboard.earned, getVotesEarnedHighScores],
+    ];
+
+    // Make db calls, format the results
     const messageLines = [];
+    for (const [header, func] of actionList) {
+        messageLines.push(header);
+        const scores = await func();
+        const scoreString = scores.map(buildLeaderboardString).join('\n');
+        messageLines.push(scoreString);
+    }
 
-    // Add TWSF stats
-    messageLines.push('This Week in Spaceflight History total points:');
-    const twsf = await getTwsfHighScores();
-    const twsfLines = twsf.map(buildLeaderboardString);
-    messageLines.push(twsfLines.join('\n'));
-
-    // Add title suggestion stats
-    messageLines.push('Episode titles submitted:');
-    const submissions = await getSubmissionHighScores();
-    const submissionsLines = submissions.map(buildLeaderboardString);
-    messageLines.push(submissionsLines.join('\n'));
-
-    messageLines.push('Episode title votes cast:');
-    const cast = await getVotesCastHighScores();
-    const castLines = cast.map(buildLeaderboardString);
-    messageLines.push(castLines.join('\n'));
-
-    messageLines.push('Episode title votes earned:');
-    const earned = await getVotesEarnedHighScores();
-    const earnedLines = earned.map(buildLeaderboardString);
-    messageLines.push(earnedLines.join('\n'));
-
+    // Join everything into one string
     return messageLines.join('\n');
 };
 
@@ -76,10 +73,10 @@ const handleUserRequest = async (interaction) => {
     interaction.client.logger.info(`Query user is ${query.username}`);
 
     // Build a response
-    const stats = await getStatsMessageContent(query.id);
+    const stats = await buildUserMessage(query.id);
     const content = `${query.username}'s stats:${stats}`;
 
-    // Set ephemeral
+    // Set ephemeral, default to true;
     let ephemeral = interaction.options.getBoolean('hidden');
     if (ephemeral === null) ephemeral = true;
 
@@ -88,9 +85,9 @@ const handleUserRequest = async (interaction) => {
 };
 const handleLeaderboardRequest = async (interaction) => {
     // Build a response
-    const content = await getLeaderboardMessage();
+    const content = await buildLeaderboardMessage();
 
-    // Set ephemeral
+    // Set ephemeral, default to true;
     let ephemeral = interaction.options.getBoolean('hidden');
     if (ephemeral === null) ephemeral = true;
 

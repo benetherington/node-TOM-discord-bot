@@ -40,12 +40,10 @@ module.exports = (fastify, opts, done) => {
             // Return success
             return reply.send(1);
         } catch (error) {
-            request.log.error(
-                'Error encountered while processing TWSF email:',
-                {
-                    error,
-                },
-            );
+            request.log.error({
+                msg: 'Error encountered while processing TWSF email:',
+                error,
+            });
             return reply.error(500).send();
         }
     });

@@ -21,10 +21,10 @@ const execute = async (interaction) => {
         else interaction.reply(config.error);
     } catch (error) {
         interaction.reply(config.failure);
-        interaction.client.logger.error(
-            'slash/title failed in an unexpected way.',
-        );
-        interaction.client.logger.error(error);
+        interaction.client.logger.error({
+            msg: 'slash/title failed in an unexpected way.',
+            error
+        });
     }
 };
 

@@ -34,10 +34,10 @@ let execute = async (interaction) => {
         else interaction.reply(config.titleSuggestions.notNewEpisode);
     } catch (error) {
         interaction.reply(config.failure);
-        interaction.client.logger.error(
-            'slash/new failed in an unexpected way.',
-            {error},
-        );
+        interaction.client.logger.error({
+            msg: 'slash/new failed in an unexpected way.',
+            error,
+        });
     }
 };
 

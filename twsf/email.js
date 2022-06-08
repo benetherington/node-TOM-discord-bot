@@ -4,6 +4,9 @@ const logger = require('../logger');
 
 const {addNewGuess, addTwsfError, guessTypes} = require('../database/twsf');
 
+/*-----------------*\
+  PARSING UTILITIES
+\*-----------------*/
 const shiftFromLine = (textLines) => {
     let fromLine; // = "From: Damonjalis <fake_greek_email@gmail.com>"
 
@@ -63,6 +66,10 @@ const shiftBodyLines = (textLines) => {
     // Done!
     return body;
 };
+
+/*---------------*\
+  HANDLER HELPERS
+\*---------------*/
 const parseTextContent = (textContent) => {
     // Parse forwarded emails. For now, we won't be collecting emails directly
     // from listeners. Instead, Ben will forward them.
@@ -70,7 +77,7 @@ const parseTextContent = (textContent) => {
     // debugging easier by accumulating error messages as we go and including
     // them in the database.
     const parsedElements = {};
-    let errors = [];
+    let parsingErrors = [];
 
     // The components we're looking for are separated by line breaks
     const textLines = textContent.split(/(\r|\n|\r\n)/);
@@ -81,7 +88,7 @@ const parseTextContent = (textContent) => {
         parsedElements.nick = nick;
         parsedElements.email = email;
     } catch (error) {
-        errors.push(['from', error.message]);
+        parsingErrors.push(['from', error.message]);
     }
 
     // Subject: Thisweeksf
@@ -89,7 +96,7 @@ const parseTextContent = (textContent) => {
         // Look for the right line
         parsedElements.subject = shiftSubjectLine(textLines);
     } catch (error) {
-        errors.push(['subject', error.message]);
+        parsingErrors.push(['subject', error.message]);
     }
 
     // To: info@tom.com\n\n\nYour multiline\nmessage here.
@@ -97,27 +104,19 @@ const parseTextContent = (textContent) => {
         // Look for the right line
         parsedElements.body = shiftBodyLines(textLines);
     } catch (error) {
-        errors.push(['body', error.message]);
+        parsingErrors.push(['body', error.message]);
     }
 
-    // Log any errors
-    if (errors.length) {
-        logger.info(
-            'Non-fatal error/s encountered while parsing TWSF email:',
-            errors,
-        );
-    } else {
-        errors = null;
-    }
+    // Nullify parsing errors if appropriate
+    if (parsingErrors.length === 0) parsingErrors = null;
 
     // Done!
-    return {parsedElements, errors};
+    return {parsedElements, parsingErrors};
 };
-
-const guessAndAuthorFromEmail = ({parsedElements, errors}) => {
+const guessAndAuthorFromEmail = ({parsedElements, parsingErrors}) => {
     const subject = parsedElements.subject;
     const text = parsedElements.body;
-    const guess = {type: guessTypes.EMAIL, subject, text, errors};
+    const guess = {type: guessTypes.EMAIL, subject, text, parsingErrors};
 
     const emailAddress = parsedElements.email;
     const emailName = parsedElements.nick;
@@ -127,27 +126,44 @@ const guessAndAuthorFromEmail = ({parsedElements, errors}) => {
     return {guess, author};
 };
 
+/*-------*\
+  HANDLER
+\*-------*/
 module.exports = (textContent) => {
     try {
         // Parse the email
-        const parsedElementsAndErrors = parseTextContent(textContent);
-        if (!parsedElementsAndErrors.parsedElements)
-            throw 'Something went wrong while parsing TWSF email...';
+        const {parsedElements, parsingErrors} =
+            parseTextContent(textContent);
+        if (!parsedElements)
+            throw {
+                msg: 'Something went wrong while parsing TWSF email...',
+                parsingErrors,
+            };
 
         // Prepare database data
-        const guessAndAuthor = guessAndAuthorFromEmail(parsedElementsAndErrors);
+        const guessAndAuthor = guessAndAuthorFromEmail({
+            parsedElements,
+            parsingErrors,
+        });
         if (!guessAndAuthor.guess && guessAndAuthor.author)
-            throw 'Something went wrong while preparing to store TWSF email...';
+            throw {
+                msg: 'Something went wrong while preparing to store TWSF email...',
+                parsingErrors,
+            };
 
         // Store email
         const successfullyStored = addNewGuess(guessAndAuthor);
         if (!successfullyStored)
-            throw 'Something went wrong while storing TWSF email...';
+            throw {
+                msg: 'Something went wrong while storing TWSF email...',
+                parsingErrors,
+            };
 
         // Done!
         logger.info('Done storing new TWSF email!');
     } catch (error) {
-        logger.error({error, textContent});
+        if (error.msg) logger.error({...error, textContent});
+        else logger.error({error, textContent});
         addTwsfError(JSON.stringify({error, textContent}));
     }
 };

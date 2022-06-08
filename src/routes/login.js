@@ -12,8 +12,12 @@ module.exports = (fastify, opts, done) => {
         // Authenticate administrator
         const username = request.body.username;
         const password = request.body.password;
-        const admin = await getAdminByCredentials(username, password);
+        let admin;
+        if (username && password) {
+            admin = await getAdminByCredentials(username, password);
+        }
 
+        // Handle authentication outcome
         if (admin) {
             // Good credentials, create an authentication token
             const authCookie = await createAuthCookie(admin);

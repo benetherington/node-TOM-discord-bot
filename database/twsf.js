@@ -6,20 +6,20 @@ let db;
 \*---------*/
 const printDbSummary = async () => {
     try {
-        const selectTables = await db.all(
-            "SELECT name FROM sqlite_master WHERE type='table';",
-        );
-        const exists = selectTables.map((row) => row.name).join(', ');
-        logger.info('Tables:', exists);
-
         const guesses = await db.all(
             `SELECT type, text
             FROM Guesses
             ORDER BY guessId DESC
             LIMIT 10`,
         );
+        guesses.forEach((guess) => {
+            guess.text = guess.text.slice(0,40);
+            Object.entries(types).forEach(([k, v]) => {
+                if (v === guess.type) guess.type = k;
+            });
+        });
         if (guesses.length) {
-            logger.info('Most recent TWSF guesses:', guesses);
+            logger.info({msg: 'Most recent TWSF guesses:', guesses});
         } else {
             logger.info('No TWSF guesses have been made yet.');
         }

@@ -29,15 +29,15 @@ const printDbSummary = async () => {
             logger.info('No admin users exist yet.');
         }
     } catch (error) {
-        logger.error(
-            'There was an issue initializing the administrators database.',
-            {error},
-        );
+        logger.error({
+            msg: 'There was an issue printing the admin DB summary.',
+            error,
+        });
     }
 };
 
 const initDB = async () => {
-    logger.info('SQLite');
+    logger.info('Opening admin DB...');
     db = await dbWrapper.open({
         filename: dbFile,
         driver: sqlite3.cached.Database,

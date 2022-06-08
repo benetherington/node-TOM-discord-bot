@@ -7,12 +7,6 @@ let db;
 \*---------*/
 const printSuggestionsSummary = async () => {
     try {
-        const selectTables = await db.all(
-            "SELECT name FROM sqlite_master WHERE type='table'",
-        );
-        const exists = selectTables.map((row) => row.name).join(', ');
-        logger.info(`Tables: ${exists}`);
-
         const suggestions = await db.all(
             `SELECT username, text
             FROM Suggestions
@@ -21,13 +15,15 @@ const printSuggestionsSummary = async () => {
             LIMIT 10`,
         );
         if (suggestions.length) {
-            logger.info('Most recent suggestions:', suggestions);
+            logger.info({msg: 'Most recent suggestions:', suggestions});
         } else {
             logger.info('No suggestions have been made yet.');
         }
     } catch (error) {
-        logger.error('There was an issue printing the db summary.');
-        logger.error(error);
+        logger.error({
+            msg: 'There was an issue printing the suggestions db summary.',
+            error,
+        });
     }
 };
 

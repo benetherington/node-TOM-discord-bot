@@ -11,8 +11,13 @@ const printThankYouSummary = async () => {
             FROM Authors
             WHERE chatThank;`,
         );
-        logger.info(`Chat thank-yous: ${chatThank.count}`);
-    } catch {}
+        logger.info(`There are ${chatThank.count} chat thank-yous.`);
+    } catch (error) {
+        logger.error({
+            msg: 'There was an issue printing the chat thank you db summary.',
+            error,
+        });
+    }
 };
 
 /*-------*\

@@ -31,17 +31,24 @@ initDB().then(printThankYouSummary);
 
 module.exports.updateAuthorThank = (author, chatThank = true) => {
     db.run(
-        `INSERT INTO Authors
-            (discordId, username, displayName, chatThank)
-        VALUES (?, ?, ?, ?)
+        `INSERT INTO Authors (
+            discordId,
+            username,
+            displayName,
+            callsign,
+            chatThank
+        )
+        VALUES (?, ?, ?, ?, ?)
         ON CONFLICT (discordId)
         DO UPDATE SET
             username = excluded.username,
             displayName = excluded.displayName,
+            callsign = excluded.callsign,
             chatThank = excluded.chatThank;`,
         author.discordId,
         author.username,
         author.displayName,
+        author.callsign,
         chatThank,
     );
 };

@@ -6,6 +6,7 @@ module.exports = (fastify, opts, done) => {
         root: path.resolve('./src/views/icons'),
         prefix: '/icons/',
         wildcard: true,
+        logLevel: 'warn',
     });
 
     done();

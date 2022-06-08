@@ -1,10 +1,11 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
 const {
     countVotesOnSuggestion,
-    hasVotedForSuggestion,
-    addVoterToSuggestion,
-    removeVoterFromSuggestion,
+    toggleVoter,
 } = require('../../database/suggestions');
+const {
+    createAuthorFromInteraction,
+} = require('../slash/utilities/title-utilities');
 
 // DISCORD COMPONENTS
 const replicateOrUpdateButton = (button, searchId, newCount) => {
@@ -22,8 +23,10 @@ const replicateOrUpdateButton = (button, searchId, newCount) => {
     return new MessageButton({label, customId, style});
 };
 const updateButtonInMesssage = (originalMessage, searchId, newCount) => {
+    // "Bind" the custom_id and count to replicateOrUpdateButton
     const buttonProcessor = (button) =>
         replicateOrUpdateButton(button, searchId, newCount);
+    // Create new MessageActionRows, one of which has an updated button
     return originalMessage.components.map((row) =>
         new MessageActionRow().addComponents(
             row.components.map(buttonProcessor),
@@ -32,36 +35,31 @@ const updateButtonInMesssage = (originalMessage, searchId, newCount) => {
 };
 
 // DATABASE
-const toggleVote = async (voter, suggestion) => {
-    if (await hasVotedForSuggestion(voter, suggestion)) {
-        console.log(
-            `Remove vote from ${voter.username} for <${suggestion.suggestionId}>.`,
-        );
-        await removeVoterFromSuggestion(voter, suggestion);
-    } else {
-        console.log(
+const toggleVote = async (voter, suggestion, logger = console) => {
+    const addedVote = await toggleVoter(voter, suggestion);
+    if (addedVote) {
+        logger.info(
             `Add vote from ${voter.username} for <${suggestion.suggestionId}>.`,
         );
-        await addVoterToSuggestion(voter, suggestion);
+    } else {
+        logger.info(
+            `Remove vote from ${voter.username} for <${suggestion.suggestionId}>.`,
+        );
     }
 };
 
 // EVENT CALLBACK
-const receiveButton = async (buttonInteraction) => {
+module.exports.receiveButton = async (buttonInteraction) => {
     // BUILD a Voter (ie an Author) and Suggestion
-    const voter = {
-        discordId: buttonInteraction.user.id,
-        username: buttonInteraction.user.username,
-        displayName: buttonInteraction.member.displayName,
-    };
+    const voter = createAuthorFromInteraction(buttonInteraction);
     const suggestion = {
         suggestionId: buttonInteraction.customId,
     };
 
     // ASSOCIATE voter and suggestion in the DB
-    await toggleVote(voter, suggestion);
+    await toggleVote(voter, suggestion, buttonInteraction.client.logger);
 
-    // DECIDE how to update the button's message
+    // Prepare to update the button's message
     const voteCount = await countVotesOnSuggestion(suggestion);
     const updatedComponents = updateButtonInMesssage(
         buttonInteraction.message,
@@ -71,5 +69,3 @@ const receiveButton = async (buttonInteraction) => {
     // UPDATE the button's message
     buttonInteraction.update({components: updatedComponents});
 };
-
-module.exports = {receiveButton};

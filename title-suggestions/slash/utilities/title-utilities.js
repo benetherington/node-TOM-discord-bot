@@ -1,20 +1,6 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
 const {addNewSuggestion} = require('../../../database/suggestions');
 
-const createAuthorFromInteraction = (interaction) => {
-    const discordId = interaction.user.id;
-    const username = interaction.user.username;
-    const member = interaction.member || {};
-    const displayName = member.displayName || {};
-    return {discordId, username, displayName};
-};
-
-const createSuggestionFromInteraction = (interaction) => {
-    const text = interaction.options.getString('suggestion');
-    const token = interaction.token;
-    return {text, token};
-};
-
 const formatTitleReply = (author, suggestion, voteCount = 1) => {
     const content = `<@${author.discordId}>: \`${suggestion.text}\``;
     const button = new MessageButton()
@@ -25,13 +11,27 @@ const formatTitleReply = (author, suggestion, voteCount = 1) => {
     return {content, components: [row]};
 };
 
-const getNewSuggestionMessage = async (interaction) => {
-    const author = createAuthorFromInteraction(interaction);
-    const suggestion = createSuggestionFromInteraction(interaction);
+const createAuthorFromInteraction = (interaction) => {
+    // User properties will always be available
+    const discordId = interaction.user.id;
+    const username = interaction.user.username;
 
-    console.log(`Adding suggstion: ${suggestion.text}`);
-    const storedSuggestion = await addNewSuggestion(author, suggestion);
-    return formatTitleReply(author, storedSuggestion);
+    // Member properties SHOULD be available, but if a slash is invoked from a
+    // direct message, etc, we'd have to do an additional server call to fetch
+    // them.
+    const member = interaction.member || {};
+    const displayName = member.displayName || '';
+
+    const callsign = member.nickname || displayName || username;
+    return {discordId, username, displayName, callsign};
 };
+module.exports.createAuthorFromInteraction = createAuthorFromInteraction;
 
-module.exports = {getNewSuggestionMessage};
+module.exports.getNewSuggestionMessage = async (interaction) => {
+    const author = createAuthorFromInteraction(interaction);
+    const text = interaction.options.getString('suggestion');
+
+    interaction.client.logger.info(`Adding suggstion: ${text}`);
+    const suggestionId = await addNewSuggestion(author, {text});
+    return formatTitleReply(author, {text, suggestionId});
+};

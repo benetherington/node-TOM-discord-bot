@@ -67,10 +67,10 @@ module.exports = (fastify, opts, done) => {
 
     // API: delete suggestion
     fastify.delete(
-        '/api/titles/:messageId',
+        '/api/titles/:suggestionId',
         {preHandler: adminPreHandler},
         (request, reply) => {
-            removeSuggestionFromApi(request.params.messageId);
+            removeSuggestionFromApi(request.params.suggestionId);
             reply.send(1);
         },
     );

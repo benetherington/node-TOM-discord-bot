@@ -1,15 +1,10 @@
-// Glitch handles its own env
-try {
-    require('dotenv').config();
-} catch (ReferenceError) {
-    console.log('oh hey we must be running on Glitch');
-}
+require('dotenv').config();
 
 const storeNewTwsfEmail = require('../../twsf/email');
 
 module.exports = (fastify, opts, done) => {
     fastify.post('/twsf-email', async (request, reply) => {
-        console.log('Incoming TWSF email!');
+        request.log.info('Incoming TWSF email!');
 
         try {
             // Grab data from header
@@ -23,7 +18,7 @@ module.exports = (fastify, opts, done) => {
             const expectedAuth = `Basic ${btoa(credentials)}`;
             // Check that the request is valid
             if (authHeader !== expectedAuth) {
-                console.log('Bad auth provided to POST /twsf-email!');
+                request.log.info('Bad auth provided to POST /twsf-email!');
                 return reply.status(401).send(); // 401: not authorized
             }
 
@@ -33,7 +28,7 @@ module.exports = (fastify, opts, done) => {
             // directly from listeners. This isn't perfectly secure, but might
             // save a headache in the future.
             if (from !== 'zoundspadang@gmail.com') {
-                console.log("Email didn't come from Ben");
+                request.log.info("Email didn't come from Ben");
                 return reply.status(401).send(); // 401: not authorized
             }
 
@@ -45,8 +40,10 @@ module.exports = (fastify, opts, done) => {
             // Return success
             return reply.send(1);
         } catch (error) {
-            console.error('Error encountered while processing TWSF email:');
-            console.error(error);
+            request.log.error({
+                msg: 'Error encountered while processing TWSF email:',
+                error,
+            });
             return reply.error(500).send();
         }
     });

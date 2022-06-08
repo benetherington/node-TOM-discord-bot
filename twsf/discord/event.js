@@ -1,23 +1,29 @@
 const {channel, role} = require('../../config/discord-id.json');
+const {updateAuthorThank} = require('../../database/thankyou');
 
-const isTheShow = (state) => state.channelId === channel.theShow;
-const getName = (member) => member.nickname || member.displayName;
-
-var chatThankYous = [];
+const authorFromVoiceState = (state) => {
+    const discordId = state.id;
+    const username = state.member.user.username;
+    const displayName = state.member.displayName || '';
+    const callsign = state.member.nickname || displayName || username;
+    return {
+        discordId,
+        username,
+        displayName,
+        callsign,
+    };
+};
 
 module.exports.onVoiceStateUpdate = async (oldState, newState) => {
     // Check if this is someone joining or leaving
-    const joiningTheShow = isTheShow(newState);
+    const joiningTheShow = newState.channelId === channel.theShow;
     if (!joiningTheShow) return;
 
-    // Fetch member, check that they're a listener
-    const member = newState.member;
-    if (member._roles.includes(role.tomCrew)) return;
+    // Fetch member, check that they're not one of the crew
+    const isTomCrew = newState.member._roles.includes(role.tomCrew);
+    if (isTomCrew) return;
 
     // Add their name to the list
-    const name = getName(member);
-    if (!chatThankYous.includes(name)) chatThankYous.push(name);
+    const author = authorFromVoiceState(newState);
+    updateAuthorThank(author);
 };
-
-module.exports.getChatThankYous = () => chatThankYous;
-module.exports.clearChatThankYous = () => (chatThankYous = []);

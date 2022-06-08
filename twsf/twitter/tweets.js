@@ -1,9 +1,7 @@
-try {
-    require('dotenv').config();
-} catch (ReferenceError) {
-    console.log('oh hey we must be running on Glitch');
-}
+require('dotenv').config();
+
 const fetch = require('node-fetch');
+const logger = require('../../logger');
 const {addNewGuess, guessTypes} = require('../../database/twsf');
 
 const client = {
@@ -31,7 +29,7 @@ const client = {
         const jsn = await response.json();
 
         if (jsn.error) {
-            console.error(error.message);
+            logger.error(error.message);
             jsn.all = () => [];
         } else {
             jsn.all = () => this._next(jsn, query);
@@ -81,19 +79,21 @@ const fetchSelfReplies = async (status) => {
     return replyTexts;
 };
 const guessAndAuthorFromTweet = async (status) => {
-    const tweetId = status.id_str,
-        textInitial = status.extended_tweet
-            ? status.extended_tweet.full_text
-            : status.full_text,
-        twitterId = status.user.id_str,
-        twitterDisplayName = status.user.name,
-        twitterUsername = status.user.screen_name;
+    const tweetId = status.id_str;
+    const textInitial = status.extended_tweet
+        ? status.extended_tweet.full_text
+        : status.full_text;
+    const twitterId = status.user.id_str;
+    const twitterDisplayName = status.user.name;
+    const twitterUsername = status.user.screen_name;
+    const callsign = twitterDisplayName;
 
     // Construct author for DB
     const author = {
         twitterId,
         twitterDisplayName,
         twitterUsername,
+        callsign,
     };
 
     // Construct guess for DB
@@ -112,14 +112,14 @@ const fetchTweets = () =>
     client.search({query: '#thisweeksf'}).then((r) => r.all());
 
 module.exports = async () => {
-    console.log('Storing #ThisWeekSF tweets...');
+    logger.info('Storing #ThisWeekSF tweets...');
 
     // Get new tweets
     const twsfTweets = await fetchTweets();
 
     // Don't continue if there weren't any tweets
     if (!twsfTweets.length) {
-        console.log('No #ThisWeekSF tweets found.');
+        logger.info('No #ThisWeekSF tweets found.');
         return;
     }
 
@@ -137,5 +137,5 @@ module.exports = async () => {
         },
         0,
     );
-    console.log(`Done storing ${newGuessesCount} new #ThisWeekSF tweets!`);
+    logger.info(`Done storing ${newGuessesCount} new #ThisWeekSF tweets!`);
 };

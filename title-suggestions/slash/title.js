@@ -14,15 +14,17 @@ let data = new SlashCommandBuilder()
     .toJSON();
 
 const execute = async (interaction) => {
-    console.log(`${interaction.user.username} used /title`);
+    interaction.client.logger.info(`${interaction.user.username} used /title`);
     try {
         const response = await getNewSuggestionMessage(interaction);
         if (response) interaction.reply(response);
         else interaction.reply(config.error);
     } catch (error) {
         interaction.reply(config.failure);
-        console.error('slash/title failed in an unexpected way.');
-        console.error(error);
+        interaction.client.logger.error({
+            msg: 'slash/title failed in an unexpected way.',
+            error
+        });
     }
 };
 

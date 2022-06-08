@@ -1,15 +1,9 @@
-try {
-    require('dotenv').config();
-} catch (ReferenceError) {
-    console.log('oh hey we must be running on Glitch');
-}
+require('dotenv').config();
 
 const {Client, Intents, Collection} = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
-const {receiveButton} = require('./title-suggestions/interactions/buttons');
-const {onVoiceStateUpdate} = require("./twsf/discord/event");
 const ID = require('./config/discord-id.json');
 
 /*----*\
@@ -17,12 +11,23 @@ const ID = require('./config/discord-id.json');
 \*----*/
 const intents = new Intents();
 intents.add(
+    Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_PRESENCES,
     Intents.FLAGS.GUILD_MESSAGES,
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
     Intents.FLAGS.GUILD_VOICE_STATES,
 );
 const client = new Client({intents});
+client.logger = require('./logger');
+
+// Status events
+client.on('ready', () => {
+    const respondingIn = process.env.TEST ? '#bot_control' : '#ground_control';
+    client.logger.info(`Ready! GUI commands output to: ${respondingIn}.`);
+});
+client.on('invalidated', () => {
+    client.logger.info('Session invalidated.');
+});
 
 /*-----*\
   CACHE
@@ -40,49 +45,44 @@ client.channels.fetch(ID.channel.groundControl);
 // available, which we do in ./scripts/register-commands.js. This needs to be
 // run once as a provisioning step whever slashes change.
 client.slashes = new Collection();
+const slashDirs = [
+    './title-suggestions/slash/',
+    './twsf/discord/slash/',
+    './stats/slash/',
+];
 
-// Title suggestions
-const suggestionFolder = './title-suggestions/slash/';
-const suggestionFileNames = fs
-    .readdirSync(suggestionFolder)
-    .filter((fn) => fn.endsWith('.js'));
-for (const fileName of suggestionFileNames) {
-    const filePath = path.resolve(suggestionFolder, fileName);
-    let slash = require(filePath);
-    client.slashes.set(slash.data.name, slash);
-}
-
-// TWSF
-const twsfFolder = './twsf/discord/slash/';
-const twsfFileNames = fs
-    .readdirSync(twsfFolder)
-    .filter((fn) => fn.endsWith('.js'));
-for (const fileName of twsfFileNames) {
-    const filePath = path.resolve(twsfFolder, fileName);
-    let slash = require(filePath);
-    client.slashes.set(slash.data.name, slash);
-}
-
-/*---------------*\
-  EVENT LISTENERS
-\*---------------*/
-client.once('ready', () => {
-    const respondingIn = process.env.TEST ? '#bot_control' : '#ground_control';
-    console.log(`Ready! GUI commands output to: ${respondingIn}.`);
-});
-client.on('invalidated', () => {
-    console.log('Session invalidated.');
+// Assemble all the module files we'll need to require
+const slashDirsAndFileNames = slashDirs.map((dir) => {
+    let fileNames = fs.readdirSync(dir);
+    fileNames = fileNames.filter((name) => name.endsWith('.js'));
+    return [dir, fileNames];
 });
 
+// Require each module, store it in the collection
+for (const [dir, fileNames] of slashDirsAndFileNames) {
+    for (const fileName of fileNames) {
+        const filePath = path.resolve(dir, fileName);
+        const slash = require(filePath);
+        client.slashes.set(slash.data.name, slash);
+    }
+}
+
+/*------------*\
+  INTERACTIONS
+\*------------*/
+// Handlers
+const {receiveButton} = require('./title-suggestions/interactions/buttons');
 const receiveSlash = async (interaction) => {
     let slash = client.slashes.get(interaction.commandName);
     if (!slash) return;
 
     slash.execute(interaction).catch((error) => {
-        console.error(error);
-        interaction.reply(responses.failure);
+        client.logger.error(error);
+        if (interaction.isRepliable()) interaction.reply(responses.failure);
     });
 };
+
+// Listener
 client.on('interactionCreate', (interaction) => {
     try {
         if (interaction.isCommand()) {
@@ -91,13 +91,22 @@ client.on('interactionCreate', (interaction) => {
             receiveButton(interaction);
         }
     } catch (error) {
-        console.error('Error encountered while handling incoming interaction!');
-        console.error(interaction);
-        console.error(error);
+        client.logger.error(
+            'Error encountered while handling incoming interaction!',
+        );
+        client.logger.error(interaction);
+        client.logger.error(error);
     }
 });
-client.on("voiceStateUpdate", onVoiceStateUpdate);
 
+/*------------*\
+  OTHER EVENTS
+\*------------*/
+const {onVoiceStateUpdate} = require('./twsf/discord/event');
+client.on('voiceStateUpdate', onVoiceStateUpdate);
+
+/*------*\
+  FINISH
+\*------*/
 client.login(process.env.DISCORD_TOKEN);
-
 module.exports = {client};

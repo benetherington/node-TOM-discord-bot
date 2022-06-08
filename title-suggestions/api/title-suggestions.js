@@ -20,36 +20,38 @@ const fetchMessage = async (messageId) => {
         throw 'Could not add unknown message as a title suggestion.';
     }
 };
-const fetchMemberFromDiscordAuthor = (author) => {
-    const tomCastGuild = client.guilds.cache.get(ID.guild.tomCast);
-    return tomCastGuild.members.fetch(author.id);
+const fetchMemberFromDiscordUser = async (author) => {
+    const guild = await client.guilds.fetch(ID.guild.tomCast);
+    return guild.members.fetch(author.id);
 };
-
 const createAuthorFromMessage = async (message) => {
+    // User properties will always be available
     const discordId = message.author.id;
     const username = message.author.username;
-    const member = await fetchMemberFromDiscordAuthor(message.author);
-    const displayName = member.nickname || '';
-    return {discordId, username, displayName};
+
+    // Member properties will never be available when we start from a messageId,
+    // so we'll have to fetch them from the guild
+    const member = await fetchMemberFromDiscordUser(message.author);
+    const displayName = member.displayName || '';
+
+    const callsign = member.nickname || displayName || username;
+    return {discordId, username, displayName, callsign};
 };
 const createSuggestionFromMessage = (message) => {
     const text = message.content;
-    const token = message.token;
     const messageId = message.id;
-    return {text, token, messageId};
+    return {text, messageId};
 };
 
 module.exports.addNewSuggestionFromApi = async (messageId) => {
-    console.log(`API creating suggestion from message ${messageId}`);
+    client.logger.info(`API creating suggestion from message ${messageId}`);
 
     const message = await fetchMessage(messageId);
     const author = await createAuthorFromMessage(message);
     const suggestion = createSuggestionFromMessage(message);
     addNewSuggestion(author, suggestion);
 };
-module.exports.removeSuggestionFromApi = async (messageId) => {
-    console.log(`API deleting suggestion from message ${messageId}`);
-
-    const suggestion = {suggestionId: messageId};
-    deleteSuggestion(suggestion);
+module.exports.removeSuggestionFromApi = async (suggestionId) => {
+    client.logger.info(`API deleting suggestion ${suggestionId}`);
+    deleteSuggestion({suggestionId});
 };

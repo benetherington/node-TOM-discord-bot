@@ -4,18 +4,40 @@
             "nothingToVoteOn": {
                 "content": "No title suggestions yet!",
                 "ephemeral": true
+            },
+            "notNewEpisode": {
+                "content": "Looks like we've already done that one.",
+                "ephemeral": true
             }
         },
         "twsf": {
-            "hiddenReply": {
+            "guessAccepted": {
                 "content": "Thank you! Your guess has been logged.",
                 "ephemeral": true
             },
-            "publicReply": {
+            "twsfChannelMessage": {
                 "content": "<@id> guessed: ||txt||",
-                "allowed_mentions": {"parse": []},
-                "ephemeral": false,
-                "fetchReply": true
+                "allowed_mentions": {"parse": []}
+            },
+            "guessNotFound": {
+                "content": "Hmmm, I don't see the most recent clue. I'm only looking 20 messages back, but maybe you can find it yourself in #thisweeksf?"
+            }
+        },
+        "stats": {
+            "user": [
+                "This Week in Spaceflight History:",
+                "    <bonusPoints> bonus points",
+                "    <score> points total",
+                "Episode title suggestions:",
+                "    <submissions> titles suggested",
+                "    <cast> votes cast",
+                "    <earned> votes earned"
+            ],
+            "leaderboard": {
+                "twsf": "This Week in Spaceflight History total points:",
+                "submissions": "Episode titles submitted:",
+                "cast": "Episode title votes cast:",
+                "earned": "Episode title votes earned:"
             }
         },
         "help": {
@@ -29,7 +51,7 @@
             "ephemeral": true
         },
         "error": {
-            "content": "Hmmm, something went wrong, but not too badly?",
+            "content": "Hmmm, something went wrong.",
             "ephemeral": true
         },
         "failure": {

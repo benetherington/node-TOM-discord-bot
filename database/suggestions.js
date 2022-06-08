@@ -1,21 +1,12 @@
-const sqlite3 = require('sqlite3').verbose();
-const dbWrapper = require('sqlite');
+const logger = require('../logger');
 
-const dbFile = require('path').resolve('./.data/title-suggestions.db');
-const migrationsPath = './database/migrations/public';
 let db;
 
 /*---------*\
   UTILITIES
 \*---------*/
-const printDbSummary = async () => {
+const printSuggestionsSummary = async () => {
     try {
-        const selectTables = await db.all(
-            "SELECT name FROM sqlite_master WHERE type='table'",
-        );
-        const exists = selectTables.map((row) => row.name).join(', ');
-        console.log(`Tables: ${exists}`);
-
         const suggestions = await db.all(
             `SELECT username, text
             FROM Suggestions
@@ -24,14 +15,15 @@ const printDbSummary = async () => {
             LIMIT 10`,
         );
         if (suggestions.length) {
-            console.log('Most recent suggestions:');
-            console.table(suggestions);
+            logger.info({msg: 'Most recent suggestions:', suggestions});
         } else {
-            console.log('No suggestions have been made yet.');
+            logger.info('No suggestions have been made yet.');
         }
     } catch (error) {
-        console.error('There was an issue printing the db summary.');
-        console.error(error);
+        logger.error({
+            msg: 'There was an issue printing the suggestions db summary.',
+            error,
+        });
     }
 };
 
@@ -42,27 +34,19 @@ const initDB = async () => {
     const public = require('./public');
     db = await public;
 };
-initDB().then(printDbSummary);
+initDB().then(printSuggestionsSummary);
 
 /*-------*\
   EPISODE
 \*-------*/
 const getCurrentEpisode = () =>
     db.get('SELECT * FROM Episodes ORDER BY created_at DESC LIMIT 1;');
-
 module.exports.getCurrentEpNum = async () => {
     const currentEp = await getCurrentEpisode();
     return currentEp.epNum;
 };
-
-module.exports.addNewEpisode = async (epNum) => {
-    await db.run('INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);', epNum);
-    const episode = await db.get(
-        'SELECT * FROM Episodes WHERE epNum = ?;',
-        epNum,
-    );
-    return episode;
-};
+module.exports.addNewEpisode = (epNum) =>
+    db.run('INSERT OR IGNORE INTO Episodes (epNum) VALUES (?);', epNum);
 
 /*-----------*\
   SUGGESTIONS
@@ -73,11 +57,11 @@ module.exports.getSuggestion = (suggestion) => {
         suggestion.suggestionId,
     );
 };
-
 module.exports.getSuggestionsWithCountedVotes = async (
     episode = {},
     getEpNum,
 ) => {
+    // TODO: simplify this per comment on #48
     // default to current episode
     if (!episode.epNum) {
         episode = await getCurrentEpisode();
@@ -117,52 +101,76 @@ module.exports.getSuggestionsWithCountedVotes = async (
     if (getEpNum) return [episode.epNum, formattedCountedSuggestions];
     else return formattedCountedSuggestions;
 };
-
 module.exports.addNewSuggestion = async (author, suggestion) => {
-    // SELECT episode
+    // SELECT Episode
     const episode = await getCurrentEpisode();
 
-    // INSECT author
-    await db.run(
-        'INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);',
+    // UPSERT Author
+    const {authorId} = await db.get(
+        `INSERT INTO Authors (
+            discordId,
+            username,
+            displayName,
+            callsign
+        ) VALUES (?, ?, ?, ?)
+        ON CONFLICT (discordId)
+        DO UPDATE SET
+            username = excluded.username,
+            displayName = excluded.displayName,
+            callsign = excluded.callsign
+        RETURNING authorId;`,
         author.discordId,
         author.username,
         author.displayName,
-    );
-    const selectedAuthor = await db.get(
-        'SELECT * FROM Authors WHERE discordId = ?;',
-        author.discordId,
+        author.callsign,
     );
 
-    // INSERT suggestion
-    const suggestionsInsert = await db.run(
-        'INSERT INTO Suggestions (episodeId, authorId, token, text) ' +
-            'VALUES (?, ?, ?, ?);',
+    // INSERT Suggestion
+    const {lastID: suggestionId} = await db.run(
+        `INSERT INTO Suggestions
+            (episodeId, authorId, text)
+        VALUES (?, ?, ?);`,
         episode.episodeId,
-        selectedAuthor.authorId,
-        suggestion.token,
+        authorId,
         suggestion.text,
     );
+
+    // INSERT default self-vote
     await db.run(
-        'INSERT INTO Suggestion_Voters (suggestionId, voterId) VALUES (?, ?);',
-        suggestionsInsert.lastID,
-        selectedAuthor.authorId,
+        `INSERT INTO Suggestion_Voters (suggestionId, voterId)
+        VALUES (?, ?);`,
+        suggestionId,
+        authorId,
     );
 
-    // SELECT suggestion
-    const newSuggestion = await db.get(
-        'SELECT * FROM Suggestions WHERE suggestionId = ?;',
-        suggestionsInsert.lastID,
-    );
-    return newSuggestion;
+    return suggestionId;
 };
-
 module.exports.deleteSuggestion = (suggestion) => {
     return db.run(
         `DELETE FROM Suggestions WHERE suggestionId = ?;`,
         suggestion.suggestionId,
     );
 };
+module.exports.getAuthorSubmissionCount = (discordId) =>
+    db.get(
+        `SELECT
+            COUNT(*) as submissions
+        FROM Suggestions
+        LEFT JOIN Authors USING(authorId)
+        WHERE discordId = ?;`,
+        discordId,
+    );
+module.exports.getSubmissionHighScores = () =>
+    db.all(
+        `SELECT
+            COUNT(*) AS submissions,
+            discordId
+        FROM Suggestions
+        LEFT JOIN Authors USING(authorId)
+        GROUP BY authorId
+        ORDER BY submissions DESC
+        LIMIT 5;`,
+    );
 
 /*------*\
   VOTING
@@ -174,41 +182,90 @@ module.exports.countVotesOnSuggestion = async (suggestion) => {
     );
     return voteCount['COUNT(*)'];
 };
-
-module.exports.hasVotedForSuggestion = (voter, suggestion) => {
-    return db.get(
-        `SELECT voterId FROM Suggestion_Voters
-        INNER JOIN Authors ON authorId = voterId
-        WHERE suggestionId = ? AND discordId = ?;`,
-        suggestion.suggestionId,
-        voter.discordId,
-    );
-};
-
-module.exports.addVoterToSuggestion = async (voter, suggestion) => {
-    await db.run(
-        'INSERT OR IGNORE INTO Authors (discordId, username, displayName) VALUES (?, ?, ?);',
+module.exports.toggleVoter = async (voter, suggestion) => {
+    // UPSERT voter
+    const {voterId} = await db.get(
+        `INSERT INTO Authors (
+            discordId,
+            username,
+            displayName,
+            callsign
+        ) VALUES (?, ?, ?, ?)
+        ON CONFLICT (discordId)
+        DO UPDATE SET
+            username = excluded.username,
+            displayName = excluded.displayName,
+            callsign = excluded.callsign
+        RETURNING authorId AS voterId;`,
         voter.discordId,
         voter.username,
         voter.displayName,
+        voter.callsign,
     );
-    return db.run(
-        `INSERT INTO Suggestion_Voters (suggestionId, voterId)
-        VALUES (
-            (?),
-            (SELECT authorId FROM Authors WHERE discordId = ?)
-        );`,
-        suggestion.suggestionId,
-        voter.discordId,
-    );
-};
 
-module.exports.removeVoterFromSuggestion = (voter, suggestion) => {
-    return db.run(
-        `DELETE FROM Suggestion_Voters
-        WHERE suggestionId = (?)
-        AND voterId = (SELECT authorId FROM Authors WHERE discordId = ?);`,
+    // Attempt to INSERT vote
+    const {changes} = await db.run(
+        `INSERT OR IGNORE INTO Suggestion_Voters
+            (voterId, suggestionId)
+        VALUES (?, ?);`,
+        voterId,
         suggestion.suggestionId,
-        voter.discordId,
     );
+
+    // DELETE vote if insert ignored
+    if (!changes)
+        await db.run(
+            `DELETE FROM Suggestion_Voters
+            WHERE voterId = ? AND suggestionId = ?;`,
+            voterId,
+            suggestion.suggestionId,
+        );
+
+    // Return 1 if added, 0 if deleted
+    return changes;
 };
+module.exports.getAuthorVotesCast = (discordId) =>
+    db.get(
+        `SELECT
+            COUNT(*) AS votesCast
+        FROM Suggestion_Voters
+        LEFT JOIN Authors ON authorId = voterId
+        WHERE discordId = ?;`,
+        discordId,
+    );
+module.exports.getVotesCastHighScores = () =>
+    db.all(
+        `SELECT
+            COUNT(*) AS votesCast,
+            discordId
+        FROM Suggestion_Voters
+        LEFT JOIN Authors ON (authorId = voterId)
+        GROUP BY voterId
+        ORDER BY votesCast DESC
+        LIMIT 5;`,
+    );
+module.exports.getAuthorVotesEarned = (discordId) =>
+    db.get(
+        `SELECT
+            COUNT(*) AS votesEarned
+        FROM Suggestion_Voters
+        LEFT JOIN Suggestions USING(suggestionId)
+        LEFT JOIN Authors USING(authorId)
+        WHERE
+            discordId = ?
+            AND voterId != authorId;`,
+        discordId,
+    );
+module.exports.getVotesEarnedHighScores = () =>
+    db.all(
+        `SELECT
+            COUNT(*) AS votesEarned,
+            discordId
+        FROM Suggestion_voters
+        LEFT JOIN Suggestions USING(suggestionId)
+        LEFT JOIN Authors USING(authorId)
+        WHERE voterId != authorId
+        GROUP BY authorId
+        ORDER BY votesEarned DESC
+        LIMIT 5;`,
+    );

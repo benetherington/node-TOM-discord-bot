@@ -38,12 +38,12 @@ const updateButtonInMesssage = (originalMessage, searchId, newCount) => {
 const toggleVote = async (voter, suggestion, logger = console) => {
     const addedVote = await toggleVoter(voter, suggestion);
     if (addedVote) {
-        logger.log(
-            `Remove vote from ${voter.username} for <${suggestion.suggestionId}>.`,
+        logger.info(
+            `Add vote from ${voter.username} for <${suggestion.suggestionId}>.`,
         );
     } else {
-        logger.log(
-            `Add vote from ${voter.username} for <${suggestion.suggestionId}>.`,
+        logger.info(
+            `Remove vote from ${voter.username} for <${suggestion.suggestionId}>.`,
         );
     }
 };

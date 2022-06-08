@@ -187,7 +187,7 @@ module.exports.countVotesOnSuggestion = async (suggestion) => {
 };
 module.exports.toggleVoter = async (voter, suggestion) => {
     // UPSERT voter
-    const {lastID: voterId} = await db.run(
+    const {voterId} = await db.get(
         `INSERT INTO Authors (
             discordId,
             username,
@@ -198,7 +198,8 @@ module.exports.toggleVoter = async (voter, suggestion) => {
         DO UPDATE SET
             username = excluded.username,
             displayName = excluded.displayName,
-            callsign = excluded.callsign;`,
+            callsign = excluded.callsign
+        RETURNING authorId AS voterId;`,
         voter.discordId,
         voter.username,
         voter.displayName,
@@ -208,7 +209,7 @@ module.exports.toggleVoter = async (voter, suggestion) => {
     // Attempt to INSERT vote
     const {changes} = await db.run(
         `INSERT OR IGNORE INTO Suggestion_Voters
-            (suggestionId, voterId)
+            (voterId, suggestionId)
         VALUES (?, ?);`,
         voterId,
         suggestion.suggestionId,
@@ -216,9 +217,11 @@ module.exports.toggleVoter = async (voter, suggestion) => {
 
     // DELETE vote if insert ignored
     if (!changes)
-        db.run(
+        await db.run(
             `DELETE FROM Suggestion_Voters
-            WHERE suggestionId = ? AND voterId = ?;`,
+            WHERE voterId = ? AND suggestionId = ?;`,
+            voterId,
+            suggestion.suggestionId,
         );
 
     // Return 1 if added, 0 if deleted

@@ -20,7 +20,7 @@ const fetchMessage = async (messageId) => {
         throw 'Could not add unknown message as a title suggestion.';
     }
 };
-const fetchMemberFromDiscordAuthor = async (author) => {
+const fetchMemberFromDiscordUser = async (author) => {
     const guild = await client.guilds.fetch(ID.guild.tomCast);
     return guild.members.fetch(author.id);
 };
@@ -29,8 +29,9 @@ const createAuthorFromMessage = async (message) => {
     const discordId = message.author.id;
     const username = message.author.username;
 
-    // Member properties will never be available when we start from a messageId.
-    const member = await fetchMemberFromDiscordAuthor(message.author);
+    // Member properties will never be available when we start from a messageId,
+    // so we'll have to fetch them from the guild
+    const member = await fetchMemberFromDiscordUser(message.author);
     const displayName = member.displayName || '';
 
     const callsign = member.nickname || displayName || username;

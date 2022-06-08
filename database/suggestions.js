@@ -110,7 +110,7 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
     const episode = await getCurrentEpisode();
 
     // UPSERT Author
-    const {lastID: authorId} = await db.run(
+    const {authorId} = await db.get(
         `INSERT INTO Authors (
             discordId,
             username,
@@ -121,7 +121,8 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
         DO UPDATE SET
             username = excluded.username,
             displayName = excluded.displayName,
-            callsign = excluded.callsign;`,
+            callsign = excluded.callsign
+        RETURNING authorId;`,
         author.discordId,
         author.username,
         author.displayName,
@@ -132,13 +133,13 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
     const {lastID: suggestionId} = await db.run(
         `INSERT INTO Suggestions
             (episodeId, authorId, text)
-        VALUES (?, ?, ?, ?);`,
+        VALUES (?, ?, ?);`,
         episode.episodeId,
         authorId,
         suggestion.text,
     );
 
-    // INSERT vote
+    // INSERT default self-vote
     await db.run(
         `INSERT INTO Suggestion_Voters (suggestionId, voterId)
         VALUES (?, ?);`,

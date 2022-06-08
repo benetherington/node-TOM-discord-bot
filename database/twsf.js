@@ -56,38 +56,40 @@ module.exports.guessTypes = types;
 \*-------*/
 const upsertAuthorByGuessType = (guessType, author) => {
     if (guessType == types.TWEET || guessType == types.TWITTER_DM) {
-        return db.run(
+        return db.get(
             `INSERT INTO Authors
                 (twitterId, twitterUsername, twitterDisplayName, callsign)
             VALUES (?, ?, ?, ?)
             ON CONFLICT (twitterId)
-            DO UPDATE SET
-                twitterDisplayName = excluded.twitterDisplayName,
-                callsign = excluded.callsign
+                DO UPDATE SET
+                    twitterDisplayName = excluded.twitterDisplayName,
+                    callsign = excluded.callsign
             ON CONFLICT (twitterUsername)
-            DO UPDATE SET
-                twitterDisplayName = excluded.twitterDisplayName,
-                callsign = excluded.callsign;`,
+                DO UPDATE SET
+                    twitterDisplayName = excluded.twitterDisplayName,
+                    callsign = excluded.callsign
+            RETURNING authorId;`,
             author.twitterId,
             author.twitterUsername,
             author.twitterDisplayName,
             author.callsign,
         );
     } else if (guessType === types.EMAIL) {
-        return db.run(
+        return db.get(
             `INSERT INTO Authors
                 (emailAddress, emailName, callsign)
             VALUES (?, ?, ?)
             ON CONFLICT (emailAddress)
             DO UPDATE SET
                 emailName = excluded.emailName,
-                callsign = excluded.callsign;`,
+                callsign = excluded.callsign
+            RETURNING authorId;`,
             author.emailAddress,
             author.emailName,
             author.callsign,
         );
     } else if (guessType === types.DISCORD) {
-        return db.run(
+        return db.get(
             `INSERT INTO Authors
                 (discordId, username, displayName, callsign)
             VALUES (?, ?, ?, ?)
@@ -95,7 +97,8 @@ const upsertAuthorByGuessType = (guessType, author) => {
             DO UPDATE SET
                 username = excluded.username,
                 displayName = excluded.displayName,
-                callsign = excluded.callsign;`,
+                callsign = excluded.callsign
+            RETURNING authorId;`,
             author.discordId,
             author.username,
             author.displayName,
@@ -192,7 +195,7 @@ module.exports.addNewGuess = async ({guess, author}) => {
     // not.
 
     // UPSERT Author with incoming values.
-    const {lastID: authorId} = await upsertAuthorByGuessType(
+    const {authorId} = await upsertAuthorByGuessType(
         guess.type,
         author,
     );

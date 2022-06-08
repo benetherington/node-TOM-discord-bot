@@ -84,7 +84,8 @@ const handleClueRequest = async (interaction) => {
             m.author.id === ID.user.ben && m.content.startsWith('Next week ('),
     );
 
-    interaction.editReply({content: lastTwsfMessage.content});
+    if (lastTwsfMessage) return interaction.editReply({content: lastTwsfMessage.content});
+    else interaction.editReply(responses.twsf.guessNotFound)
 };
 
 /*-------*\

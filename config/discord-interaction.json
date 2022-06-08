@@ -18,6 +18,9 @@
             "twsfChannelMessage": {
                 "content": "<@id> guessed: ||txt||",
                 "allowed_mentions": {"parse": []}
+            },
+            "guessNotFound": {
+                "content": "Hmmm, I don't see the most recent clue. I'm only looking 20 messages back, but maybe you can find it yourself in #thisweeksf?"
             }
         },
         "stats": [

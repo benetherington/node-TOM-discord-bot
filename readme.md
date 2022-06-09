@@ -1,6 +1,6 @@
 # TOMbot for Discord
 
-Written by Ben Etherington in 2022 as an adaptation of the [Python version](https://github.com/benetherington/TOMbot).
+Written by Ben Etherington in 2022 as an adaptation of the [Python version](https://github.com/benetherington/discord-bot).
 
 Code reviewing and mentorship kindly provided by [Fonji](https://github.com/fonji).
 

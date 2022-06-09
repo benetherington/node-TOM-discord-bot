@@ -33,8 +33,13 @@ const importAll = async () => {
     enrichAuthors(audiences, tweets);
     enrichAuthors(audiences, emails);
 
-    emails.forEach(addImportedEmail);
-    tweets.forEach(addImportedTweet);
+    const changedEmails = await Promise.all(emails.map(addImportedEmail));
+    const changedEmailsCount = changedEmails.reduce((prev,curr)=>prev+curr);
+    console.log(`Inserted ${changedEmailsCount} new email guesses.`);
+    
+    const changedTweets = await Promise.all(tweets.map(addImportedTweet));
+    const changedTweetsCount = changedTweets.reduce((prev,curr)=>prev+curr);
+    console.log(`Inserted ${changedTweetsCount} new twitter guesses.`);
 };
 
 /*---------*\
@@ -114,19 +119,20 @@ const toDbDateTime = (anvil) =>
     ' ' + // Skip the A
     anvil.slice(11, 19); // 11:33:49
 const addImportedEmail = async ({guess, author}) => {
-    const {lastID: authorId} = await db.run(
+    const {authorId} = await db.get(
         `INSERT INTO Authors
             (emailAddress, emailName, callsign)
         VALUES (?, ?, ?)
         ON CONFLICT (emailAddress)
         DO UPDATE SET
             emailName = excluded.emailName,
-            callsign = excluded.callsign;`,
+            callsign = excluded.callsign
+        RETURNING authorId;`,
         author.emailAddress,
         author.emailName,
         author.callsign,
     );
-    await db.run(
+    const {changes} = await db.run(
         `INSERT OR IGNORE INTO Guesses (
             episodeId,
             authorId,
@@ -144,9 +150,10 @@ const addImportedEmail = async ({guess, author}) => {
         guess.bonusPoint,
         guess.created_at,
     );
+    return changes;
 };
 const addImportedTweet = async ({guess, author}) => {
-    const {lastID: authorId} = await db.run(
+    const {authorId} = await db.get(
         `INSERT INTO Authors
             (twitterId, twitterUsername, twitterDisplayName, callsign)
         VALUES (?, ?, ?, ?)
@@ -157,13 +164,14 @@ const addImportedTweet = async ({guess, author}) => {
         ON CONFLICT (twitterUsername)
         DO UPDATE SET
             twitterDisplayName = excluded.twitterDisplayName,
-            callsign = excluded.callsign;`,
+            callsign = excluded.callsign
+        RETURNING authorId;`,
         author.twitterId,
         author.twitterUsername,
         author.twitterDisplayName,
         author.callsign,
     );
-    await db.run(
+    const {changes} = await db.run(
         `INSERT OR IGNORE INTO Guesses (
             episodeId,
             authorId,
@@ -183,6 +191,7 @@ const addImportedTweet = async ({guess, author}) => {
         guess.bonusPoint,
         guess.created_at,
     );
+    return changes;
 };
 
 /*---------------*\
@@ -197,7 +206,12 @@ const importAudience = () => {
     const records = loadCSV('./.data/anvil-imports/audience.csv');
     console.log(`Loaded ${records.length} audience_rows.`);
 
-    return records.map(createAudience);
+    const filtered = records.filter(
+        (a) => a.twitter_screen_name || a.twitter_user_id || a.discord_user_id,
+    );
+    console.log(`Reduced down to ${filtered.length} qualified audience_rows.`);
+
+    return filtered.map(createAudience);
 };
 const createAudience = (audience) => {
     const rowId = audience.ID;
@@ -227,11 +241,13 @@ const createAudience = (audience) => {
 /*--------------*\
   TWITTER IMPORT
 \*--------------*/
-const importTwitterGuesses = (audiencesAndRowIds) => {
+const importTwitterGuesses = () => {
     const records = loadCSV('./.data/anvil-imports/guess-twitter.csv');
     console.log(`Loaded ${records.length} tweet_guess_rows`);
 
-    return records.map(formatTwitterGuess);
+    const filtered = records.filter((r) => !r.text.startsWith('RT'));
+    console.log(`Reduced down to ${filtered.length} qualified tweets.`);
+    return filtered.map(formatTwitterGuess);
 };
 const formatTwitterGuess = (anvilGuess) => {
     const type =

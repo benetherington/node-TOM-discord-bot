@@ -34,8 +34,7 @@ const printDbSummary = async () => {
   DB INIT
 \*-------*/
 const initDB = async () => {
-    const public = require('./public');
-    db = await public;
+    db = await require('./public');
 };
 initDB().then(printDbSummary);
 
@@ -63,11 +62,11 @@ const upsertAuthorByGuessType = (guessType, author) => {
             ON CONFLICT (twitterId)
                 DO UPDATE SET
                     twitterDisplayName = excluded.twitterDisplayName,
-                    callsign = excluded.callsign
+                    callsign = COALESCE(callsign, excluded.callsign)
             ON CONFLICT (twitterUsername)
                 DO UPDATE SET
                     twitterDisplayName = excluded.twitterDisplayName,
-                    callsign = excluded.callsign
+                    callsign = COALESCE(callsign, excluded.callsign)
             RETURNING authorId;`,
             author.twitterId,
             author.twitterUsername,
@@ -82,7 +81,7 @@ const upsertAuthorByGuessType = (guessType, author) => {
             ON CONFLICT (emailAddress)
             DO UPDATE SET
                 emailName = excluded.emailName,
-                callsign = excluded.callsign
+                callsign = COALESCE(callsign, excluded.callsign)
             RETURNING authorId;`,
             author.emailAddress,
             author.emailName,
@@ -97,7 +96,7 @@ const upsertAuthorByGuessType = (guessType, author) => {
             DO UPDATE SET
                 username = excluded.username,
                 displayName = excluded.displayName,
-                callsign = excluded.callsign
+                callsign = COALESCE(callsign, excluded.callsign)
             RETURNING authorId;`,
             author.discordId,
             author.username,

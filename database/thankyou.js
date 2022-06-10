@@ -43,7 +43,7 @@ module.exports.updateAuthorThank = (author, chatThank = true) => {
         DO UPDATE SET
             username = excluded.username,
             displayName = excluded.displayName,
-            callsign = excluded.callsign,
+            callsign = COALESCE(callsign, excluded.callsign),
             chatThank = excluded.chatThank;`,
         author.discordId,
         author.username,

@@ -9,6 +9,40 @@ const initDB = async () => {
 };
 initDB();
 
+module.exports.getAuthors = (limit=40, offset=0)=>
+    db.all(
+        `SELECT
+            authorId,
+            callsign,
+            username,
+            displayName,
+            twitterUsername,
+            twitterDisplayName,
+            emailAddress,
+            emailName,
+            notes
+        FROM Authors
+        LIMIT ?
+        OFFSET ?;`,
+        limit,
+        offset
+    )
+module.exports.updateAuthorNotes = (author) =>
+    db.run(
+        `UPDATE Authors
+        SET notes = ?
+        WHERE authorId = ?;`,
+        author.notes,
+        author.authorId
+    )
+module.exports.updateAuthorCallsign = (author) =>
+    db.run(
+        `UPDATE Authors
+        SET callsign = ?
+        WHERE authorId = ?;`,
+        author.callsign,
+        author.authorId
+    )
 module.exports.mergeAuthors = async (authorKeep, authorDelete) => {
     // Create a savepoint
     await db.run('SAVEPOINT merge_authors;');

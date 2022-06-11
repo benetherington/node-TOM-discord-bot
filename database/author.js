@@ -126,6 +126,7 @@ module.exports.mergeAuthors = async (authorKeep, authorDelete) => {
 
         // If all that worked, we can release the savepoint.
         await db.run('RELEASE SAVEPOINT merge_authors;');
+        return true;
     } catch (error) {
         // Something went wrong, rollback to savepoint
         await db.run('ROLLBACK TO SAVEPOINT merge_authors;');
@@ -135,5 +136,6 @@ module.exports.mergeAuthors = async (authorKeep, authorDelete) => {
             authorDelete,
             error,
         });
+        return false;
     }
 };

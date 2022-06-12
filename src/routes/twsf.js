@@ -31,7 +31,7 @@ module.exports = (fastify, opts, done) => {
         async (request, reply) => {
             const guesses = await getUnscoredGuesses();
             const epNum = await getCurrentEpNum();
-            request.log.info(`Found ${guesses.length} unscored TWSF guesses.`);
+            request.logger.info(`Found ${guesses.length} unscored TWSF guesses.`);
 
             reply.send({guesses, epNum});
         },
@@ -42,7 +42,7 @@ module.exports = (fastify, opts, done) => {
         async (request, reply) => {
             const guesses = await getCorrectGuesses();
             const epNum = await getCurrentEpNum();
-            request.log.info(
+            request.logger.info(
                 `Found ${guesses.length} correct guesses for this episode.`,
             );
 
@@ -56,7 +56,7 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const thanks = await getChatThanks();
-            reply.log({thanks});
+            reply.logger({thanks});
             reply.send(thanks);
         },
     );
@@ -67,7 +67,7 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const guess = request.body;
-            request.log.info(guess);
+            request.logger.info(guess);
 
             // Update guess
             const update = await scoreGuess(guess);

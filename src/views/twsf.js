@@ -205,7 +205,9 @@ const getWinnersCallsigns = () => {
 };
 const setThankYouBox = async () => {
     const thankYous = await getThankYous();
-    document.getElementById('thank-you').textContent = thankYous.join(', ');
+    document.getElementById('thank-you').textContent = thankYous
+        .map((t) => t.callsign)
+        .join(', ');
 };
 
 /*-------------*\

@@ -1,3 +1,9 @@
+mixin titleBar(title)
+    h2#title.card= title
+    if epNum
+        h2#episode-number.card= epNum
+
+
 doctype html
 html
     head
@@ -16,6 +22,8 @@ html
                         button#nav-title(type="submit") Title Suggestions
                     form(action="/twsf").grouped
                         button#nav-twsf(type="submit") TWSF
+                    form(action="/manage").grouped
+                        button#nav-manage(type="submit") Database
             div#login.container
                 if username
                     b #{username}
@@ -27,7 +35,6 @@ html
                         button(type="submit") Log in
         div#title-bar
             block title-bar
-                h2#title.card This Week in Spaceflight History
-                h2#episode-number.card #{epNum||999}
+                
         div#content
             block content

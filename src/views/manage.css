@@ -101,5 +101,30 @@
     display: flex;
     width: 100%;
     justify-content: center;
+    align-items: center;
 }
 
+#page-curr,
+#page-divide,
+#page-total {
+    font-size: 25px;
+}
+
+#page-curr {
+    width: 50px;
+    text-align: right;
+    border-radius: 4px;
+    transition: 0.1s;
+    cursor: text;
+}
+#page-curr:hover:not(:focus) { background-color: var(--primary-light); }
+
+#page-divide {
+    text-align: center;
+    width: 20px;
+}
+
+#page-total {
+    width: 50px;
+    text-align: left;
+}

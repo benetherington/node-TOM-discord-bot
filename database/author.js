@@ -28,6 +28,8 @@ module.exports.getAuthors = (limit=40, offset=0)=>
         limit,
         offset
     )
+module.exports.getAuthorsCount = () =>
+    db.get(`SELECT COUNT(*) AS count FROM Authors;`);
 module.exports.updateAuthorNotes = (author) =>
     db.run(
         `UPDATE Authors

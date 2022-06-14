@@ -1,32 +1,32 @@
 /*---*\
   API
 \*---*/
-const getAuthors = (offset, limit=20) => {
+const getAuthors = (offset, limit) => {
     const params = new URLSearchParams();
     if (offset) params.append('offset', offset);
     if (limit) params.append('limit', limit);
     return fetch(`/api/authors?${params}`).then((r) => r.json());
 };
 
-/*-----------*\
-  GUI Helpers
-\*-----------*/
+/*------------*\
+  GUI BUILDERS
+\*------------*/
 const getSocialElement = (username, displayName) => {
-    const socialElement = document.createElement("div");
-    
+    const socialElement = document.createElement('div');
+
     const iconEl = document.createElement('div');
     iconEl.classList.add('icon');
-    socialElement.append(iconEl)
+    socialElement.append(iconEl);
 
     const usernameEl = document.createElement('div');
     usernameEl.classList.add('username');
-    usernameEl.textContent = username ? "@"+username: "";
-    socialElement.append(usernameEl)
+    usernameEl.textContent = username ? '@' + username : '';
+    socialElement.append(usernameEl);
 
     const displayNameEl = document.createElement('div');
     displayNameEl.classList.add('display-name');
     displayNameEl.textContent = displayName;
-    socialElement.append(displayNameEl)
+    socialElement.append(displayNameEl);
 
     return socialElement;
 };
@@ -74,13 +74,101 @@ const addAuthorRow = ({
 
     document.getElementById('data-table').append(rolodex);
 };
-
-/*-----------*\
-  GUI Setters
-\*-----------*/
-const loadAuthors = async () => {
-    const authors = await getAuthors();
-    authors.forEach(addAuthorRow);
+const clearDataRows = () => {
+    const dataTable = document.getElementById('data-table');
+    while (dataTable.lastChild) dataTable.lastChild.remove();
 };
 
-document.addEventListener("DOMContentLoaded", loadAuthors)
+/*-----------*\
+  GUI HELPERS
+\*-----------*/
+let pageCurrElement, pageTotalElement;
+const getCurrentPage = () => {
+    const userInput = pageCurrElement.textContent;
+    const inputValid = /\d+/.test(userInput);
+    if (!inputValid) {
+        pageCurrElement.textContent = '1';
+        return 1;
+    } else {
+        return Number(userInput);
+    }
+};
+const getCurrentRecordsPerPage = () => 20;
+const setPaginationTotal = (totalCount) => {
+    const totalPages = Math.ceil(totalCount / getCurrentRecordsPerPage());
+    pageTotalElement.textContent = totalPages;
+};
+
+/*------------------*\
+  GUI Event Handlers
+\*------------------*/
+const loadAuthors = async () => {
+    // Assemble request params
+    const currentPage = getCurrentPage();
+    const limit = getCurrentRecordsPerPage();
+    const offset = limit * (currentPage - 1);
+
+    // Send request
+    const {authors, count} = await getAuthors(offset, limit);
+
+    // Update page
+    clearDataRows();
+    authors.forEach(addAuthorRow);
+    setPaginationTotal(count);
+};
+const pageCurrFocus = () => {
+    const pageCurrRange = document.createRange();
+    pageCurrRange.selectNodeContents(pageCurrElement);
+
+    const windowSelection = window.getSelection();
+    windowSelection.removeAllRanges();
+    windowSelection.addRange(pageCurrRange);
+};
+const pageCurrInput = (event) => {
+    if (event.keyCode === 13) {
+        // Enter was pressed, don't add a newline
+        event.preventDefault();
+
+        // Unfocus this element, handle input
+        pageCurrElement.blur();
+
+        // Deselect element
+        const windowSelection = window.getSelection();
+        windowSelection.removeAllRanges();
+    }
+};
+
+// Pagination buttons
+const loadFirstPage = () => {
+    pageCurrElement.textContent = '1';
+    loadAuthors();
+};
+const decrementPage = () => {
+    const currentPage = pageCurrElement.textContent;
+    const newPage = Number(currentPage) - 1;
+    pageCurrElement.textContent = Math.max(newPage, 1);
+    loadAuthors();
+};
+const incrementPage = () => {
+    const currentPage = pageCurrElement.textContent;
+    const newPage = Number(currentPage) + 1;
+    const maxPage = Number(pageTotalElement.textContent);
+    pageCurrElement.textContent = Math.min(newPage, maxPage);
+    loadAuthors();
+};
+const loadLastPage = () => {
+    pageCurrElement.textContent = pageTotalElement.textContent;
+    loadAuthors();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Save common elements
+    pageCurrElement = document.getElementById('page-curr');
+    pageTotalElement = document.getElementById('page-total');
+
+    // Set event listeners
+    pageCurrElement.addEventListener('keydown', pageCurrInput);
+
+    // Fetch and display first page
+    loadAuthors();
+});

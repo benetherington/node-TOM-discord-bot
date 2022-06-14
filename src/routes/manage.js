@@ -1,5 +1,6 @@
 const {
     getAuthors,
+    getAuthorsCount,
     updateAuthorCallsign,
     updateAuthorNotes,
     mergeAuthors,
@@ -25,7 +26,8 @@ module.exports = (fastify, opts, done) => {
         async (request, reply) => {
             const {offset, limit} = request.query;
             const authors = await getAuthors(limit, offset);
-            return reply.send(authors);
+            const {count} = await getAuthorsCount();
+            return reply.send({authors, count});
         },
     );
     // API: update callsign

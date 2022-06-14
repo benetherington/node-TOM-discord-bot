@@ -56,9 +56,10 @@ block content
         //-             div.display-name Damonjalis
         //-     textarea(placeholder="No listener notes yet...").notes You know this guy...
     div#pagination
-        button#page-first.solid <<
-        button#page-prev.solid <
-        input#page-curr
+        button#page-first(onclick="loadFirstPage()").solid <<
+        button#page-prev(onclick="decrementPage()").solid <
+        span(contenteditable onfocus="pageCurrFocus()" onblur="loadAuthors()")#page-curr 1
+        p#page-divide /
         p#page-total
-        button#page-next.solid >
-        button#page-last.solid >>
+        button#page-next(onclick="incrementPage()").solid >
+        button#page-last(onclick="loadLastPage()").solid >>

@@ -1,0 +1,105 @@
+/* -------------------- *\
+   HEADER NAV HIGHLIGHT
+\* -------------------- */
+#nav-manage {
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 9px var(--primary-dark);
+    color: white !important;
+}
+
+/* ----------------- *\
+   TITLE BAR > table
+\* ----------------- */
+#controls { width: 425px; }
+#controls label { font-weight: bold; }
+
+/* --------------- *\
+   DATA TABLE CARD
+\* --------------- */
+#data-table { margin: 8px 25px; }
+
+/* Each record row */
+#data-table .rolodex {
+    display: grid;
+    grid-template:
+        "callsign socials notes" 30px
+        "callsign socials notes" 30px
+        "callsign socials notes" 30px
+        / 140px 3fr 1fr;
+    transition: background-color 0.1s;
+}
+
+#data-table .rolodex:nth-of-type(even) {
+    background-color: #fff0f0;
+}
+
+#data-table .rolodex:hover {
+    background-color: #a9c2f1;
+}
+
+/* Callsign box */
+#data-table .rolodex .callsign {
+    grid-area: callsign; /* span rows */
+    text-align: center;
+    align-self: center;
+}
+
+/* Socials box */
+#data-table .info > * {
+    height: fit-content;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    display: grid;
+    grid-template:
+        "icon username display-name" 30px
+        /30px 1fr 1fr;
+    align-items: center;
+}
+
+#data-table .info > :not(:last-of-type) {
+    border-bottom: 1px dotted black;
+}
+
+/* Socials -- icons */
+#data-table .info .icon {
+    grid-area: icon;
+    height: 30px;
+    width: 30px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: opacity(0.3);
+}
+#data-table .discord .icon { background-image: url("/icons/discord.svg"); }
+#data-table .twitter .icon { background-image: url("/icons/twitter.svg"); }
+#data-table .email .icon { background-image: url("/icons/envelope-paper.svg"); }
+
+/* Socials -- text */
+#data-table .info .username,
+#data-table .info .display-name {
+    padding: 0 15px;
+    height: 100%; /* don't disappear when empty! */
+}
+
+#data-table .info .username {
+    text-decoration: underline;
+    border-right: 1px solid black;
+}
+
+/* Info card notes text area */
+#data-table textarea.notes {
+    grid-area: notes; /* span rows */
+    background: transparent;
+    border: none;
+    resize: none;
+}
+
+/* ---------- *\
+   PAGINATION
+\* ---------- */
+#pagination {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+

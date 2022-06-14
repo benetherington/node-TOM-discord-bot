@@ -8,17 +8,22 @@ const {adminPreHandler} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
     // Objects viewer
-    fastify.get('/manage', {preHander: adminPreHandler}, (request, reply) => {
-        return reply.view('src/views/manage');
-    });
+    fastify.get(
+        '/manage',
+        {preHandler: adminPreHandler},
+        async (request, reply) => {
+            return reply.view('src/views/manage', {
+                username: request.admin.username,
+            });
+        },
+    );
 
     // API: get Authors
     fastify.get(
-        '/api/authors/:offset/:limit',
+        '/api/authors',
         {preHander: adminPreHandler},
         async (request, reply) => {
-            const offset = request.params.offset;
-            const limit = request.params.limit;
+            const {offset, limit} = request.query;
             const authors = await getAuthors(limit, offset);
             return reply.send(authors);
         },

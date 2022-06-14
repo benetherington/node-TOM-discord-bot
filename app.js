@@ -21,6 +21,7 @@ fastify.register(require('./src/routes/static'));
 fastify.register(require('./src/routes/login'));
 fastify.register(require('./src/routes/titles'));
 fastify.register(require('./src/routes/twsf'));
+fastify.register(require('./src/routes/manage'));
 
 // Start server
 fastify.listen(3000, (err, address) => {

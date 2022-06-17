@@ -130,18 +130,29 @@ body {
 /* ---------- *\
    PAGINATION
 \* ---------- */
+
+/* container */
 #pagination {
-    display: flex;
+    height: 30px;
     width: 100%;
+    margin-bottom: 4px;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#page-curr,
-#page-divide,
-#page-total {
-    font-size: 25px;
+/* buttons */
+#pagination .pagination-button {
+    height: 100%;
+    border-radius: 4px;
+    animation: 0.1s;
 }
+#pagination .pagination-button:hover { background-color: var(--primary); }
+#pagination svg { height: 100%; }
+#pagination .pagination-button:hover svg { fill: white; }
+
+/* text */
+#pagination .pagination-text { font-size: 25px; }
 
 #page-curr {
     width: 50px;

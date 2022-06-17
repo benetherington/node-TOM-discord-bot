@@ -58,10 +58,50 @@ block content
             //-             div.display-name Damonjalis
             //-     textarea(placeholder="No listener notes yet...").notes You know this guy...
     div#pagination
-        button#page-first(onclick="loadFirstPage()").solid <<
-        button#page-prev(onclick="decrementPage()").solid <
-        span(contenteditable onfocus="pageCurrFocus()" onblur="loadAuthors()")#page-curr 1
-        p#page-divide /
-        p#page-total
-        button#page-next(onclick="incrementPage()").solid >
-        button#page-last(onclick="loadLastPage()").solid >>
+        span#page-first(onclick="loadFirstPage()").pagination-button
+            svg(
+                xmlns="http://www.w3.org/2000/svg"
+                class="bi bi-caret-left-fill"
+                viewBox="0 0 16 16"
+            )
+                path(d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z")
+        span#page-prev(onclick="decrementPage()").pagination-button
+            svg(
+                xmlns="http://www.w3.org/2000/svg"
+                class="bi bi-caret-left-fill"
+                viewBox="0 0 16 16"
+            )
+                path(d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z")
+            svg(
+                xmlns="http://www.w3.org/2000/svg"
+                class="bi bi-caret-left-fill"
+                viewBox="0 0 16 16"
+            )
+                path(d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z")
+        span(
+            contenteditable
+            onfocus="pageCurrFocus()"
+            onblur="loadAuthors()"
+        )#page-curr.pagination-text
+        p#page-divide.pagination-text /
+        p#page-total.pagination-text
+        span#page-next(onclick="incrementPage()").pagination-button
+            svg(
+                xmlns="http://www.w3.org/2000/svg"
+                class="bi bi-caret-right-fill"
+                viewBox="0 0 16 16"
+            )
+                path(d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z")
+        span#page-last(onclick="loadLastPage()").pagination-button
+            svg(
+                xmlns="http://www.w3.org/2000/svg"
+                class="bi bi-caret-right-fill"
+                viewBox="0 0 16 16"
+            )
+                path(d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z")
+            svg(
+                xmlns="http://www.w3.org/2000/svg"
+                class="bi bi-caret-right-fill"
+                viewBox="0 0 16 16"
+            )
+                path(d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z")

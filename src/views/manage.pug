@@ -38,23 +38,25 @@ block title-bar
             div.slider
 
 block content
-    div#data-table.card
-        //- div.rolodex.author-9
-        //-     div.callsign The Greek
-        //-     div.info
-        //-         div.discord
-        //-             div.icon
-        //-             div.username The Greek
-        //-             div.display-name The Greek
-        //-         div.twitter
-        //-             div.icon
-        //-             div.username Damonjalis
-        //-             div.display-name The Greek
-        //-         div.email
-        //-             div.icon
-        //-             div.username mrdcarras@gmail.com
-        //-             div.display-name Damonjalis
-        //-     textarea(placeholder="No listener notes yet...").notes You know this guy...
+    div.center-container
+        div#data-table.card
+            //- div.rolodex.author-9
+            //-     div.callsign The Greek
+            //-     div.socials
+            //-         div.discord
+            //-             div.icon
+            //-             div.username The Greek
+            //-             div.display-name The Greek
+            //-         div.twitter
+            //-             div.icon
+            //-             div.username Damonjalis
+            //-             div.display-name The Greek
+            //-         div.social-divider
+            //-         div.email
+            //-             div.icon
+            //-             div.username mrdcarras@gmail.com
+            //-             div.display-name Damonjalis
+            //-     textarea(placeholder="No listener notes yet...").notes You know this guy...
     div#pagination
         button#page-first(onclick="loadFirstPage()").solid <<
         button#page-prev(onclick="decrementPage()").solid <

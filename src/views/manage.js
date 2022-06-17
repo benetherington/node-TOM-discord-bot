@@ -22,6 +22,10 @@ const getSocialElement = (username, displayName) => {
     usernameEl.classList.add('username');
     usernameEl.textContent = username ? '@' + username : '';
     socialElement.append(usernameEl);
+    
+    const dividerElement = document.createElement('div')
+    dividerElement.classList.add("social-divider")
+    socialElement.append(dividerElement)
 
     const displayNameEl = document.createElement('div');
     displayNameEl.classList.add('display-name');
@@ -50,21 +54,21 @@ const addAuthorRow = ({
     callsignEl.textContent = callsign;
     rolodex.append(callsignEl);
 
-    const infoEl = document.createElement('div');
-    infoEl.classList.add('info');
-    rolodex.append(infoEl);
+    const socialsElement = document.createElement('div');
+    socialsElement.classList.add('socials');
+    rolodex.append(socialsElement);
 
     const discordEl = getSocialElement(username, displayName);
     discordEl.classList.add('discord');
-    infoEl.append(discordEl);
+    socialsElement.append(discordEl);
 
     const twitterEl = getSocialElement(twitterUsername, twitterDisplayName);
     twitterEl.classList.add('twitter');
-    infoEl.append(twitterEl);
+    socialsElement.append(twitterEl);
 
     const emailEl = getSocialElement(emailAddress, emailName);
     emailEl.classList.add('email');
-    infoEl.append(emailEl);
+    socialsElement.append(emailEl);
 
     const notesEl = document.createElement('textarea');
     notesEl.classList.add('notes');

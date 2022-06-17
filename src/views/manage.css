@@ -144,12 +144,17 @@ body {
 /* buttons */
 #pagination .pagination-button {
     height: 100%;
-    border-radius: 4px;
+    padding: 0 5px;
     animation: 0.1s;
 }
 #pagination .pagination-button:hover { background-color: var(--primary); }
-#pagination svg { height: 100%; }
-#pagination .pagination-button:hover svg { fill: white; }
+
+#pagination svg {
+    height: 100%;
+    margin: 0 -5px; /* double arrows sit closer to each other */
+    fill: var(--primary-dark);
+}
+#pagination .pagination-button:hover svg { fill: black; }
 
 /* text */
 #pagination .pagination-text { font-size: 25px; }

@@ -34,8 +34,10 @@ body {
 /* ----------------- *\
    TITLE BAR > table
 \* ----------------- */
-#controls { width: 425px; }
-#controls label { font-weight: bold; }
+#controls { display: flex; }
+#table { width: 425px; }
+#table label { font-weight: bold; }
+#records-per-page { width: 60px; }
 
 /* --------------- *\
    DATA TABLE CARD

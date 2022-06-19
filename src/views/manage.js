@@ -22,10 +22,10 @@ const getSocialElement = (username, displayName) => {
     usernameEl.classList.add('username');
     usernameEl.textContent = username ? '@' + username : '';
     socialElement.append(usernameEl);
-    
-    const dividerElement = document.createElement('div')
-    dividerElement.classList.add("social-divider")
-    socialElement.append(dividerElement)
+
+    const dividerElement = document.createElement('div');
+    dividerElement.classList.add('social-divider');
+    socialElement.append(dividerElement);
 
     const displayNameEl = document.createElement('div');
     displayNameEl.classList.add('display-name');
@@ -97,7 +97,8 @@ const getCurrentPage = () => {
         return Number(userInput);
     }
 };
-const getCurrentRecordsPerPage = () => 20;
+const getCurrentRecordsPerPage = () =>
+    document.getElementById('records-per-page').value;
 const setPaginationTotal = (totalCount) => {
     const totalPages = Math.ceil(totalCount / getCurrentRecordsPerPage());
     pageTotalElement.textContent = totalPages;

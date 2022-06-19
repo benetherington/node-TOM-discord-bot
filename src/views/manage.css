@@ -7,7 +7,12 @@
     color: white !important;
 }
 
-/* --=------------ *\
+/* ---------------- *\
+   TITLE BAR SQUISH
+\* ---------------- */
+#header { margin: 0; }
+
+/* --------------- *\
    SCROLL OVERRIDE
 \* --------------- */
 
@@ -46,7 +51,7 @@ body {
 }
 
 #data-table {
-    --row-height: 30px;
+    --row-height: 20px;
 
     width: fit-content;
     overflow-y: scroll;
@@ -112,10 +117,10 @@ body {
 #data-table .email .icon { background-image: url("/icons/envelope-paper.svg"); }
 
 /* Socials -- text */
-#data-table .socials .username,
-#data-table .socials .display-name {
-    padding: 0 15px;
+#data-table .socials :is(.username, .display-name) {
     flex-basis: 50%;
+    padding: 0 15px;
+    font-size: calc(var(--row-height) * 0.7);
 }
 
 #data-table .socials .username { text-decoration: underline; }

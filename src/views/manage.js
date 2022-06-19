@@ -47,11 +47,10 @@ const addAuthorRow = ({
 }) => {
     const rolodex = document.createElement('div');
     rolodex.classList.add('rolodex', `author-${authorId}`);
-    rolodex.title = `${authorId}`;
 
     const callsignEl = document.createElement('div');
     callsignEl.classList.add('callsign');
-    callsignEl.textContent = callsign;
+    callsignEl.textContent = `#${authorId}\n${callsign}`;
     rolodex.append(callsignEl);
 
     const socialsElement = document.createElement('div');

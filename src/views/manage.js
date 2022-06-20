@@ -145,10 +145,30 @@ const addUndoState = (state) => {
 }
 const restoreUndoState = () => {
     // Get most recent state
+    const state = undoStack.pop();
+    const rolodex = document.querySelector(`.author-${state.authorId}`);
     
     // Perform update actions
+    if (state.callsign) {
+        // Update server
+        updateCallsign(state);
+        
+        // Update GUI
+        const callsignEl = rolodex.querySelector(".callsign [contenteditable]");
+        callsignEl.innerText = state.callsign;
+    } else if (state.notes) {
+        // Update server
+        updateNotes(state);
+        
+        // Update GUI
+        const notesEl = rolodex.querySelector(".notes");
+        notesEl.value = state.notes;
+    }
     
     // Update undo button
+    if (!undoStack.length) {
+        document.getElementById("undo").classList.add('disabled');
+    }
 }
 
 /*------------------*\

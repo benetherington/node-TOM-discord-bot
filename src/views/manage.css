@@ -107,7 +107,12 @@ body {
 #data-table .rolodex:hover { background-color: #a9c2f1; }
 
 /* Callsign box */
-#data-table .rolodex .callsign p {
+#data-table .callsign {
+    /* Allow absolute positioning of edit icon */
+    position: relative;
+}
+
+#data-table .callsign p {
     text-align: center;
     align-self: center;
     margin: 1px 3px;
@@ -118,6 +123,20 @@ body {
 #data-table .rolodex:hover .callsign [contenteditable] {
     background-color: white;
 }
+
+#data-table .callsign .edit-icon {
+    visibility: hidden;
+    position: absolute;
+    height: var(--row-height);
+    width: var(--row-height);
+    left: 5px;
+    top: -5px;
+    background-image: url("/icons/menu-up.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+#data-table .callsign .edit-icon:hover { background-color: var(--primary-dark); }
+#data-table .rolodex:hover .callsign .edit-icon { visibility: visible; }
 
 /* Socials box */
 #data-table .socials {

@@ -58,9 +58,12 @@ const addAuthorRow = ({
     emailName,
     notes,
 }) => {
+    // Row container
     const rolodex = document.createElement('div');
-    rolodex.classList.add('rolodex', `author-${authorId}`);
+    rolodex.classList.add('rolodex');
+    rolodex.dataset.authorId = authorId;
 
+    // Callsign box
     const callsignContainerEl = document.createElement('div');
     callsignContainerEl.classList.add('callsign');
     rolodex.append(callsignContainerEl);
@@ -76,7 +79,13 @@ const addAuthorRow = ({
     callsignEl.addEventListener('focus', createUndoDraft);
     callsignEl.addEventListener('blur', callsignBlur);
     callsignContainerEl.append(callsignEl);
+    
+    const editPopupEl = document.createElement("span");
+    editPopupEl.classList.add("edit-icon")
+    editPopupEl.addEventListener("click", showEditPopup);
+    callsignContainerEl.append(editPopupEl)
 
+    // Socials box
     const socialsElement = document.createElement('div');
     socialsElement.classList.add('socials');
     rolodex.append(socialsElement);
@@ -93,9 +102,9 @@ const addAuthorRow = ({
     emailEl.classList.add('email');
     socialsElement.append(emailEl);
 
+    // Notes box
     const notesEl = document.createElement('textarea');
     notesEl.classList.add('notes');
-    notesEl.dataset.authorId = authorId;
     notesEl.placeholder = 'No listener notes yet...';
     notesEl.value = notes;
     notesEl.addEventListener('focus', createUndoDraft);
@@ -189,11 +198,15 @@ const loadAuthors = async () => {
     setPaginationTotal(count);
 };
 
+const showEditPopup = ({target})=>{
+    target.classList.remove(".hidden")
+}
+
 // Data editing
 const callsignBlur = ({target}) => {
     // Collect data
     const callsign = target.innerText;
-    const authorId = target.dataset.authorId;
+    const authorId = target.closest(".rolodex").dataset.authorId;
 
     if (callsign !== undoDraft) {
         console.log('sending update');
@@ -207,7 +220,7 @@ const callsignBlur = ({target}) => {
 const notesBlur = ({target}) => {
     // Collect data
     const notes = target.value;
-    const authorId = target.dataset.authorId;
+    const authorId = target.closest(".rolodex").dataset.authorId;
 
     if (notes !== undoDraft) {
         console.log('sending update');

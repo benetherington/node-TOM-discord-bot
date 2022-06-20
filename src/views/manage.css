@@ -31,13 +31,48 @@ body {
     flex-direction: column;
 }
 
-/* ----------------- *\
-   TITLE BAR > table
-\* ----------------- */
+/* -------------------- *\
+   TITLE BAR > CONTROLS
+\* -------------------- */
 #controls { display: flex; }
-#table { width: 425px; }
+#controls > * { height: 35px; }
+
+#table {
+    width: 425px;
+    margin: 4px;
+}
 #table label { font-weight: bold; }
+
 #records-per-page { width: 60px; }
+
+#undo {
+    aspect-ratio: 1/1;
+    padding: 0;
+    animation: 0.1s;
+}
+#undo:not(.disabled):hover { background-color: var(--primary); }
+
+#undo.disabled {
+    cursor: default;
+    border-color: transparent;
+    background-color: transparent;
+}
+
+#undo svg {
+    height: 100%;
+    color: var(--primary-dark);
+    fill: var(--primary-dark);
+}
+
+#undo.disabled svg {
+    color: grey;
+    fill: grey;
+}
+
+#undo:not(.disabled):hover svg {
+    color: black;
+    fill: black;
+}
 
 /* --------------- *\
    DATA TABLE CARD
@@ -61,20 +96,27 @@ body {
 
 /* Each record row */
 #data-table .rolodex {
-    height: calc(var(--row-height) * 3);
+    min-height: calc(var(--row-height) * 3);
     display: grid;
-    grid-template-columns: 140px 3fr 1fr;
+    grid-template-columns: 180px 3fr 1fr;
     grid-auto-rows: calc(var(--row-height) * 3);
+    align-items: center;
     transition: background-color 0.1s;
 }
 #data-table .rolodex:nth-of-type(even) { background-color: #fff0f0; }
 #data-table .rolodex:hover { background-color: #a9c2f1; }
 
 /* Callsign box */
-#data-table .rolodex .callsign {
+#data-table .rolodex .callsign p {
     text-align: center;
     align-self: center;
-    white-space: pre-wrap;
+    margin: 1px 3px;
+    border-radius: 4px;
+    transition: 0.1s;
+}
+
+#data-table .rolodex:hover .callsign [contenteditable] {
+    background-color: white;
 }
 
 /* Socials box */
@@ -129,10 +171,17 @@ body {
 #data-table .socials .username { text-decoration: underline; }
 
 /* Info card notes text area */
-#data-table textarea.notes {
+#data-table .notes {
+    margin: 2px 3px;
     background: transparent;
     border: none;
     resize: none;
+    scrollbar-width: narrow;
+    border-radius: 4px;
+}
+
+#data-table .rolodex:hover .notes {
+    background-color: white;
 }
 
 /* ---------- *\
@@ -157,7 +206,7 @@ body {
 }
 #pagination .pagination-button:hover { background-color: var(--primary); }
 
-#pagination svg {
+#pagination svg { /* stylelint-disable no-descending-specificity */
     height: 100%;
     margin: 0 -5px; /* double arrows sit closer to each other */
     fill: var(--primary-dark);

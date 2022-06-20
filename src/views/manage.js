@@ -1,12 +1,25 @@
 /*---*\
   API
 \*---*/
-const getAuthors = (offset, limit) => {
+const getAuthors = async (offset, limit) => {
     const params = new URLSearchParams();
     if (offset) params.append('offset', offset);
     if (limit) params.append('limit', limit);
-    return fetch(`/api/authors?${params}`).then((r) => r.json());
+    const response = await fetch(`/api/authors?${params}`)
+    return response.json();
 };
+const updateCallsign = (author) =>
+    fetch(`/api/authors/callsign`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(author),
+    });
+const updateNotes = (author) =>
+    fetch(`/api/authors/notes`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(author),
+    });
 
 /*------------*\
   GUI BUILDERS
@@ -48,10 +61,21 @@ const addAuthorRow = ({
     const rolodex = document.createElement('div');
     rolodex.classList.add('rolodex', `author-${authorId}`);
 
-    const callsignEl = document.createElement('div');
-    callsignEl.classList.add('callsign');
-    callsignEl.textContent = `#${authorId}\n${callsign}`;
-    rolodex.append(callsignEl);
+    const callsignContainerEl = document.createElement('div');
+    callsignContainerEl.classList.add('callsign');
+    rolodex.append(callsignContainerEl);
+
+    const idElement = document.createElement('p');
+    idElement.textContent = '#' + authorId;
+    callsignContainerEl.append(idElement);
+
+    const callsignEl = document.createElement('p');
+    callsignEl.dataset.authorId = authorId;
+    callsignEl.textContent = callsign;
+    callsignEl.contentEditable = true;
+    callsignEl.addEventListener('focus', createUndoDraft);
+    callsignEl.addEventListener('blur', callsignBlur);
+    callsignContainerEl.append(callsignEl);
 
     const socialsElement = document.createElement('div');
     socialsElement.classList.add('socials');
@@ -71,8 +95,11 @@ const addAuthorRow = ({
 
     const notesEl = document.createElement('textarea');
     notesEl.classList.add('notes');
+    notesEl.dataset.authorId = authorId;
     notesEl.placeholder = 'No listener notes yet...';
     notesEl.value = notes;
+    notesEl.addEventListener('focus', createUndoDraft);
+    notesEl.addEventListener('blur', notesBlur);
     rolodex.append(notesEl);
 
     document.getElementById('data-table').append(rolodex);
@@ -103,6 +130,27 @@ const setPaginationTotal = (totalCount) => {
     pageTotalElement.textContent = totalPages;
 };
 
+/*----------*\
+  UNDO STACK
+\*----------*/
+const undoStack = [];
+var undoDraft;
+const createUndoDraft = ({target}) => {
+    undoDraft = target.innerText || target.value
+};
+const removeUndoDraft = () => (undoDraft = null);
+const addUndoState = (state) => {
+    undoStack.push(state);
+    document.getElementById("undo").classList.remove('disabled');
+}
+const restoreUndoState = () => {
+    // Get most recent state
+    
+    // Perform update actions
+    
+    // Update undo button
+}
+
 /*------------------*\
   GUI Event Handlers
 \*------------------*/
@@ -120,6 +168,38 @@ const loadAuthors = async () => {
     authors.forEach(addAuthorRow);
     setPaginationTotal(count);
 };
+
+// Data editing
+const callsignBlur = ({target}) => {
+    // Collect data
+    const callsign = target.innerText;
+    const authorId = target.dataset.authorId;
+
+    if (callsign !== undoDraft) {
+        console.log('sending update');
+        updateCallsign({authorId, callsign});
+        addUndoState({authorId, callsign: undoDraft});
+    }
+    
+    // Clear draft
+    removeUndoDraft();
+};
+const notesBlur = ({target}) => {
+    // Collect data
+    const notes = target.value;
+    const authorId = target.dataset.authorId;
+
+    if (notes !== undoDraft) {
+        console.log('sending update');
+        updateNotes({authorId, notes});
+        addUndoState({authorId, notes: undoDraft});
+    }
+    
+    // Clear draft
+    removeUndoDraft();
+};
+
+// Pagination text
 const pageCurrFocus = () => {
     const pageCurrRange = document.createRange();
     pageCurrRange.selectNodeContents(pageCurrElement);

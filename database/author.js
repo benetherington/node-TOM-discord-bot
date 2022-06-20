@@ -22,7 +22,7 @@ module.exports.getAuthors = (limit=40, offset=0)=>
             emailName,
             notes
         FROM Authors
-        ORDER BY callsign
+        ORDER BY callsign COLLATE NOCASE
         LIMIT ?
         OFFSET ?;`,
         limit,

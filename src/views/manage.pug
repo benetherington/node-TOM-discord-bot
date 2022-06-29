@@ -51,6 +51,13 @@ block title-bar
             )
                 path(fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z")
                 path(d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z")
+        button#merge-button
+            svg(
+                xmlns="http://www.w3.org/2000/svg"
+                class="bi bi-intersect"
+                viewBox="0 0 16 16"
+            )
+                path(d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm5 10v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2v5a2 2 0 0 1-2 2H5zm6-8V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2V6a2 2 0 0 1 2-2h5z")
 
 block content
     div.center-container
@@ -124,3 +131,23 @@ block content
                 viewBox="0 0 16 16"
             )
                 path(d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z")
+    div#merge.card.hidden
+        h2 Merge two authors
+        div.input
+            label(for="author-keep") Author ID (overwriting)
+            input(
+                type="text"
+                name="author-keep"
+                oninput="validateMergeInputs()"
+                placeholder="SAFE"
+            )#authorKeepId
+            label(for="author-delete") Author ID (overwritten)
+            input(
+                type="text"
+                name="author-delete"
+                oninput="validateMergeInputs()"
+                placeholder="NOT SAFE"
+            )#authorDeleteId
+            button(onclick="previewAuthorMerge()" disabled)#merge-preview Preview Merge
+            button(onclick="doAuthorMerge()").hidden#merge-do Merge Authors
+        div.preview

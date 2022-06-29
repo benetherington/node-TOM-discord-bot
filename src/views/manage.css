@@ -45,34 +45,70 @@ body {
 
 #records-per-page { width: 60px; }
 
-#undo {
+#controls button {
     aspect-ratio: 1/1;
     padding: 0;
     animation: 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-#undo:not(.disabled):hover { background-color: var(--primary); }
+#controls button:not(.disabled):hover { background-color: var(--primary-light); }
 
-#undo.disabled {
+#controls button.disabled {
     cursor: default;
     border-color: transparent;
     background-color: transparent;
 }
 
-#undo svg {
-    height: 100%;
+#controls button svg {
+    height: 80%;
     color: var(--primary-dark);
     fill: var(--primary-dark);
 }
 
-#undo.disabled svg {
+#controls button.disabled svg {
     color: grey;
     fill: grey;
 }
 
-#undo:not(.disabled):hover svg {
+#controls button:not(.disabled):hover svg {
     color: black;
     fill: black;
 }
+
+/* Merge modal */
+
+#merge {
+    position: absolute;
+    height: 70vh;
+    width: 70vw;
+    top: 15vh; /* 100-70 = 30 */
+    left: 15vw;
+    box-shadow: 2px 2px 15px 1px black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#merge h2 {
+    width: 100%;
+    margin: 0;
+    padding: 7px 0;
+    text-align: center;
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+#merge .input {
+    margin: 10px;
+    display: grid;
+    align-items: center;
+}
+#merge .input input { text-align: center; }
+#merge .input label { white-space: pre-wrap; }
+
+#merge button { grid-column: 1/3; } /* stylelint-disable-line no-descending-specificity */
 
 /* --------------- *\
    DATA TABLE CARD
@@ -112,7 +148,7 @@ body {
     position: relative;
 }
 
-#data-table .callsign p {
+#data-table .callsign > p {
     text-align: center;
     align-self: center;
     margin: 1px 3px;
@@ -225,12 +261,12 @@ body {
 }
 #pagination .pagination-button:hover { background-color: var(--primary); }
 
-#pagination svg { /* stylelint-disable no-descending-specificity */
+#pagination svg { /* stylelint-disable-line no-descending-specificity */
     height: 100%;
     margin: 0 -5px; /* double arrows sit closer to each other */
     fill: var(--primary-dark);
 }
-#pagination .pagination-button:hover svg { fill: black; }
+#pagination .pagination-button:hover svg { fill: black; } /* stylelint-disable-line no-descending-specificity */
 
 /* text */
 #pagination .pagination-text { font-size: 25px; }

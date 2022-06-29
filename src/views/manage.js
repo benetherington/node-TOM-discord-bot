@@ -5,7 +5,7 @@ const getAuthors = async (offset, limit) => {
     const params = new URLSearchParams();
     if (offset) params.append('offset', offset);
     if (limit) params.append('limit', limit);
-    const response = await fetch(`/api/authors?${params}`)
+    const response = await fetch(`/api/authors?${params}`);
     return response.json();
 };
 const updateCallsign = (author) =>
@@ -79,11 +79,6 @@ const addAuthorRow = ({
     callsignEl.addEventListener('focus', createUndoDraft);
     callsignEl.addEventListener('blur', callsignBlur);
     callsignContainerEl.append(callsignEl);
-    
-    const editPopupEl = document.createElement("span");
-    editPopupEl.classList.add("edit-icon")
-    editPopupEl.addEventListener("click", showEditPopup);
-    callsignContainerEl.append(editPopupEl)
 
     // Socials box
     const socialsElement = document.createElement('div');
@@ -145,40 +140,40 @@ const setPaginationTotal = (totalCount) => {
 const undoStack = [];
 var undoDraft;
 const createUndoDraft = ({target}) => {
-    undoDraft = target.innerText || target.value
+    undoDraft = target.innerText || target.value;
 };
 const removeUndoDraft = () => (undoDraft = null);
 const addUndoState = (state) => {
     undoStack.push(state);
-    document.getElementById("undo").classList.remove('disabled');
-}
+    document.getElementById('undo').classList.remove('disabled');
+};
 const restoreUndoState = () => {
     // Get most recent state
     const state = undoStack.pop();
     const rolodex = document.querySelector(`.author-${state.authorId}`);
-    
+
     // Perform update actions
     if (state.callsign) {
         // Update server
         updateCallsign(state);
-        
+
         // Update GUI
-        const callsignEl = rolodex.querySelector(".callsign [contenteditable]");
+        const callsignEl = rolodex.querySelector('.callsign [contenteditable]');
         callsignEl.innerText = state.callsign;
     } else if (state.notes) {
         // Update server
         updateNotes(state);
-        
+
         // Update GUI
-        const notesEl = rolodex.querySelector(".notes");
+        const notesEl = rolodex.querySelector('.notes');
         notesEl.value = state.notes;
     }
-    
+
     // Update undo button
     if (!undoStack.length) {
-        document.getElementById("undo").classList.add('disabled');
+        document.getElementById('undo').classList.add('disabled');
     }
-}
+};
 
 /*------------------*\
   GUI Event Handlers
@@ -198,36 +193,77 @@ const loadAuthors = async () => {
     setPaginationTotal(count);
 };
 
-const showEditPopup = ({target})=>{
-    target.classList.remove(".hidden")
-}
+const showMergeModal = (event) => {
+    // Un-hide edit modal
+    const mergeModal = document.getElementById('merge');
+    mergeModal.classList.remove('hidden');
+
+    // Close the modal when losing focus
+    event.stopPropagation();
+    document.addEventListener('click', ({target}) => {
+        if (!target.closest('#merge')) mergeModal.classList.add('hidden');
+    });
+};
+
+const validateMergeInputs = () => {
+    const authorKeepEl = document.getElementById('authorKeepId');
+    const authorDeleteEl = document.getElementById('authorDeleteId');
+
+    keepValid = /^\d{1,3}$/.test(authorKeepEl.value);
+    deleteValid = /^\d{1,3}$/.test(authorDeleteEl.value);
+    
+    // Easy: everything's valid, we can run a preview
+    if (keepValid && deleteValid) {
+        authorKeepEl.classList.remove('invalid');
+        authorDeleteEl.classList.remove('invalid');
+        document.getElementById('merge-preview').disabled = false;
+        return;
+    }
+    
+    // Somthing's not right, disable preview button
+    document.getElementById('merge-preview').disabled = true;
+    keepBlank = !authorKeepEl.value;
+    deleteBlank = !authorDeleteEl.value;
+    
+    // Warn on 
+    if (!keepValid || keepBlank) authorKeepEl.classList.add('invalid');
+    else authorKeepEl.classList.remove('invalid');
+
+    if (!deleteValid || deleteBlank) authorDeleteEl.classList.add('invalid');
+    else authorDeleteEl.classList.remove('invalid');
+
+};
+
+const previewAuthorMerge = () => {};
+
+const doAuthorMerge = ({target}) => {};
 
 // Data editing
 const callsignBlur = ({target}) => {
     // Collect data
     const callsign = target.innerText;
-    const authorId = target.closest(".rolodex").dataset.authorId;
+    const authorId = target.closest('.rolodex').dataset.authorId;
 
     if (callsign !== undoDraft) {
         console.log('sending update');
         updateCallsign({authorId, callsign});
         addUndoState({authorId, callsign: undoDraft});
     }
-    
+
     // Clear draft
     removeUndoDraft();
 };
 const notesBlur = ({target}) => {
     // Collect data
     const notes = target.value;
-    const authorId = target.closest(".rolodex").dataset.authorId;
+    const authorId = target.closest('.rolodex').dataset.authorId;
 
     if (notes !== undoDraft) {
         console.log('sending update');
         updateNotes({authorId, notes});
         addUndoState({authorId, notes: undoDraft});
     }
-    
+
     // Clear draft
     removeUndoDraft();
 };
@@ -285,6 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set event listeners
     pageCurrElement.addEventListener('keydown', pageCurrInput);
+    document
+        .getElementById('merge-button')
+        .addEventListener('click', showMergeModal);
 
     // Fetch and display first page
     loadAuthors();

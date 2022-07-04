@@ -68,7 +68,9 @@ const handleNewGuess = async (interaction) => {
     const postToTwsfChannel = hiddenOption || hiddenOption === null; // default True
     if (postToTwsfChannel) {
         const messageOptions = getTwsfChannelMessage(interaction);
-        const twsfChannel = await interaction.client.channels.fetch(ID.channel.thisweeksf);
+        const twsfChannel = await interaction.client.channels.fetch(
+            ID.channel.thisweeksf,
+        );
         const postedMessage = await twsfChannel.send(messageOptions);
         updateGuessDiscordReply(guess, postedMessage.id);
     }
@@ -84,8 +86,9 @@ const handleClueRequest = async (interaction) => {
             m.author.id === ID.user.ben && m.content.startsWith('Next week ('),
     );
 
-    if (lastTwsfMessage) return interaction.editReply({content: lastTwsfMessage.content});
-    else interaction.editReply(responses.twsf.guessNotFound)
+    if (lastTwsfMessage)
+        return interaction.editReply({content: lastTwsfMessage.content});
+    else interaction.editReply(responses.twsf.guessNotFound);
 };
 
 /*-------*\

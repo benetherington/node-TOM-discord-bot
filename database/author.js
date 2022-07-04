@@ -9,7 +9,7 @@ const initDB = async () => {
 };
 initDB();
 
-module.exports.getAuthors = (limit=40, offset=0)=>
+module.exports.getAuthors = (limit = 40, offset = 0) =>
     db.all(
         `SELECT
             authorId,
@@ -26,8 +26,24 @@ module.exports.getAuthors = (limit=40, offset=0)=>
         LIMIT ?
         OFFSET ?;`,
         limit,
-        offset
-    )
+        offset,
+    );
+module.exports.getAuthor = (authorId) =>
+    db.get(
+        `SELECT
+            authorId,
+            callsign,
+            username,
+            displayName,
+            twitterUsername,
+            twitterDisplayName,
+            emailAddress,
+            emailName,
+            notes
+        FROM Authors
+        WHERE authorId = ?`,
+        authorId,
+    );
 module.exports.getAuthorsCount = () =>
     db.get(`SELECT COUNT(*) AS count FROM Authors;`);
 module.exports.updateAuthorNotes = (author) =>
@@ -36,17 +52,37 @@ module.exports.updateAuthorNotes = (author) =>
         SET notes = ?
         WHERE authorId = ?;`,
         author.notes,
-        author.authorId
-    )
+        author.authorId,
+    );
 module.exports.updateAuthorCallsign = (author) =>
     db.run(
         `UPDATE Authors
         SET callsign = ?
         WHERE authorId = ?;`,
         author.callsign,
-        author.authorId
-    )
-module.exports.mergeAuthors = async (authorKeep, authorDelete) => {
+        author.authorId,
+    );
+module.exports.getMergedAuthor = (authorKeep, authorDelete) =>
+    db.get(
+        `WITH
+                author_keep AS (SELECT * FROM Authors WHERE authorId = ?),
+                author_delete AS (SELECT * FROM Authors WHERE authorId = ?)
+            SELECT
+                COALESCE(author_keep.callsign, author_delete.callsign) AS callsign,
+                COALESCE(author_keep.discordId, author_delete.discordId) AS discordId,
+                COALESCE(author_keep.username, author_delete.username) AS username,
+                COALESCE(author_keep.displayName, author_delete.displayName) AS displayName,
+                COALESCE(author_keep.twitterId, author_delete.twitterId) AS twitterId,
+                COALESCE(author_keep.twitterUsername, author_delete.twitterUsername) AS twitterUsername,
+                COALESCE(author_keep.twitterDisplayName, author_delete.twitterDisplayName) AS twitterDisplayName,
+                COALESCE(author_keep.emailAddress, author_delete.emailAddress) AS emailAddress,
+                COALESCE(author_keep.emailName, author_delete.emailName) AS emailName,
+                author_keep.notes || "<merged>" || author_delete.notes AS notes
+            FROM author_keep, author_delete;`,
+        authorKeep.authorId,
+        authorDelete.authorId,
+    );
+module.exports.executeAuthorMerge = async (authorKeep, authorDelete) => {
     // Create a savepoint
     await db.run('SAVEPOINT merge_authors;');
     try {
@@ -76,25 +112,7 @@ module.exports.mergeAuthors = async (authorKeep, authorDelete) => {
         );
 
         // Merge authors
-        const mergedAuthor = await db.get(
-            `WITH
-                author_keep AS (SELECT * FROM Authors WHERE authorId = ?),
-                author_delete AS (SELECT * FROM Authors WHERE authorId = ?)
-            SELECT
-                COALESCE(author_keep.callsign, author_delete.callsign) AS callsign,
-                COALESCE(author_keep.discordId, author_delete.discordId) AS discordId,
-                COALESCE(author_keep.username, author_delete.username) AS username,
-                COALESCE(author_keep.displayName, author_delete.displayName) AS displayName,
-                COALESCE(author_keep.twitterId, author_delete.twitterId) AS twitterId,
-                COALESCE(author_keep.twitterUsername, author_delete.twitterUsername) AS twitterUsername,
-                COALESCE(author_keep.twitterDisplayName, author_delete.twitterDisplayName) AS twitterDisplayName,
-                COALESCE(author_keep.emailAddress, author_delete.emailAddress) AS emailAddress,
-                COALESCE(author_keep.emailName, author_delete.emailName) AS emailName,
-                author_keep.notes || "<merged>" || author_delete.notes AS notes
-            FROM author_keep, author_delete;`,
-            authorKeep.authorId,
-            authorDelete.authorId,
-        );
+        const mergedAuthor = await this.getMergedAuthor(authorKeep, authorDelete);
         await db.run(
             `DELETE FROM Authors
             WHERE authorId = ?;`,

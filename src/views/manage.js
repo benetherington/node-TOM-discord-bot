@@ -44,7 +44,7 @@ const executeMerge = (authorKeep, authorDelete) =>
 /*------------*\
   GUI BUILDERS
 \*------------*/
-const getSocialElement = (username, displayName) => {
+const buildSocialElement = (username, displayName) => {
     const socialElement = document.createElement('div');
 
     const iconEl = document.createElement('div');
@@ -66,10 +66,6 @@ const getSocialElement = (username, displayName) => {
     socialElement.append(displayNameEl);
 
     return socialElement;
-};
-const addAuthorRow = (author) => {
-    const rolodex = buildAuthorRow(author);
-    document.getElementById('data-table').append(rolodex);
 };
 const buildAuthorRow = (
     {
@@ -114,15 +110,15 @@ const buildAuthorRow = (
     socialsElement.classList.add('socials');
     rolodex.append(socialsElement);
 
-    const discordEl = getSocialElement(username, displayName);
+    const discordEl = buildSocialElement(username, displayName);
     discordEl.classList.add('discord');
     socialsElement.append(discordEl);
 
-    const twitterEl = getSocialElement(twitterUsername, twitterDisplayName);
+    const twitterEl = buildSocialElement(twitterUsername, twitterDisplayName);
     twitterEl.classList.add('twitter');
     socialsElement.append(twitterEl);
 
-    const emailEl = getSocialElement(emailAddress, emailName);
+    const emailEl = buildSocialElement(emailAddress, emailName);
     emailEl.classList.add('email');
     socialsElement.append(emailEl);
 
@@ -141,31 +137,18 @@ const buildAuthorRow = (
 
     return rolodex;
 };
-const clearDataRows = () => {
-    const dataTable = document.getElementById('data-table');
-    while (dataTable.lastChild) dataTable.lastChild.remove();
-};
 
 /*-----------*\
   GUI HELPERS
 \*-----------*/
-// Pagination things
-let pageCurrElement, pageTotalElement;
-const getCurrentPage = () => {
-    const userInput = pageCurrElement.textContent;
-    const inputValid = /\d+/.test(userInput);
-    if (!inputValid) {
-        pageCurrElement.textContent = '1';
-        return 1;
-    } else {
-        return Number(userInput);
-    }
+// Rolodex things
+const addAuthorRow = (author) => {
+    const rolodex = buildAuthorRow(author);
+    document.getElementById('data-table').append(rolodex);
 };
-const getCurrentRecordsPerPage = () =>
-    document.getElementById('records-per-page').value;
-const setPaginationTotal = (totalCount) => {
-    const totalPages = Math.ceil(totalCount / getCurrentRecordsPerPage());
-    pageTotalElement.textContent = totalPages;
+const clearDataRows = () => {
+    const dataTable = document.getElementById('data-table');
+    while (dataTable.lastChild) dataTable.lastChild.remove();
 };
 
 // Merge modal things
@@ -194,7 +177,7 @@ const clearMergePreview = () => {
     while (rolodexContainer.lastChild) rolodexContainer.lastChild.remove();
 
     // Reset buttons
-    document.getElementById('merge-preview').classList.remove('hidden');
+    mergePreviewElement.classList.remove('hidden');
     document.getElementById('merge-do').classList.add('hidden');
 };
 const displayMergePreview = async (previewPromise) => {
@@ -222,6 +205,24 @@ const findCallsignFromInput = async (authorInputElement) => {
     // Nope, we don't have it, go fetch it
     const author = await getAuthor(authorId);
     if (author) return author.callsign;
+};
+
+// Pagination things
+const getCurrentPage = () => {
+    const userInput = pageCurrElement.textContent;
+    const inputValid = /\d+/.test(userInput);
+    if (!inputValid) {
+        pageCurrElement.textContent = '1';
+        return 1;
+    } else {
+        return Number(userInput);
+    }
+};
+const getCurrentRecordsPerPage = () =>
+    document.getElementById('records-per-page').value;
+const setPaginationTotal = (totalCount) => {
+    const totalPages = Math.ceil(totalCount / getCurrentRecordsPerPage());
+    pageTotalElement.textContent = totalPages;
 };
 
 /*----------*\
@@ -299,49 +300,45 @@ const validateMergeInputs = async () => {
     // Start with a clean slate
     clearMergePreview();
 
-    // Find input elements
-    const authorKeepEl = document.getElementById('authorKeepId');
-    const authorDeleteEl = document.getElementById('authorDeleteId');
-
     // Check inputs make sense
-    let keepValid = /^\d{1,3}$/.test(authorKeepEl.value);
-    let deleteValid = /^\d{1,3}$/.test(authorDeleteEl.value);
-    if (authorKeepEl.value === authorDeleteEl.value)
+    let keepValid = /^\d{1,3}$/.test(authorKeepElement.value);
+    let deleteValid = /^\d{1,3}$/.test(authorDeleteElement.value);
+    if (authorKeepElement.value === authorDeleteElement.value)
         keepValid = deleteValid = false;
 
     // Check inputs mean something
     let keepCallsign, deleteCallsign;
     if (keepValid) {
-        keepCallsign = await findCallsignFromInput(authorKeepEl);
+        keepCallsign = await findCallsignFromInput(authorKeepElement);
     }
     if (deleteValid) {
-        deleteCallsign = await findCallsignFromInput(authorDeleteEl);
+        deleteCallsign = await findCallsignFromInput(authorDeleteElement);
     }
 
     // Easy: everything works
     if (keepCallsign && deleteCallsign) {
         // Enable preview button
-        document.getElementById('merge-preview').disabled = false;
+        mergePreviewElement.disabled = false;
 
         // Update inputs and labels
-        showValidMergeInput(authorKeepEl, keepCallsign);
-        showValidMergeInput(authorDeleteEl, deleteCallsign);
+        showValidMergeInput(authorKeepElement, keepCallsign);
+        showValidMergeInput(authorDeleteElement, deleteCallsign);
         return true;
     }
 
     // Somthing's not right, disable preview button
-    document.getElementById('merge-preview').disabled = true;
+    mergePreviewElement.disabled = true;
 
     // Handle each input
-    keepBlank = !authorKeepEl.value;
+    keepBlank = !authorKeepElement.value;
     if (keepCallsign || keepBlank)
-        showValidMergeInput(authorKeepEl, keepCallsign);
-    else showInvalidMergeInput(authorKeepEl);
+        showValidMergeInput(authorKeepElement, keepCallsign);
+    else showInvalidMergeInput(authorKeepElement);
 
-    deleteBlank = !authorDeleteEl.value;
+    deleteBlank = !authorDeleteElement.value;
     if (deleteCallsign || deleteBlank)
-        showValidMergeInput(authorDeleteEl, deleteCallsign);
-    else showInvalidMergeInput(authorDeleteEl);
+        showValidMergeInput(authorDeleteElement, deleteCallsign);
+    else showInvalidMergeInput(authorDeleteElement);
 };
 const previewAuthorMerge = () => {
     // Double check inputs
@@ -349,10 +346,10 @@ const previewAuthorMerge = () => {
 
     // Get authors to preview
     const authorKeep = {
-        authorId: document.getElementById('authorKeepId').value,
+        authorId: authorKeepElement.value,
     };
     const authorDelete = {
-        authorId: document.getElementById('authorDeleteId').value,
+        authorId: authorDeleteElement.value,
     };
 
     // Send preview request
@@ -362,7 +359,7 @@ const previewAuthorMerge = () => {
     displayMergePreview(previewPromise);
 
     // Enable do merge button
-    document.getElementById('merge-preview').classList.add('hidden');
+    mergePreviewElement.classList.add('hidden');
     document.getElementById('merge-do').classList.remove('hidden');
 };
 const doAuthorMerge = async () => {
@@ -371,10 +368,10 @@ const doAuthorMerge = async () => {
 
     // Get authors to merge
     const authorKeep = {
-        authorId: document.getElementById('authorKeepId').value,
+        authorId: authorKeepElement.value,
     };
     const authorDelete = {
-        authorId: document.getElementById('authorDeleteId').value,
+        authorId: authorDeleteElement.value,
     };
 
     // Send merge request
@@ -465,10 +462,19 @@ const loadLastPage = () => {
     loadAuthors();
 };
 
+/*---------------------*\
+  "On Load" Preparation
+\*---------------------*/
+let pageCurrElement, pageTotalElement;
+let mergePreviewElement, authorKeepElement, authorDeleteElement;
 document.addEventListener('DOMContentLoaded', () => {
     // Save common elements
     pageCurrElement = document.getElementById('page-curr');
     pageTotalElement = document.getElementById('page-total');
+
+    mergePreviewElement = document.getElementById('merge-preview');
+    authorKeepElement = document.getElementById('authorKeepId');
+    authorDeleteElement = document.getElementById('authorDeleteId');
 
     // Set event listeners
     pageCurrElement.addEventListener('keydown', pageCurrInput);

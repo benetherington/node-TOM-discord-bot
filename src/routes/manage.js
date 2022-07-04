@@ -1,9 +1,11 @@
 const {
     getAuthors,
+    getAuthor,
     getAuthorsCount,
     updateAuthorCallsign,
     updateAuthorNotes,
-    mergeAuthors,
+    getMergedAuthor,
+    executeAuthorMerge,
 } = require('../../database/author');
 const {adminPreHandler} = require('./loginUtilities');
 
@@ -19,6 +21,16 @@ module.exports = (fastify, opts, done) => {
         },
     );
 
+    // API: get a single Author
+    fastify.get(
+        '/api/author/:authorId',
+        {preHander: adminPreHandler},
+        async (request, reply) => {
+            const {authorId} = request.params;
+            const author = await getAuthor(authorId);
+            return reply.send(author);
+        },
+    );
     // API: get Authors
     fastify.get(
         '/api/authors',
@@ -74,9 +86,9 @@ module.exports = (fastify, opts, done) => {
             return reply.send(changes);
         },
     );
-    // API: merge Authors
+    // API: preview Author merge
     fastify.post(
-        '/api/authors/merge',
+        '/api/authors/merge/preview',
         {
             preHander: adminPreHandler,
             schema: {
@@ -100,7 +112,44 @@ module.exports = (fastify, opts, done) => {
         },
         async (request, reply) => {
             const {authorKeep, authorDelete} = request.body;
-            const success = await mergeAuthors(authorKeep, authorDelete);
+            const mergePreview = await getMergedAuthor(
+                authorKeep,
+                authorDelete,
+            );
+            mergePreview.authorId = authorKeep.authorId;
+            return reply.send(mergePreview);
+        },
+    );
+    // API: merge Authors
+    fastify.post(
+        '/api/authors/merge/execute',
+        {
+            preHander: adminPreHandler,
+            schema: {
+                body: {
+                    type: 'object',
+                    properties: {
+                        authorKeep: {
+                            type: 'object',
+                            properties: {authorId: {type: 'string'}},
+                            additionalProperties: true,
+                        },
+                        authorDelete: {
+                            type: 'object',
+                            properties: {authorId: {type: 'string'}},
+                            additionalProperties: true,
+                        },
+                        additionalProperties: false,
+                    },
+                },
+            },
+        },
+        async (request, reply) => {
+            const {authorKeep, authorDelete} = request.body;
+            // TODO: should preview values be included in the request, and
+            // double checked? This would ensure we've got the correct IDs and
+            // that nothing has changed.
+            const success = await executeAuthorMerge(authorKeep, authorDelete);
             return reply.send(success);
         },
     );

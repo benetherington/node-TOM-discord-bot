@@ -134,20 +134,21 @@ block content
     div#merge.card.hidden
         h2 Merge two authors
         div.input
-            label(for="author-keep") Author ID (overwriting)
+            label(for="author-keep") Author ID
             input(
                 type="text"
                 name="author-keep"
                 oninput="validateMergeInputs()"
                 placeholder="SAFE"
             )#authorKeepId
-            label(for="author-delete") Author ID (overwritten)
+            label(for="author-delete") Author ID
             input(
                 type="text"
                 name="author-delete"
                 oninput="validateMergeInputs()"
                 placeholder="NOT SAFE"
             )#authorDeleteId
-            button(onclick="previewAuthorMerge()" disabled)#merge-preview Preview Merge
-            button(onclick="doAuthorMerge()").hidden#merge-do Merge Authors
-        div.preview
+        div.card#merge-rolodex-container
+        button(onclick="previewAuthorMerge()" disabled)#merge-preview Preview Merge
+        button(onclick="doAuthorMerge()").hidden#merge-do Merge Authors
+        div.notification.card

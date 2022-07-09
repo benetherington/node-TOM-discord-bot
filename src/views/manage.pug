@@ -5,16 +5,17 @@ append style
 
 block script
     include manage.js
+    include manage-author.js
 
 block title-bar
     +titleBar("Manage Database")
     div#controls
-        div#table.slide-radio.three
+        div#table-selector.slide-radio.three
             input#authors.toggle-option(
                 type='radio'
                 name='table'
                 value='authors'
-                onchange='refreshData()'
+                onchange='changeTable()'
                 checked
             )
             label(for='authors') Listeners
@@ -23,7 +24,7 @@ block title-bar
                 type='radio'
                 name='table'
                 value='guesses'
-                onchange='refreshData()'
+                onchange='changeTable()'
             )
             label(for='guesses') TWSF Guesses
             
@@ -31,7 +32,7 @@ block title-bar
                 type='radio'
                 name='table'
                 value='suggestions'
-                onchange='refreshData()'
+                onchange='changeTable()'
             )
             label(for='suggestions') Title Suggestions
             

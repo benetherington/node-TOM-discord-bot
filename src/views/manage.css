@@ -43,12 +43,12 @@ body {
 }
 #controls > * { height: 35px; }
 
-#table {
+#table-selector {
     width: 300px;
     height: 50px;
     margin: 4px;
 }
-#table label { font-weight: bold; }
+#table-selector label { font-weight: bold; }
 
 #records-per-page { width: 60px; }
 
@@ -170,7 +170,7 @@ body {
     height: 1px;
     flex-grow: 1;
 
-    /* data-table will shrink horizontally to fit content */
+    /* data-table-selector will shrink horizontally to fit content */
     display: flex;
     justify-content: center;
 }

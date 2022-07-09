@@ -32,13 +32,20 @@ body {
 }
 
 /* -------------------- *\
-   TITLE BAR > CONTROLS
+   TITLE BAR & CONTROLS
 \* -------------------- */
-#controls { display: flex; }
+#title-bar { justify-content: center; }
+#title { margin: 0; }
+
+#controls {
+    display: flex;
+    align-items: center;
+}
 #controls > * { height: 35px; }
 
 #table {
-    width: 425px;
+    width: 300px;
+    height: 50px;
     margin: 4px;
 }
 #table label { font-weight: bold; }
@@ -75,6 +82,28 @@ body {
 #controls button:not(.disabled):hover svg {
     color: black;
     fill: black;
+}
+
+#controls .bookmark-for-expandable { width: 0; }
+
+#search-input {
+    position: relative;
+    height: 36px;
+    max-width: 200px;
+    left: 4px;
+    top: 4px;
+    margin: 0;
+    transition: 0.5s;
+    z-index: 1;
+    box-shadow: 0 0 5px black;
+}
+
+#search-input:not(.expanded) {
+    max-width: 0;
+    left: 0;
+    padding: 0;
+    border-width: 0;
+    box-shadow: 0 0 5px transparent;
 }
 
 /* ----------- *\

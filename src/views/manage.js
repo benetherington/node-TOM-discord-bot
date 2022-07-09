@@ -151,6 +151,19 @@ const clearDataRows = () => {
     while (dataTable.lastChild) dataTable.lastChild.remove();
 };
 
+// Search things
+const showSearch = (event) => {
+    const searchEl = document.getElementById('search-input');
+    searchEl.classList.add('expanded');
+    event.stopPropagation();
+
+    document.addEventListener('click', ({target}) => {
+        if (target.id !== 'search-input') {
+            searchEl.classList.remove('expanded');
+        }
+    });
+};
+
 // Merge modal things
 const showValidMergeInput = async (inputElement, callsign) => {
     // Update input
@@ -481,6 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document
         .getElementById('merge-button')
         .addEventListener('click', showMergeModal);
+    document.getElementById('search').addEventListener('click', showSearch);
 
     // Fetch and display first page
     loadAuthors();

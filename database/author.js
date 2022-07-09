@@ -112,7 +112,10 @@ module.exports.executeAuthorMerge = async (authorKeep, authorDelete) => {
         );
 
         // Merge authors
-        const mergedAuthor = await this.getMergedAuthor(authorKeep, authorDelete);
+        const mergedAuthor = await this.getMergedAuthor(
+            authorKeep,
+            authorDelete,
+        );
         await db.run(
             `DELETE FROM Authors
             WHERE authorId = ?;`,

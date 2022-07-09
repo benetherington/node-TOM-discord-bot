@@ -158,7 +158,7 @@ const getMatchingRolodae = (searchString) => {
             rolo.innerText.toLowerCase().includes(searchString)
                 ? [[...pass, rolo], fail] // add rolodex to pass list
                 : [pass, [...fail, rolo]], // add rolodex to fail list
-        [[],[]] // start with empty pass/fail arrays
+        [[], []], // start with empty pass/fail arrays
     );
     return passAndFail;
 };
@@ -207,6 +207,9 @@ const clearMergePreview = () => {
     // Reset buttons
     mergePreviewElement.classList.remove('hidden');
     document.getElementById('merge-do').classList.add('hidden');
+
+    // Clear notification
+    document.querySelector('#merge .notification').textContent = '';
 };
 const displayMergePreview = async (previewPromise) => {
     // Fetch preview data
@@ -319,11 +322,13 @@ const showSearch = (event) => {
     searchEl.focus();
     event.stopPropagation();
 
-    document.addEventListener('click', ({target}) => {
-        if (target.id !== 'search-input') {
-            searchEl.classList.remove('expanded');
-        }
-    });
+    document.addEventListener('click', hideSearch);
+};
+const hideSearch = ({target}) => {
+    if (target.id !== 'search-input') {
+        document.getElementById('search-input').classList.remove('expanded');
+        document.removeEventListener('click', hideSearch);
+    }
 };
 const performSearch = () => {
     const searchEl = document.getElementById('search-input');
@@ -339,7 +344,7 @@ const performSearch = () => {
         document.getElementById('search-button').classList.add('active');
     } else {
         // Show all elements
-        notMatch.forEach(hiddenUnwrap)
+        notMatch.forEach(hiddenUnwrap);
         // Update search button
         document.getElementById('search-button').classList.remove('active');
     }

@@ -144,24 +144,39 @@ const buildAuthorRow = (
 // Rolodex things
 const addAuthorRow = (author) => {
     const rolodex = buildAuthorRow(author);
-    document.getElementById('data-table').append(rolodex);
+    dataTable.append(rolodex);
 };
 const clearDataRows = () => {
-    const dataTable = document.getElementById('data-table');
     while (dataTable.lastChild) dataTable.lastChild.remove();
 };
 
 // Search things
-const showSearch = (event) => {
-    const searchEl = document.getElementById('search-input');
-    searchEl.classList.add('expanded');
-    event.stopPropagation();
-
-    document.addEventListener('click', ({target}) => {
-        if (target.id !== 'search-input') {
-            searchEl.classList.remove('expanded');
-        }
-    });
+const getMatchingRolodae = (searchString) => {
+    const rolodae = Array.from(document.querySelectorAll('.rolodex'));
+    const passAndFail = rolodae.reduce(
+        ([pass, fail], rolo) =>
+            rolo.innerText.toLowerCase().includes(searchString)
+                ? [[...pass, rolo], fail] // add rolodex to pass list
+                : [pass, [...fail, rolo]], // add rolodex to fail list
+        [[],[]] // start with empty pass/fail arrays
+    );
+    return passAndFail;
+};
+const hiddenWrap = (toWrap) => {
+    // Check that this element is not yet wrapped
+    if (toWrap.parentElement.classList.contains('hidden-wrapper')) return;
+    // Create wrapper
+    const hiddenWrapper = document.createElement('span');
+    hiddenWrapper.classList.add('hidden', 'hidden-wrapper');
+    // Wrap element
+    toWrap.replaceWith(hiddenWrapper);
+    hiddenWrapper.appendChild(toWrap);
+};
+const hiddenUnwrap = (toUnwrap) => {
+    // Check this element is actually wrapped
+    if (!toUnwrap.parentElement.classList.contains('hidden-wrapper')) return;
+    // Unwrap element
+    toUnwrap.parentElement.replaceWith(toUnwrap);
 };
 
 // Merge modal things
@@ -295,6 +310,39 @@ const loadAuthors = async () => {
     clearDataRows();
     authors.forEach(addAuthorRow);
     setPaginationTotal(count);
+};
+
+// Search things
+const showSearch = (event) => {
+    const searchEl = document.getElementById('search-input');
+    searchEl.classList.add('expanded');
+    searchEl.focus();
+    event.stopPropagation();
+
+    document.addEventListener('click', ({target}) => {
+        if (target.id !== 'search-input') {
+            searchEl.classList.remove('expanded');
+        }
+    });
+};
+const performSearch = () => {
+    const searchEl = document.getElementById('search-input');
+    const searchString = searchEl.value.trim().toLowerCase();
+    console.log({searchString});
+
+    const [yesMatch, notMatch] = getMatchingRolodae(searchString);
+    if (yesMatch.length) {
+        // Hide/show not/matching elements
+        yesMatch.forEach(hiddenUnwrap);
+        notMatch.forEach(hiddenWrap);
+        // Update search button
+        document.getElementById('search-button').classList.add('active');
+    } else {
+        // Show all elements
+        notMatch.forEach(hiddenUnwrap)
+        // Update search button
+        document.getElementById('search-button').classList.remove('active');
+    }
 };
 
 // Merge modal things
@@ -478,10 +526,13 @@ const loadLastPage = () => {
 /*---------------------*\
   "On Load" Preparation
 \*---------------------*/
+let dataTable;
 let pageCurrElement, pageTotalElement;
 let mergePreviewElement, authorKeepElement, authorDeleteElement;
 document.addEventListener('DOMContentLoaded', () => {
     // Save common elements
+    dataTable = document.getElementById('data-table');
+
     pageCurrElement = document.getElementById('page-curr');
     pageTotalElement = document.getElementById('page-total');
 
@@ -494,7 +545,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document
         .getElementById('merge-button')
         .addEventListener('click', showMergeModal);
-    document.getElementById('search').addEventListener('click', showSearch);
+    document
+        .getElementById('search-button')
+        .addEventListener('click', showSearch);
 
     // Fetch and display first page
     loadAuthors();

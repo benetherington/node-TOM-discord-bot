@@ -84,6 +84,10 @@ body {
     fill: black;
 }
 
+#search-button.active {
+    background-color: var(--secondary-light);
+}
+
 #controls .bookmark-for-expandable { width: 0; }
 
 #search-input {
@@ -91,9 +95,8 @@ body {
     height: 36px;
     max-width: 200px;
     left: 4px;
-    top: 4px;
     margin: 0;
-    transition: 0.5s;
+    transition: 0.2s;
     z-index: 1;
     box-shadow: 0 0 5px black;
 }
@@ -190,7 +193,7 @@ body {
     align-items: center;
     transition: background-color 0.1s;
 }
-.rolodex:nth-of-type(even) { background-color: var(--secondary-ultralight); }
+#data-table .rolodex:nth-of-type(even) { background-color: var(--secondary-ultralight); }
 .rolodex:hover { background-color: var(--primary-ultralight); }
 /* stylelint-enable no-descending-specificity */
 

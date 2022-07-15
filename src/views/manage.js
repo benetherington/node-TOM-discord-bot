@@ -3,20 +3,6 @@
 \*-----------*/
 const getActiveTable = () =>
     document.querySelector('#table-selector input:checked').value;
-const changeTable = () => {
-    // Clear things that change per table
-    document.getElementById("merge-button").classList.add("disabled")
-    clearDataRows();
-    clearSearch();
-    clearUndoStack();
-    
-    
-    // Update page
-    const activeTable = getActiveTable();
-    if (activeTable === 'authors') loadAuthors();
-    if (activeTable === 'guesses') loadGuesses();
-    if (activeTable === 'suggestions') loadSuggestions();
-};
 const clearDataRows = () => {
     while (dataTable.lastChild) dataTable.lastChild.remove();
 };
@@ -95,6 +81,23 @@ const restoreUndoState = () => {
 /*------------------*\
   GUI Event Handlers
 \*------------------*/
+// Table selection things
+const changeTable = () => {
+    // Clear things that change per table
+    document.getElementById("merge-button").classList.add("disabled")
+    clearDataRows();
+    clearSearch();
+    clearUndoStack();
+    
+    
+    // Update page
+    const activeTable = getActiveTable();
+    if (activeTable === 'authors') loadAuthors();
+    if (activeTable === 'guesses') loadGuesses();
+    if (activeTable === 'suggestions') loadSuggestions();
+};
+
+
 // Search things
 const showSearch = (event) => {
     const searchEl = document.getElementById('search-input');

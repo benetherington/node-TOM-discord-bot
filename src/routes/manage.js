@@ -7,6 +7,7 @@ const {
     getMergedAuthor,
     executeAuthorMerge,
 } = require('../../database/author');
+const {getAllGuesses, getGuessesCount} = require('../../database/twsf');
 const {adminPreHandler} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
@@ -18,6 +19,18 @@ module.exports = (fastify, opts, done) => {
             return reply.view('src/views/manage', {
                 username: request.admin.username,
             });
+        },
+    );
+
+    // API: get guesses
+    fastify.get(
+        '/api/guesses',
+        {preHander: adminPreHandler},
+        async (request, reply) => {
+            const {offset, limit} = request.query;
+            const guesses = await getAllGuesses(limit, offset);
+            const {count} = await getGuessesCount();
+            return reply.send({guesses, count});
         },
     );
 

@@ -190,6 +190,28 @@ module.exports.getCorrectGuesses = () =>
                 ORDER BY created_at DESC LIMIT 1
             );`,
     );
+module.exports.getAllGuesses = (limit=40, offset=0) =>
+    db.all(
+        `SELECT
+            guessId, type, text, correct, bonusPoint
+            tweetId, discordReplyId,
+            Guesses.authorId, callsign,
+            Guesses.created_at
+        FROM Guesses
+        LEFT JOIN Authors USING(authorId)
+        ORDER BY Guesses.created_at DESC
+        LIMIT ?
+        OFFSET ?`,
+        limit,
+        offset,
+    );
+module.exports.getGuessesCount = () =>
+    db.get(
+        `SELECT
+            COUNT(*) AS count
+        FROM Guesses`,
+    );
+
 module.exports.addNewGuess = async ({guess, author}) => {
     // Inserts or updates Author, then inserts Guess and associates it to
     // Author. Returns 1 or 0, indicating whether the guess was a duplicate or

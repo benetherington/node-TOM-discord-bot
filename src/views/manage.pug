@@ -6,6 +6,7 @@ append style
 block script
     include manage.js
     include manage-author.js
+    include manage-guesses.js
 
 block title-bar
     +titleBar("Manage Database")
@@ -97,6 +98,28 @@ block content
             //-             div.username mrdcarras@gmail.com
             //-             div.display-name Damonjalis
             //-     textarea(placeholder="No listener notes yet...").notes You know this guy...
+            
+            //- div(data-author-id).row-container
+                    div.info.card
+                        div.link.discord //- Link goes first so that others can select off its class
+                        h3.callsign Ben Etherington
+                        div.points.slide-radio.three
+                            input#none-2.toggle-option(
+                                type='radio' name='points-2' value='none' required
+                            )
+                            label(for="none-2")
+                            input#correct-2.toggle-option(
+                                type='radio' name='points-2' value='correct' required
+                            )
+                            label(for="correct-2")
+                            input#bonus-2.toggle-option(
+                                type='radio' name='points-2' value='bonus' required
+                            )
+                            label(for="bonus-2")
+                            div.slider
+                    div.text
+                        | A potato maybe?
+
     div#pagination
         button#page-first(onclick="loadFirstPage()").pagination-button
             svg(

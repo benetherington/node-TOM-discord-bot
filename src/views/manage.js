@@ -10,6 +10,9 @@ const clearDataRows = () => {
 // Search things
 const getMatchingRolodae = (searchString) => {
     const rolodae = Array.from(document.querySelectorAll('.rolodex'));
+    if (searchString.length === 0) {
+        return [[], rolodae]
+    }
     const passAndFail = rolodae.reduce(
         ([pass, fail], rolo) =>
             rolo.innerText.toLowerCase().includes(searchString)
@@ -84,19 +87,17 @@ const restoreUndoState = () => {
 // Table selection things
 const changeTable = () => {
     // Clear things that change per table
-    document.getElementById("merge-button").classList.add("disabled")
+    document.getElementById('merge-button').classList.add('disabled');
     clearDataRows();
     clearSearch();
     clearUndoStack();
-    
-    
+
     // Update page
     const activeTable = getActiveTable();
     if (activeTable === 'authors') loadAuthors();
     if (activeTable === 'guesses') loadGuesses();
     if (activeTable === 'suggestions') loadSuggestions();
 };
-
 
 // Search things
 const showSearch = (event) => {
@@ -114,10 +115,10 @@ const hideSearch = ({target}) => {
     }
 };
 const clearSearch = () => {
-    document.getElementById('search-input').value = "";
+    document.getElementById('search-input').value = '';
     document.getElementById('search-input').classList.remove('expanded');
     document.getElementById('search-button').classList.remove('active');
-}
+};
 const performSearch = () => {
     const searchEl = document.getElementById('search-input');
     const searchString = searchEl.value.trim().toLowerCase();

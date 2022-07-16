@@ -27,9 +27,9 @@ buildGuessRow = ({
     const rolodex = document.createElement('div');
     rolodex.classList.add('rolodex');
     rolodex.dataset.guessId = guessId;
-    
-    // 
-}
+
+    //
+};
 // {
 //     "guessId": 304,
 //     "type": 1,

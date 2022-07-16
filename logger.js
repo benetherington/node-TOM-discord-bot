@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'development') {
         colorize: true,
     });
 } else {
-    destination = pino.destination(`${process.cwd()}\\app.log`)
+    destination = pino.destination(`${process.cwd()}\\app.log`);
 }
 
 module.exports = pino({level: 'info'}, destination);

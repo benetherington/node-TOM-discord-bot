@@ -11,7 +11,7 @@ const clearDataRows = () => {
 const getMatchingRolodae = (searchString) => {
     const rolodae = Array.from(document.querySelectorAll('.rolodex'));
     if (searchString.length === 0) {
-        return [[], rolodae]
+        return [[], rolodae];
     }
     const passAndFail = rolodae.reduce(
         ([pass, fail], rolo) =>

@@ -138,7 +138,6 @@ const buildAuthorRow = (
     return rolodex;
 };
 
-
 /*-----------*\
   GUI HELPERS
 \*-----------*/
@@ -207,7 +206,6 @@ const findCallsignFromInput = async (authorInputElement) => {
     if (author) return author.callsign;
 };
 
-
 /*----------*\
   UNDO STACK
 \*----------*/
@@ -255,7 +253,7 @@ const loadAuthors = async () => {
     clearDataRows();
     authors.forEach(addAuthorRow);
     setPaginationTotal(count);
-    document.getElementById("merge-button").classList.remove("disabled")
+    document.getElementById('merge-button').classList.remove('disabled');
 };
 
 // Merge modal things
@@ -405,4 +403,3 @@ document.addEventListener('DOMContentLoaded', () => {
         .getElementById('merge-button')
         .addEventListener('click', showMergeModal);
 });
-

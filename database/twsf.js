@@ -190,7 +190,7 @@ module.exports.getCorrectGuesses = () =>
                 ORDER BY created_at DESC LIMIT 1
             );`,
     );
-module.exports.getAllGuesses = (limit=40, offset=0) =>
+module.exports.getAllGuesses = (limit = 40, offset = 0) =>
     db.all(
         `SELECT
             guessId, type, text, correct, bonusPoint

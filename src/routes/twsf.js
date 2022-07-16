@@ -56,7 +56,7 @@ module.exports = (fastify, opts, done) => {
         {preHandler: adminPreHandler},
         async (request, reply) => {
             const thanks = await getChatThanks();
-            reply.log({thanks});
+            reply.log.info({thanks});
             reply.send(thanks);
         },
     );

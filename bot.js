@@ -108,5 +108,5 @@ client.on('voiceStateUpdate', onVoiceStateUpdate);
 /*------*\
   FINISH
 \*------*/
-client.login(process.env.DISCORD_TOKEN);
+// client.login(process.env.DISCORD_TOKEN);
 module.exports = {client};

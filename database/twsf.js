@@ -13,7 +13,7 @@ const printDbSummary = async () => {
             LIMIT 10`,
         );
         guesses.forEach((guess) => {
-            guess.text = guess.text.slice(0,40);
+            guess.text = guess.text.slice(0, 40);
             Object.entries(types).forEach(([k, v]) => {
                 if (v === guess.type) guess.type = k;
             });
@@ -63,11 +63,11 @@ const upsertAuthorByGuessType = (guessType, author) => {
             ON CONFLICT (twitterId)
                 DO UPDATE SET
                     twitterDisplayName = excluded.twitterDisplayName,
-                    callsign = excluded.callsign
+                    callsign = COALESCE(callsign, excluded.callsign)
             ON CONFLICT (twitterUsername)
                 DO UPDATE SET
                     twitterDisplayName = excluded.twitterDisplayName,
-                    callsign = excluded.callsign
+                    callsign = COALESCE(callsign, excluded.callsign)
             RETURNING authorId;`,
             author.twitterId,
             author.twitterUsername,
@@ -82,7 +82,7 @@ const upsertAuthorByGuessType = (guessType, author) => {
             ON CONFLICT (emailAddress)
             DO UPDATE SET
                 emailName = excluded.emailName,
-                callsign = excluded.callsign
+                callsign = COALESCE(callsign, excluded.callsign)
             RETURNING authorId;`,
             author.emailAddress,
             author.emailName,
@@ -97,7 +97,7 @@ const upsertAuthorByGuessType = (guessType, author) => {
             DO UPDATE SET
                 username = excluded.username,
                 displayName = excluded.displayName,
-                callsign = excluded.callsign
+                callsign = COALESCE(callsign, excluded.callsign)
             RETURNING authorId;`,
             author.discordId,
             author.username,
@@ -195,10 +195,7 @@ module.exports.addNewGuess = async ({guess, author}) => {
     // not.
 
     // UPSERT Author with incoming values.
-    const {authorId} = await upsertAuthorByGuessType(
-        guess.type,
-        author,
-    );
+    const {authorId} = await upsertAuthorByGuessType(guess.type, author);
 
     // INSERT AND ASSOCIATE Guess
     const {changes} = await insertOrIgnoreGuessByType(authorId, guess);

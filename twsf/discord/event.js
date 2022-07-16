@@ -21,6 +21,7 @@ module.exports.onVoiceStateUpdate = async (oldState, newState) => {
 
     // Fetch member, check that they're not one of the crew
     const isTomCrew = newState.member._roles.includes(role.tomCrew);
+    newState.client.logger.info({msg: "New connection to The Show", isTomCrew})
     if (isTomCrew) return;
 
     // Add their name to the list

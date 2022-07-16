@@ -5,9 +5,8 @@ const ID = require('../../config/discord-id.json');
 module.exports.startNewVoteFromApi = async () => {
     client.logger.info('Bot monitor GUI requested vote message');
 
-    const channelId = process.env.TEST
-        ? ID.channel.botTest
-        : ID.channel.groundControl;
+    const inDevEnv = process.env.NODE_ENV === 'development';
+    const channelId = inDevEnv ? ID.channel.botTest : ID.channel.groundControl;
     const channel = await client.channels.fetch(channelId);
 
     const voteMessages = await getVoteMessages();

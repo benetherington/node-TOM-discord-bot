@@ -22,7 +22,8 @@ client.logger = require('./logger');
 
 // Status events
 client.on('ready', () => {
-    const respondingIn = process.env.TEST ? '#bot_control' : '#ground_control';
+    const inDevEnv = process.env.NODE_ENV === 'development';
+    const respondingIn = inDevEnv ? '#bot_control' : '#ground_control';
     client.logger.info(`Ready! GUI commands output to: ${respondingIn}.`);
 });
 client.on('invalidated', () => {

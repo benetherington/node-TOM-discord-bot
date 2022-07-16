@@ -3,6 +3,7 @@ const {ApplicationCommandPermissionType} = require('discord-api-types/v9');
 const {responses: config} = require('../../config/discord-interaction.json');
 const ID = require('../../config/discord-id.json');
 const {addNewEpisode} = require('../../database/suggestions');
+const {clearChatThanks} = require('../../database/thankyou');
 
 let data = new SlashCommandBuilder()
     .setName('new')
@@ -28,6 +29,9 @@ let execute = async (interaction) => {
     try {
         // Add new episode
         const {changes: episodeCreated} = await addNewEpisode(epNum);
+
+        // Reset chat thank-yous
+        await clearChatThanks();
 
         // Reply
         if (episodeCreated) interaction.reply(config.acknowledge);

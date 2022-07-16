@@ -1,0 +1,346 @@
+/* -------------------- *\
+   HEADER NAV HIGHLIGHT
+\* -------------------- */
+#nav-manage {
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 9px var(--primary-dark);
+    color: white !important;
+}
+
+/* ---------------- *\
+   TITLE BAR SQUISH
+\* ---------------- */
+#header { margin: 0; }
+
+/* --------------- *\
+   SCROLL OVERRIDE
+\* --------------- */
+
+/* Elements on this page will handle their own scrolling */
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    /* Take up remaining space after header and title */
+    height: 1px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* -------------------- *\
+   TITLE BAR & CONTROLS
+\* -------------------- */
+#title-bar { justify-content: center; }
+#title { margin: 0; }
+
+#controls {
+    display: flex;
+    align-items: center;
+}
+#controls > * { height: 35px; }
+
+#table-selector {
+    width: 300px;
+    height: 50px;
+    margin: 4px;
+}
+#table-selector label { font-weight: bold; }
+
+#records-per-page { width: 60px; }
+
+#controls button {
+    aspect-ratio: 1/1;
+    padding: 0;
+    animation: 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#controls button:not(.disabled):hover { background-color: var(--primary-light); }
+
+#controls button.disabled {
+    cursor: default;
+    border-color: transparent;
+    background-color: transparent;
+}
+
+#controls button svg {
+    height: 80%;
+    color: var(--primary-dark);
+    fill: var(--primary-dark);
+}
+
+#controls button.disabled svg {
+    color: grey;
+    fill: grey;
+}
+
+#controls button:not(.disabled):hover svg {
+    color: black;
+    fill: black;
+}
+
+#search-button.active {
+    background-color: var(--secondary-light);
+}
+
+#controls .bookmark-for-expandable { width: 0; }
+
+#search-input {
+    position: relative;
+    height: 36px;
+    max-width: 200px;
+    left: 4px;
+    margin: 0;
+    transition: 0.2s;
+    z-index: 1;
+    box-shadow: 0 0 5px black;
+}
+
+#search-input:not(.expanded) {
+    max-width: 0;
+    left: 0;
+    padding: 0;
+    border-width: 0;
+    box-shadow: 0 0 5px transparent;
+}
+
+/* ----------- *\
+   MERGE MODAL
+\* ----------- */
+#merge {
+    position: absolute;
+    height: 70vh;
+    width: 70vw;
+    top: 15vh; /* 100-70 = 30 */
+    left: 15vw;
+    box-shadow: 2px 2px 15px 1px black;
+    background-color: var(--background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#merge h2 {
+    width: 100%;
+    margin: 0;
+    padding: 7px 0;
+    text-align: center;
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+#merge .input {
+    margin: 10px;
+    width: 100%;
+    grid-template-columns: 50% 50%;
+    display: grid;
+    gap: 0 10px;
+    align-items: center;
+}
+
+#merge label {
+    white-space: pre-wrap;
+    justify-self: right;
+}
+#merge label[for="author-keep"]::after { content: " (overwriting)"; }
+#merge label[for="author-delete"]::after { content: " (overwritten)"; }
+
+#merge input {
+    text-align: center;
+    grid-column: 2;
+    width: 100px;
+    justify-self: left;
+}
+
+#merge button { grid-column: 1/3; } /* stylelint-disable-line no-descending-specificity */
+
+#merge-rolodex-container { overflow: hidden; }
+#merge-rolodex-container .rolodex:hover { background-color: inherit; }
+
+/* --------------- *\
+   DATA TABLE CARD
+\* --------------- */
+.center-container {
+    /* Take up remaining space above pagination */
+    height: 1px;
+    flex-grow: 1;
+
+    /* data-table-selector will shrink horizontally to fit content */
+    display: flex;
+    justify-content: center;
+}
+
+#data-table,
+#merge-rolodex-container {
+    --row-height: 20px;
+
+    width: fit-content;
+    overflow-y: scroll;
+}
+
+/* Each record row */
+/* stylelint-disable no-descending-specificity */
+.rolodex {
+    min-height: calc(var(--row-height) * 3);
+    display: grid;
+    grid-template-columns: 180px 3fr 1fr;
+    grid-auto-rows: calc(var(--row-height) * 3);
+    align-items: center;
+    transition: background-color 0.1s;
+}
+#data-table .rolodex:nth-of-type(even) { background-color: var(--secondary-ultralight); }
+.rolodex:hover { background-color: var(--primary-ultralight); }
+/* stylelint-enable no-descending-specificity */
+
+/* Callsign box */
+.rolodex .callsign {
+    /* Allow absolute positioning of edit icon */
+    position: relative;
+}
+
+.rolodex .callsign > p {
+    text-align: center;
+    align-self: center;
+    margin: 1px 3px;
+    border-radius: 4px;
+    transition: 0.1s;
+}
+
+.rolodex:hover .callsign [contenteditable] {
+    background-color: white;
+}
+
+.rolodex .callsign .edit-icon {
+    visibility: hidden;
+    position: absolute;
+    height: var(--row-height);
+    width: var(--row-height);
+    left: 5px;
+    top: -5px;
+    background-image: url("/icons/menu-up.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.rolodex .callsign .edit-icon:hover { background-color: var(--primary-dark); }
+.rolodex:hover .callsign .edit-icon { visibility: visible; }
+
+/* Socials box */
+.rolodex .socials {
+    display: grid;
+    grid-auto-rows: var(--row-height);
+}
+
+.rolodex .social-divider {
+    /* sits between username and displayname */
+    border-left: 1px dotted black;
+    height: 100%;
+}
+
+/* Each social */
+.rolodex .socials :is(.discord, .twitter, .email) {
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    display: grid;
+
+    /*                     icon          uname divider dname */
+    grid-template-columns: var(--row-height) 1fr 1px 1fr;
+    grid-auto-flow: column;
+    align-items: center;
+}
+
+.rolodex .socials :is(.discord, .twitter, .email):not(:last-of-type) {
+    /* Add dividers between username and screenname */
+    border-bottom: 1px dotted black;
+}
+
+/* Socials -- icons */
+.rolodex .socials .icon {
+    height: var(--row-height);
+    width: var(--row-height);
+    background-size: 66%;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: opacity(0.3);
+}
+.rolodex .discord .icon { background-image: url("/icons/discord.svg"); }
+.rolodex .twitter .icon { background-image: url("/icons/twitter.svg"); }
+.rolodex .email .icon { background-image: url("/icons/envelope-paper.svg"); }
+
+/* Socials -- text */
+.rolodex .socials :is(.username, .display-name) {
+    flex-basis: 50%;
+    padding: 0 15px;
+    font-size: calc(var(--row-height) * 0.7);
+}
+
+.rolodex .socials .username { text-decoration: underline; }
+
+/* Info card notes text area */
+.rolodex .notes {
+    margin: 2px 3px;
+    background: transparent;
+    border: none;
+    resize: none;
+    scrollbar-width: narrow;
+    border-radius: 4px;
+}
+
+.rolodex:hover .notes {
+    background-color: white;
+}
+
+/* ---------- *\
+   PAGINATION
+\* ---------- */
+
+/* container */
+#pagination {
+    height: 30px;
+    width: 100%;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* buttons */
+#pagination .pagination-button {
+    height: 100%;
+    padding: 0 5px;
+    animation: 0.1s;
+}
+#pagination .pagination-button:hover { background-color: var(--primary); }
+
+#pagination svg { /* stylelint-disable-line no-descending-specificity */
+    height: 100%;
+    margin: 0 -5px; /* double arrows sit closer to each other */
+    fill: var(--primary-dark);
+}
+#pagination .pagination-button:hover svg { fill: black; } /* stylelint-disable-line no-descending-specificity */
+
+/* text */
+#pagination .pagination-text { font-size: 25px; }
+
+#page-curr {
+    width: 50px;
+    text-align: right;
+    border-radius: 4px;
+    transition: 0.1s;
+    cursor: text;
+}
+#page-curr:hover:not(:focus) { background-color: var(--primary-light); }
+
+#page-divide {
+    text-align: center;
+    width: 20px;
+}
+
+#page-total {
+    width: 50px;
+    text-align: left;
+}

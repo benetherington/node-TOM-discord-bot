@@ -37,7 +37,8 @@
 
 #header .grouped:not(:first-of-type):not(:last-of-type) button {
     /* Middle buttons */
-    margin: inherit 0;
+    margin-left: 0;
+    margin-right: 0;
     border-right: none;
     border-left-width: 1px;
     border-radius: 0;

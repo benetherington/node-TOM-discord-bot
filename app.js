@@ -17,8 +17,10 @@ fastify.register(require('@fastify/cookie'), {
 
 // Routes
 fastify.register(require('@fastify/formbody'));
-fastify.register(require('./src/routes/static'));
+fastify.register(require('./src/routes/email'));
 fastify.register(require('./src/routes/login'));
+fastify.register(require('./src/routes/manage'));
+fastify.register(require('./src/routes/static'));
 fastify.register(require('./src/routes/titles'));
 fastify.register(require('./src/routes/twsf'));
 

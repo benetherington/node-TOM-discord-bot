@@ -34,11 +34,15 @@ const importAll = async () => {
     enrichAuthors(audiences, emails);
 
     const changedEmails = await Promise.all(emails.map(addImportedEmail));
-    const changedEmailsCount = changedEmails.reduce((prev,curr)=>prev+curr);
+    const changedEmailsCount = changedEmails.reduce(
+        (prev, curr) => prev + curr,
+    );
     console.log(`Inserted ${changedEmailsCount} new email guesses.`);
-    
+
     const changedTweets = await Promise.all(tweets.map(addImportedTweet));
-    const changedTweetsCount = changedTweets.reduce((prev,curr)=>prev+curr);
+    const changedTweetsCount = changedTweets.reduce(
+        (prev, curr) => prev + curr,
+    );
     console.log(`Inserted ${changedTweetsCount} new twitter guesses.`);
 };
 

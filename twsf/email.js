@@ -132,8 +132,7 @@ const guessAndAuthorFromEmail = ({parsedElements, parsingErrors}) => {
 module.exports = (textContent) => {
     try {
         // Parse the email
-        const {parsedElements, parsingErrors} =
-            parseTextContent(textContent);
+        const {parsedElements, parsingErrors} = parseTextContent(textContent);
         if (!parsedElements)
             throw {
                 msg: 'Something went wrong while parsing TWSF email...',

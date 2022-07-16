@@ -1,8 +1,8 @@
 /*-----------*\
   GUI HELPERS
 \*-----------*/
-const getActiveTable = () =>
-    document.querySelector('#table-selector input:checked').value;
+const getActiveTable = () => 'authors';
+// document.querySelector('#table-selector input:checked').value;
 const clearDataRows = () => {
     while (dataTable.lastChild) dataTable.lastChild.remove();
 };

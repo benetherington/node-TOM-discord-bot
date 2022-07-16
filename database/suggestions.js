@@ -117,7 +117,7 @@ module.exports.addNewSuggestion = async (author, suggestion) => {
         DO UPDATE SET
             username = excluded.username,
             displayName = excluded.displayName,
-            callsign = excluded.callsign
+            callsign = COALESCE(callsign, excluded.callsign)
         RETURNING authorId;`,
         author.discordId,
         author.username,
@@ -195,7 +195,7 @@ module.exports.toggleVoter = async (voter, suggestion) => {
         DO UPDATE SET
             username = excluded.username,
             displayName = excluded.displayName,
-            callsign = excluded.callsign
+            callsign = COALESCE(callsign, excluded.callsign)
         RETURNING authorId AS voterId;`,
         voter.discordId,
         voter.username,

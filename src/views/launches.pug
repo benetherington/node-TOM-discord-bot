@@ -1,0 +1,42 @@
+extends layout.pug
+
+append style
+    include launches.css
+
+block script
+    include launches.js
+
+block title-bar
+    +titleBar("Launch Libarary 2")
+    div#search-window.card
+
+block content
+    div#launch-table
+        //- div.row-container
+            a(href)
+                img
+            div.window-times
+                p.start
+                p.to-separator
+                p.end
+            div.window-status.card
+                p.status-name
+                p.status-description
+            div.window-updates.card.has-header
+                a(href)
+            div.rocket.card.has-header
+                p.name
+                p.company-name
+                p.total-launch
+                p.consecutive-launch
+            div.mission.card.has-header
+                p.name
+                p.description
+                p.orbit
+            div.site.card.has-header
+                div.location
+                    p.name
+                    p.count
+                div.pad
+                    p.name
+                    p.count

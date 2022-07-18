@@ -225,13 +225,13 @@ const buildLaunchRow = (launchData) => {
     return rowContainer;
 };
 const buildLoadingIndicator = () => {
-    const loadingContainer = document.createElement("div")
-    loadingContainer.classList.add("spinner-container")
-    
+    const loadingContainer = document.createElement('div');
+    loadingContainer.classList.add('spinner-container');
+
     const loadingEl = document.createElement('div');
     loadingEl.classList.add('spinner');
-    loadingContainer.append(loadingEl)
-    
+    loadingContainer.append(loadingEl);
+
     return loadingContainer;
 };
 
@@ -295,8 +295,8 @@ const displayUpcomingLaunches = async () => {
         const launchRow = buildLaunchRow(launch);
         loadingEl.before(launchRow);
     }
-    
-    loadingEl.remove()
+
+    loadingEl.remove();
 };
 const updateSearchWindow = () => {
     const start = nextTuesday().toLocaleDateString('en-US', {

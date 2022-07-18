@@ -10,6 +10,6 @@ module.exports = (fastify, opts, done) => {
             });
         },
     );
-    
-    done()
+
+    done();
 };

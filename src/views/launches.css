@@ -1,0 +1,198 @@
+/* -------------------- *\
+   HEADER NAV HIGHLIGHT
+\* -------------------- */
+#nav-launches {
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 9px var(--primary-dark);
+    color: white !important;
+}
+
+/* --------- *\
+   TITLE BAR
+\* --------- */
+#search-window { padding: 5px; }
+
+/* -------------------- *\
+   LAUNCH ROW CONTAINER
+\* -------------------- */
+
+#launch-table .spinner-container {
+    width: 100%;
+    align-items: center;
+}
+
+#launch-table .spinner {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 5px solid var(--primary);
+    border-left-color: transparent;
+    animation: 0.75s linear infinite spinning;
+}
+
+@keyframes spinning {
+    100% {
+        transform: rotate(1turn);
+    }
+}
+
+#launch-table .row-container {
+    display: grid;
+    grid-template:
+        "logo    times   times  times"
+        "logo    status  status status"
+        "mission mission rocket updates"
+        "mission mission site   site"
+        / 0.75fr 2fr     2fr    2fr;
+    margin: 15px;
+}
+
+#launch-table p {
+    padding: 0;
+    margin: 0;
+}
+
+#launch-table div {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+}
+
+/* cards with headers */
+#launch-table .has-header {
+    /* blend in with header */
+    border-radius: 0 0 4px 4px;
+    padding: 0 10px;
+}
+
+#launch-table .has-header::before {
+    font-weight: bolder;
+    text-align: center;
+    color: white;
+    background-color: var(--primary);
+    padding: 1px 0;
+
+    /* blend in with card */
+    border-radius: 4px 4px 0 0;
+    box-shadow:
+        1px 0 3px -1px rgb(0 0 0 / 12%),
+        1px 0 2px -1px rgb(0 0 0 / 24%);
+    margin: 0 -10.5px;
+}
+
+/* HERO IMAGE */
+#launch-table .hero-link {
+    grid-area: logo;
+    height: 70px;
+    width: 100px;
+    align-self: center;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* LAUNCH WINDOW -- times */
+#launch-table .window-times {
+    grid-area: times;
+    justify-content: left;
+    flex-direction: row;
+}
+
+#launch-table .window-times p {
+    align-self: center;
+    font-weight: bold;
+}
+
+/* LAUNCH WINDOW -- status */
+#launch-table .window-status {
+    grid-area: status;
+    flex-direction: row;
+    height: fit-content;
+    width: fit-content;
+    overflow: hidden;
+}
+
+#launch-table .status-name {
+    align-self: center;
+    font-weight: bold;
+    text-align: center;
+    padding: 3px 7px;
+    flex-shrink: 0;
+    line-height: 200%;
+    background-color: lightblue;
+}
+
+#launch-table .status-description {
+    font-size: small;
+    font-style: italic;
+    text-align: center;
+    align-self: center;
+    padding: 0 10px;
+}
+
+#launch-table .window-updates {
+    grid-area: updates;
+    overflow-y: auto;
+    padding: 0 15px;
+    min-width: fit-content;
+}
+
+#launch-table .window-updates::before {
+    content: "STATUS UPDATES";
+    margin: 0 -15px;
+}
+
+/* SECOND ROW */
+
+/* main item */
+#launch-table :is(.rocket, .mission, .location, .pad) :nth-child(1) {
+    font-weight: bold;
+    text-align: center;
+    padding: 2px 0;
+}
+
+/* descriptive item */
+#launch-table :is(.rocket, .mission) :nth-child(2) {
+    text-align: center;
+    font-style: italic;
+}
+
+/* statistics */
+#launch-table :is(.rocket, .mission) :nth-child(3) {
+    /* align launch stats to the bottom */
+    margin-top: auto;
+}
+
+#launch-table :is(.rocket, .mission) :nth-child(1n+3),
+#launch-table :is(.location, .pad) :nth-child(2) {
+    /* Bold number */
+    font-weight: bold;
+    text-align: right;
+}
+
+#launch-table :is(.rocket, .mission) :nth-child(1n+3)::before,
+#launch-table :is(.location, .pad) :nth-child(2)::before {
+    /* un-bold descriptor */
+    font-weight: normal;
+}
+
+/* ROCKET */
+#launch-table .rocket { grid-area: rocket; }
+#launch-table .rocket::before { content: "ASCENT VEHICLE"; }
+
+/* descriptor text */
+#launch-table .total-launch::before { content: "Total launches: "; }
+#launch-table .consecutive-launch::before { content: "Consecutive successful: "; }
+
+/* MISSION */
+#launch-table .mission { grid-area: mission; }
+#launch-table .mission::before { content: "PAYLOAD"; }
+
+#launch-table .orbit::before { content: "Orbit: "; }
+
+/* LAUNCH SITE */
+#launch-table .site { grid-area: site; }
+#launch-table .site::before { content: "LAUNCH SITE"; }
+
+/* #launch-table .name { white-space: nowrap; } */
+#launch-table .count::before { content: "Launches to date: "; }

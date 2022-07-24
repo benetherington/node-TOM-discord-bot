@@ -300,6 +300,7 @@ const months = [
     'December',
 ];
 const ordinals = [
+    'ike',
     'st',
     'nd',
     'rd',

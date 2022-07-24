@@ -205,9 +205,22 @@ const getWinnersCallsigns = () => {
 };
 const setThankYouBox = async () => {
     const thankYous = await getThankYous();
-    document.getElementById('thank-you').textContent = thankYous
-        .map((t) => t.callsign)
-        .join(', ');
+    const finalThankYou = thankYous.pop();
+    let names;
+    if (thankYous.length) {
+        names = thankYous.map((t) => t.callsign).join(', ');
+        names += ', and ';
+        names += finalThankYou.callsign;
+    } else if (finalThankYou) {
+        names = finalThankYou.callsign;
+    } else {
+        names = 'FUCKEN NO ONE';
+    }
+    document.getElementById('thank-you').textContent =
+        'We record live on Sundays at 9am PT/12pm ET. Thank you so much to ' +
+        names +
+        ' for joining our recording session today and helping us make ' +
+        'correction burns on the fly.';
 };
 
 /*-------------*\

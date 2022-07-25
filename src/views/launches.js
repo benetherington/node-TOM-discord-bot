@@ -131,6 +131,8 @@ const buildLaunchRow = (launchData) => {
     updates.forEach((update) => {
         const updateLink = document.createElement('a');
         updateLink.href = update.href;
+        updateLink.dataset.href = update.href;
+        updateLink.addEventListener('click', onUpdateClick);
         updateLink.innerText =
             update.date.toLocaleDateString('en-US', {
                 dateStyle: 'short',
@@ -315,6 +317,10 @@ const updateSearchWindow = () => {
 /*------------------*\
   GUI EVENT HANDLERS
 \*------------------*/
+const onUpdateClick = (event) => {
+    window.open(event.target.dataset.href);
+    event.preventDefault();
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     displayUpcomingLaunches();

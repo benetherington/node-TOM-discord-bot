@@ -1,0 +1,2734 @@
+[1658665034791] INFO (837 on b31ffe2460b6): Opening public DB...
+[1658665034893] INFO (837 on b31ffe2460b6): Opening admin DB...
+[1658665037212] INFO (837 on b31ffe2460b6): Migrating public DB...
+[1658665037213] INFO (837 on b31ffe2460b6): Migrating admin...
+[1658665037215] INFO (837 on b31ffe2460b6): Server listening at http://127.0.0.1:3000
+[1658665037215] INFO (837 on b31ffe2460b6): Listening on http://127.0.0.1:3000
+[1658665037305] INFO (837 on b31ffe2460b6): Tables: migrations, Administrators, Administrator_Tokens, sqlite_sequence
+[1658665037305] INFO (837 on b31ffe2460b6):
+    tables: "migrations, Episodes, Suggestions, Suggestion_Voters, sqlite_sequence, Guesses, Authors"
+[1658665037305] INFO (837 on b31ffe2460b6): Most recent TWSF guesses:
+    guesses: [
+      {
+        "type": "EMAIL",
+        "text": "July 28th, 1961. NASA invites *12* compa"
+      },
+      {
+        "type": "DISCORD",
+        "text": "The launch of Astrobee-1500 from LC-A at"
+      },
+      {
+        "type": "EMAIL",
+        "text": "Hey guys!\n\nThis week's clue is referenci"
+      },
+      {
+        "type": "DISCORD",
+        "text": "24 July 1992: launch of GEOTAIL, a joint"
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 24th, 1992. Launch of Geotail. This"
+      },
+      {
+        "type": "TWEET",
+        "text": "@orbitalpodcast #ThisWeekSF is the launc"
+      },
+      {
+        "type": "TWEET",
+        "text": "#thisweeksf 24 July 1992, the launch of "
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf \nThis is a big guess on your"
+      },
+      {
+        "type": "DISCORD",
+        "text": "guess"
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 16th, 2013. Cassidy and Parmitano's"
+      }
+    ]
+[1658665037306] INFO (837 on b31ffe2460b6): Most recent suggestions:
+    suggestions: [
+      {
+        "username": "benetherington",
+        "text": "running on a server"
+      },
+      {
+        "username": "thewonderidiot",
+        "text": "up to no good"
+      },
+      {
+        "username": "colin",
+        "text": "Golden sample retriever"
+      },
+      {
+        "username": "benetherington",
+        "text": "wider than orion"
+      },
+      {
+        "username": "CsabaT",
+        "text": "Phat phairing"
+      },
+      {
+        "username": "sciencepolice",
+        "text": "Yeetage on Mars"
+      },
+      {
+        "username": "benetherington",
+        "text": "knot useless"
+      },
+      {
+        "username": "colin",
+        "text": "it's knot intuitive"
+      },
+      {
+        "username": "colin",
+        "text": "1 potato 2 potato..."
+      },
+      {
+        "username": "Uncwilly",
+        "text": "A damp dress rehersal."
+      }
+    ]
+[1658665037306] INFO (837 on b31ffe2460b6): There are 0 chat thank-yous.
+[1658665037306] INFO (837 on b31ffe2460b6): No admin users exist yet.
+[1658665037523] INFO (837 on b31ffe2460b6): Ready! GUI commands output to: #ground_control.
+[1658665545870] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-1"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45512
+    }
+[1658665545889] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-1"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 18.045323848724365
+[1658665545942] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-2"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45522
+    }
+[1658665546300] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-2"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 357.9906680583954
+[1658665570960] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-4"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45980
+    }
+[1658665571209] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-4"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 248.99375891685486
+[1658665571304] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-5"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45982
+    }
+[1658665571305] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-6"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45984
+    }
+[1658665571308] INFO (837 on b31ffe2460b6):
+    reqId: "req-6"
+    thanks: []
+[1658665571309] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-6"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 3.4693989753723145
+[1658665571309] INFO (837 on b31ffe2460b6): Found 3 unscored TWSF guesses.
+    reqId: "req-5"
+[1658665571311] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-5"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 6.393872976303101
+[1658665571391] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-7"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45986
+    }
+[1658665571404] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-7"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 12.505674123764038
+[1658665571404] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-8"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45988
+    }
+[1658665571405] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-9"
+    req: {
+      "method": "GET",
+      "url": "/icons/award.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45990
+    }
+[1658665571407] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-a"
+    req: {
+      "method": "GET",
+      "url": "/icons/discord.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45992
+    }
+[1658665571407] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-b"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45994
+    }
+[1658665571408] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-c"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 45996
+    }
+[1658665571410] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-9"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 3.922631025314331
+[1658665571484] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-a"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 77.49344301223755
+[1658665571487] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-b"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 80.07720708847046
+[1658665571490] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-c"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 82.35573196411133
+[1658665571493] INFO (837 on b31ffe2460b6): Found 0 correct guesses for this episode.
+    reqId: "req-8"
+[1658665571494] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-8"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 89.32651591300964
+[1658665751604] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-d"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52628
+    }
+[1658665751607] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-d"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 3.111400842666626
+[1658665751658] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-e"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52634
+    }
+[1658665751664] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-e"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 5.848236083984375
+[1658665753697] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-g"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52788
+    }
+[1658665753700] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-g"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.6362199783325195
+[1658665753770] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-h"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52802
+    }
+[1658665753771] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-i"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52808
+    }
+[1658665753772] INFO (837 on b31ffe2460b6):
+    reqId: "req-h"
+    thanks: []
+[1658665753772] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-h"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.226201057434082
+[1658665753773] INFO (837 on b31ffe2460b6): Found 3 unscored TWSF guesses.
+    reqId: "req-i"
+[1658665753774] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-i"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.647519826889038
+[1658665753827] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-j"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52810
+    }
+[1658665753828] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-k"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52814
+    }
+[1658665753829] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-l"
+    req: {
+      "method": "GET",
+      "url": "/icons/award.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52816
+    }
+[1658665753829] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-m"
+    req: {
+      "method": "GET",
+      "url": "/icons/discord.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52818
+    }
+[1658665753829] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-n"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52820
+    }
+[1658665753830] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-o"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52822
+    }
+[1658665753830] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-k"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.9306600093841553
+[1658665753831] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-l"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 2.269012212753296
+[1658665753831] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-m"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 2.153538942337036
+[1658665753832] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-n"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 2.261186122894287
+[1658665753832] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-o"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 2.302578926086426
+[1658665753833] INFO (837 on b31ffe2460b6): Found 0 correct guesses for this episode.
+    reqId: "req-j"
+[1658665753833] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-j"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 5.8134050369262695
+[1658665836312] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-p"
+    req: {
+      "method": "POST",
+      "url": "/api/twsf/score",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 55846
+    }
+[1658665836314] INFO (837 on b31ffe2460b6):
+    reqId: "req-p"
+    guessId: "332"
+    correct: true
+    bonusPoint: true
+[1658665836324] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-p"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 12.30635404586792
+[1658665839958] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-q"
+    req: {
+      "method": "POST",
+      "url": "/api/twsf/score",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 55928
+    }
+[1658665839959] INFO (837 on b31ffe2460b6):
+    reqId: "req-q"
+    guessId: "333"
+    correct: false
+    bonusPoint: false
+[1658665839969] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-q"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 11.225110054016113
+[1658665843110] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-r"
+    req: {
+      "method": "POST",
+      "url": "/api/twsf/score",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 55962
+    }
+[1658665843111] INFO (837 on b31ffe2460b6):
+    reqId: "req-r"
+    guessId: "334"
+    correct: true
+    bonusPoint: true
+[1658665843122] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-r"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 11.918455839157104
+[1658666028696] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-s"
+    req: {
+      "method": "GET",
+      "url": "/titles?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34900
+    }
+[1658666028700] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-s"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 3.7313029766082764
+[1658666029483] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-u"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34942
+    }
+[1658666029488] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-u"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 4.695323944091797
+[1658666029557] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-v"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34952
+    }
+[1658666029560] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-w"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34954
+    }
+[1658666029560] INFO (837 on b31ffe2460b6): Found 0 unscored TWSF guesses.
+    reqId: "req-v"
+[1658666029561] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-v"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 3.3156909942626953
+[1658666029561] INFO (837 on b31ffe2460b6):
+    reqId: "req-w"
+    thanks: []
+[1658666029561] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-w"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.4173178672790527
+[1658666029607] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-x"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34956
+    }
+[1658666029609] INFO (837 on b31ffe2460b6): Found 2 correct guesses for this episode.
+    reqId: "req-x"
+[1658666029610] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-x"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.17755389213562
+[1658666029663] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-y"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34962
+    }
+[1658666029664] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-y"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.2104308605194092
+[1658666029664] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-z"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34964
+    }
+[1658666029665] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-10"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34966
+    }
+[1658666029665] INFO (837 on b31ffe2460b6): incoming request
+    reqId: "req-11"
+    req: {
+      "method": "GET",
+      "url": "/icons/award.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34968
+    }
+[1658666029666] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-z"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.3035168647766113
+[1658666029666] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-10"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.129755973815918
+[1658666029666] INFO (837 on b31ffe2460b6): request completed
+    reqId: "req-11"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.0086829662322998
+[1658666277274] INFO (201 on 45bb8dd1412a): Opening public DB...
+[1658666277355] INFO (201 on 45bb8dd1412a): Opening admin DB...
+[1658666279950] INFO (201 on 45bb8dd1412a): Migrating public DB...
+[1658666279951] INFO (201 on 45bb8dd1412a): Migrating admin...
+[1658666279952] INFO (201 on 45bb8dd1412a): Server listening at http://127.0.0.1:3000
+[1658666279952] INFO (201 on 45bb8dd1412a): Listening on http://127.0.0.1:3000
+[1658666279968] INFO (201 on 45bb8dd1412a):
+    tables: "migrations, Episodes, Suggestions, Suggestion_Voters, sqlite_sequence, Guesses, Authors"
+[1658666279968] INFO (201 on 45bb8dd1412a): Most recent TWSF guesses:
+    guesses: [
+      {
+        "type": "EMAIL",
+        "text": "July 28th, 1961. NASA invites *12* compa"
+      },
+      {
+        "type": "DISCORD",
+        "text": "The launch of Astrobee-1500 from LC-A at"
+      },
+      {
+        "type": "EMAIL",
+        "text": "This week's clue is referencing NASA sen"
+      },
+      {
+        "type": "DISCORD",
+        "text": "24 July 1992: launch of GEOTAIL, a joint"
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 24th, 1992. Launch of Geotail. This"
+      },
+      {
+        "type": "TWEET",
+        "text": "@orbitalpodcast #ThisWeekSF is the launc"
+      },
+      {
+        "type": "TWEET",
+        "text": "#thisweeksf 24 July 1992, the launch of "
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf \nThis is a big guess on your"
+      },
+      {
+        "type": "DISCORD",
+        "text": "guess"
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 16th, 2013. Cassidy and Parmitano's"
+      }
+    ]
+[1658666279968] INFO (201 on 45bb8dd1412a): Most recent suggestions:
+    suggestions: [
+      {
+        "username": "benetherington",
+        "text": "running on a server"
+      },
+      {
+        "username": "thewonderidiot",
+        "text": "up to no good"
+      },
+      {
+        "username": "colin",
+        "text": "Golden sample retriever"
+      },
+      {
+        "username": "benetherington",
+        "text": "wider than orion"
+      },
+      {
+        "username": "CsabaT",
+        "text": "Phat phairing"
+      },
+      {
+        "username": "sciencepolice",
+        "text": "Yeetage on Mars"
+      },
+      {
+        "username": "benetherington",
+        "text": "knot useless"
+      },
+      {
+        "username": "colin",
+        "text": "it's knot intuitive"
+      },
+      {
+        "username": "colin",
+        "text": "1 potato 2 potato..."
+      },
+      {
+        "username": "Uncwilly",
+        "text": "A damp dress rehersal."
+      }
+    ]
+[1658666279968] INFO (201 on 45bb8dd1412a): There are 0 chat thank-yous.
+[1658666279969] INFO (201 on 45bb8dd1412a): Tables: migrations, Administrators, Administrator_Tokens, sqlite_sequence
+[1658666279969] INFO (201 on 45bb8dd1412a): No admin users exist yet.
+[1658666280278] INFO (201 on 45bb8dd1412a): Ready! GUI commands output to: #ground_control.
+[1658666340565] INFO (349 on 45bb8dd1412a): Opening public DB...
+[1658666340681] INFO (349 on 45bb8dd1412a): Opening admin DB...
+[1658666343101] INFO (349 on 45bb8dd1412a): Migrating public DB...
+[1658666343101] INFO (349 on 45bb8dd1412a): Migrating admin...
+[1658666343155] INFO (349 on 45bb8dd1412a): Server listening at http://127.0.0.1:3000
+[1658666343155] INFO (349 on 45bb8dd1412a): Listening on http://127.0.0.1:3000
+[1658666343261] INFO (349 on 45bb8dd1412a):
+    tables: "migrations, Episodes, Suggestions, Suggestion_Voters, sqlite_sequence, Guesses, Authors"
+[1658666343261] INFO (349 on 45bb8dd1412a): Most recent TWSF guesses:
+    guesses: [
+      {
+        "type": "EMAIL",
+        "text": "July 28th, 1961. NASA invites *12* compa"
+      },
+      {
+        "type": "DISCORD",
+        "text": "The launch of Astrobee-1500 from LC-A at"
+      },
+      {
+        "type": "EMAIL",
+        "text": "This week's clue is referencing NASA sen"
+      },
+      {
+        "type": "DISCORD",
+        "text": "24 July 1992: launch of GEOTAIL, a joint"
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 24th, 1992. Launch of Geotail. This"
+      },
+      {
+        "type": "TWEET",
+        "text": "@orbitalpodcast #ThisWeekSF is the launc"
+      },
+      {
+        "type": "TWEET",
+        "text": "#thisweeksf 24 July 1992, the launch of "
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf \nThis is a big guess on your"
+      },
+      {
+        "type": "DISCORD",
+        "text": "guess"
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 16th, 2013. Cassidy and Parmitano's"
+      }
+    ]
+[1658666343261] INFO (349 on 45bb8dd1412a): Most recent suggestions:
+    suggestions: [
+      {
+        "username": "benetherington",
+        "text": "running on a server"
+      },
+      {
+        "username": "thewonderidiot",
+        "text": "up to no good"
+      },
+      {
+        "username": "colin",
+        "text": "Golden sample retriever"
+      },
+      {
+        "username": "benetherington",
+        "text": "wider than orion"
+      },
+      {
+        "username": "CsabaT",
+        "text": "Phat phairing"
+      },
+      {
+        "username": "sciencepolice",
+        "text": "Yeetage on Mars"
+      },
+      {
+        "username": "benetherington",
+        "text": "knot useless"
+      },
+      {
+        "username": "colin",
+        "text": "it's knot intuitive"
+      },
+      {
+        "username": "colin",
+        "text": "1 potato 2 potato..."
+      },
+      {
+        "username": "Uncwilly",
+        "text": "A damp dress rehersal."
+      }
+    ]
+[1658666343262] INFO (349 on 45bb8dd1412a): There are 0 chat thank-yous.
+[1658666343262] INFO (349 on 45bb8dd1412a): Tables: migrations, Administrators, Administrator_Tokens, sqlite_sequence
+[1658666343262] INFO (349 on 45bb8dd1412a): No admin users exist yet.
+[1658666343465] INFO (349 on 45bb8dd1412a): Ready! GUI commands output to: #ground_control.
+[1658667600154] INFO (349 on 45bb8dd1412a): Storing #ThisWeekSF tweets...
+[1658667600156] INFO (349 on 45bb8dd1412a): Storing #ThisWeekSF direct messages...
+[1658667600256] INFO (349 on 45bb8dd1412a): Found 12 direct messsages...
+[1658667600256] INFO (349 on 45bb8dd1412a): ... 4 of them are #ThisWeekSF direct messsages.
+[1658667600370] INFO (349 on 45bb8dd1412a): Done storing 2 new #ThisWeekSF direct messages!
+[1658667601410] INFO (349 on 45bb8dd1412a): Done storing 1 new #ThisWeekSF tweets!
+[1658667747183] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49234
+    }
+[1658667747186] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 3.2489569187164307
+[1658667747267] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49240
+    }
+[1658667747649] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 381.80051016807556
+[1658667751809] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-4"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49286
+    }
+[1658667752057] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-4"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 247.64817595481873
+[1658667752131] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-5"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49288
+    }
+[1658667752131] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-6"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49290
+    }
+[1658667752134] INFO (349 on 45bb8dd1412a):
+    reqId: "req-5"
+    thanks: []
+[1658667752136] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-5"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 5.309613943099976
+[1658667752137] INFO (349 on 45bb8dd1412a): Found 3 unscored TWSF guesses.
+    reqId: "req-6"
+[1658667752138] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-6"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 6.764337062835693
+[1658667752196] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-7"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49294
+    }
+[1658667752202] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-7"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 5.249114036560059
+[1658667752203] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-8"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49296
+    }
+[1658667752204] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-9"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49298
+    }
+[1658667752205] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-a"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49300
+    }
+[1658667752206] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-8"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 3.1152119636535645
+[1658667752251] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-b"
+    req: {
+      "method": "GET",
+      "url": "/icons/award.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49302
+    }
+[1658667752252] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-c"
+    req: {
+      "method": "GET",
+      "url": "/icons/twitter.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 49304
+    }
+[1658667752253] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-a"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 48.62539315223694
+[1658667752254] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-b"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 2.8655879497528076
+[1658667752259] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-c"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 5.924987077713013
+[1658667752259] INFO (349 on 45bb8dd1412a): Found 2 correct guesses for this episode.
+    reqId: "req-9"
+[1658667752260] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-9"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 55.85527992248535
+[1658667901109] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-d"
+    req: {
+      "method": "POST",
+      "url": "/api/twsf/score",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52630
+    }
+[1658667901150] INFO (349 on 45bb8dd1412a):
+    reqId: "req-d"
+    guessId: "337"
+    correct: true
+    bonusPoint: true
+[1658667901162] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-d"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 52.608673095703125
+[1658667902358] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-e"
+    req: {
+      "method": "POST",
+      "url": "/api/twsf/score",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52640
+    }
+[1658667902360] INFO (349 on 45bb8dd1412a):
+    reqId: "req-e"
+    guessId: "336"
+    correct: true
+    bonusPoint: true
+[1658667902373] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-e"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 14.414877891540527
+[1658675383640] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-f"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 56898
+    }
+[1658675383858] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-f"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 217.3986051082611
+[1658675384075] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-g"
+    req: {
+      "method": "GET",
+      "url": "/favicon.ico",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 56906
+    }
+[1658675384075] INFO (349 on 45bb8dd1412a): Route GET:/favicon.ico not found
+    reqId: "req-g"
+[1658675384076] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-g"
+    res: {
+      "statusCode": 404
+    }
+    responseTime: 0.705557107925415
+[1658675401152] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-h"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57082
+    }
+[1658675401152] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-h"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 0.5979828834533691
+[1658675401191] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-i"
+    req: {
+      "method": "GET",
+      "url": "/favicon.ico",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57088
+    }
+[1658675401191] INFO (349 on 45bb8dd1412a): Route GET:/favicon.ico not found
+    reqId: "req-i"
+[1658675401192] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-i"
+    res: {
+      "statusCode": 404
+    }
+    responseTime: 0.4261147975921631
+[1658675417043] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-j"
+    req: {
+      "method": "POST",
+      "url": "/login",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57260
+    }
+[1658675417082] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-j"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 38.159384965896606
+[1658675417186] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-k"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57270
+    }
+[1658675417187] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-k"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 0.9693648815155029
+[1658675417288] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-l"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57276
+    }
+[1658675417289] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-l"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.4175429344177246
+[1658675419365] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-n"
+    req: {
+      "method": "GET",
+      "url": "/launches?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57312
+    }
+[1658675419477] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-n"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 111.29713916778564
+[1658676778181] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: true
+[1658676817857] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-o"
+    req: {
+      "method": "POST",
+      "url": "/login",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 37568
+    }
+[1658676817874] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-o"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 17.168905019760132
+[1658676817952] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-p"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 37570
+    }
+[1658676817953] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-p"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 0.5934100151062012
+[1658676818002] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-q"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 37574
+    }
+[1658676818003] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-q"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 0.8933010101318359
+[1658676818206] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-r"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 37576
+    }
+[1658676818251] INFO (349 on 45bb8dd1412a): Found 1 unscored TWSF guesses.
+    reqId: "req-r"
+[1658676818251] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-r"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 45.3716721534729
+[1658676974149] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-s"
+    req: {
+      "method": "POST",
+      "url": "/api/twsf/score",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41384
+    }
+[1658676974153] INFO (349 on 45bb8dd1412a):
+    reqId: "req-s"
+    guessId: "335"
+    correct: false
+    bonusPoint: false
+[1658676974252] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-s"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 102.69942307472229
+[1658676974763] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-t"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41396
+    }
+[1658676974765] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-t"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.7162518501281738
+[1658676974856] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-u"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41398
+    }
+[1658676974857] INFO (349 on 45bb8dd1412a): Found 0 unscored TWSF guesses.
+    reqId: "req-u"
+[1658676974857] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-u"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.3827741146087646
+[1658676974864] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-v"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41400
+    }
+[1658676974866] INFO (349 on 45bb8dd1412a):
+    reqId: "req-v"
+    thanks: []
+[1658676974868] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-v"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 4.062175035476685
+[1658676974907] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-w"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41402
+    }
+[1658676974908] INFO (349 on 45bb8dd1412a): Found 4 correct guesses for this episode.
+    reqId: "req-w"
+[1658676974908] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-w"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.2892429828643799
+[1658676974969] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-x"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41404
+    }
+[1658676974970] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-y"
+    req: {
+      "method": "GET",
+      "url": "/icons/award.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41406
+    }
+[1658676974971] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-z"
+    req: {
+      "method": "GET",
+      "url": "/icons/twitter.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41408
+    }
+[1658676974972] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-x"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 2.6373839378356934
+[1658676974972] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-y"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.9268879890441895
+[1658676974975] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-z"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 4.191154956817627
+[1658676974980] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-10"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41410
+    }
+[1658676974981] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-10"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.3683140277862549
+[1658676975053] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-11"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41416
+    }
+[1658676975055] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-11"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.9899392127990723
+[1658677101209] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-12"
+    req: {
+      "method": "GET",
+      "url": "/titles?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 44210
+    }
+[1658677101214] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-12"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 4.834228038787842
+[1658677175564] INFO (349 on 45bb8dd1412a): stygarfield used /twsf guess
+[1658677186361] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-14"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46298
+    }
+[1658677186362] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-14"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.5895800590515137
+[1658677186432] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-15"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46306
+    }
+[1658677186433] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-16"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46308
+    }
+[1658677186434] INFO (349 on 45bb8dd1412a):
+    reqId: "req-15"
+    thanks: []
+[1658677186435] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-15"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.8444697856903076
+[1658677186435] INFO (349 on 45bb8dd1412a): Found 1 unscored TWSF guesses.
+    reqId: "req-16"
+[1658677186436] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-16"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.1642229557037354
+[1658677186489] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-17"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46310
+    }
+[1658677186490] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-17"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 0.7178950309753418
+[1658677186496] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-18"
+    req: {
+      "method": "GET",
+      "url": "/icons/discord.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46312
+    }
+[1658677186497] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-19"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46314
+    }
+[1658677186498] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1a"
+    req: {
+      "method": "GET",
+      "url": "/icons/award.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46316
+    }
+[1658677186499] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-18"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 2.6506309509277344
+[1658677186500] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1a"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.2822799682617188
+[1658677186500] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1b"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46318
+    }
+[1658677186554] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1b"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 54.4677619934082
+[1658677186556] INFO (349 on 45bb8dd1412a): Found 4 correct guesses for this episode.
+    reqId: "req-19"
+[1658677186557] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-19"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 59.42801308631897
+[1658677186614] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1c"
+    req: {
+      "method": "GET",
+      "url": "/icons/twitter.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46324
+    }
+[1658677186615] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1c"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.0801470279693604
+[1658677186618] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1d"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46326
+    }
+[1658677186619] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1d"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 0.5763628482818604
+[1658677196534] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1e"
+    req: {
+      "method": "POST",
+      "url": "/api/twsf/score",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 46440
+    }
+[1658677196535] INFO (349 on 45bb8dd1412a):
+    reqId: "req-1e"
+    guessId: "338"
+    correct: true
+    bonusPoint: true
+[1658677196545] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1e"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 11.050041198730469
+[1658677209627] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658677251792] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658677256147] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658677304031] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658677739377] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: true
+[1658677909751] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658678400058] INFO (349 on 45bb8dd1412a): Storing #ThisWeekSF tweets...
+[1658678400061] INFO (349 on 45bb8dd1412a): Storing #ThisWeekSF direct messages...
+[1658678400213] INFO (349 on 45bb8dd1412a): Found 12 direct messsages...
+[1658678400213] INFO (349 on 45bb8dd1412a): ... 4 of them are #ThisWeekSF direct messsages.
+[1658678400687] INFO (349 on 45bb8dd1412a): Done storing 0 new #ThisWeekSF direct messages!
+[1658678401602] INFO (349 on 45bb8dd1412a): Done storing 1 new #ThisWeekSF tweets!
+[1658678845274] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658678859244] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658679306275] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658679803221] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658681938701] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658682174604] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658682184189] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658682209639] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658682950822] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658685632695] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658687325332] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658687712452] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: false
+[1658689000296] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1f"
+    req: {
+      "method": "GET",
+      "url": "/titles?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54222
+    }
+[1658689000347] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1f"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 51.12516498565674
+[1658689005151] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1h"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54324
+    }
+[1658689005159] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1h"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 7.503786087036133
+[1658689005229] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1i"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54332
+    }
+[1658689005230] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1j"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54334
+    }
+[1658689005231] INFO (349 on 45bb8dd1412a):
+    reqId: "req-1j"
+    thanks: [
+      {
+        "callsign": "thewonderidiot"
+      },
+      {
+        "callsign": "CsabaT"
+      },
+      {
+        "callsign": "Chris (stygarfield)"
+      },
+      {
+        "callsign": "Deskin Miller"
+      },
+      {
+        "callsign": "The Greek"
+      },
+      {
+        "callsign": "LeonRunningMan"
+      },
+      {
+        "callsign": "Peter McMally"
+      },
+      {
+        "callsign": "GopalSapparapu"
+      },
+      {
+        "callsign": "kenton"
+      },
+      {
+        "callsign": "DaveM"
+      },
+      {
+        "callsign": "ArcadeEngineer"
+      }
+    ]
+[1658689005232] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1j"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.2893359661102295
+[1658689005232] INFO (349 on 45bb8dd1412a): Found 1 unscored TWSF guesses.
+    reqId: "req-1i"
+[1658689005233] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1i"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 3.548081159591675
+[1658689005275] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1k"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54336
+    }
+[1658689005278] INFO (349 on 45bb8dd1412a): Found 5 correct guesses for this episode.
+    reqId: "req-1k"
+[1658689005278] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1k"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.5924291610717773
+[1658689005282] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1l"
+    req: {
+      "method": "GET",
+      "url": "/icons/twitter.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54338
+    }
+[1658689005283] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1l"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 0.8183660507202148
+[1658689005288] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1m"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54340
+    }
+[1658689005288] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1n"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54342
+    }
+[1658689005288] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1o"
+    req: {
+      "method": "GET",
+      "url": "/icons/award.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54344
+    }
+[1658689005289] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1m"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.0530509948730469
+[1658689005289] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1n"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 0.8411989212036133
+[1658689005289] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1o"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 0.9154131412506104
+[1658689005359] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1p"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54346
+    }
+[1658689005359] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1p"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 0.4029350280761719
+[1658689005363] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1q"
+    req: {
+      "method": "GET",
+      "url": "/icons/discord.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 54348
+    }
+[1658689005365] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1q"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 0.5285530090332031
+[1658689383847] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1r"
+    req: {
+      "method": "POST",
+      "url": "/api/twsf/score",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 35274
+    }
+[1658689383851] INFO (349 on 45bb8dd1412a):
+    reqId: "req-1r"
+    guessId: "339"
+    correct: true
+    bonusPoint: true
+[1658689383865] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1r"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 17.971161127090454
+[1658690535750] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1s"
+    req: {
+      "method": "GET",
+      "url": "/launches?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 33474
+    }
+[1658690535752] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1s"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.0008020401000977
+[1658690550957] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1t"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 33656
+    }
+[1658690550959] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1t"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 1.3788349628448486
+[1658690551342] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1u"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34084
+    }
+[1658690551354] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1u"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 9.090446949005127
+[1658690553869] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1w"
+    req: {
+      "method": "GET",
+      "url": "/manage?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34370
+    }
+[1658690554391] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1w"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 521.4441270828247
+[1658690554393] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1x"
+    req: {
+      "method": "GET",
+      "url": "/launches?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 34440
+    }
+[1658690554395] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1x"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.623406171798706
+[1658690610967] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1y"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 35580
+    }
+[1658690610969] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1y"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.4133570194244385
+[1658690614639] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-1z"
+    req: {
+      "method": "POST",
+      "url": "/login",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 36002
+    }
+[1658690614676] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-1z"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 36.42497396469116
+[1658690614738] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-20"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 36014
+    }
+[1658690614738] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-20"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 0.6043000221252441
+[1658690614812] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-21"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 36034
+    }
+[1658690614813] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-21"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.4380991458892822
+[1658690619254] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-23"
+    req: {
+      "method": "GET",
+      "url": "/launches?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 36238
+    }
+[1658690619257] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-23"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.0973451137542725
+[1658690619906] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-24"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 36250
+    }
+[1658690619953] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-24"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 47.01837992668152
+[1658690620062] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-25"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 36256
+    }
+[1658690620065] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-25"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.3064301013946533
+[1658690621663] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-27"
+    req: {
+      "method": "GET",
+      "url": "/launches?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 36274
+    }
+[1658690621665] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-27"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.765641212463379
+[1658690836635] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-28"
+    req: {
+      "method": "GET",
+      "url": "/titles?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41202
+    }
+[1658690836650] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-28"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 14.572213172912598
+[1658690838060] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2a"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41222
+    }
+[1658690838062] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2a"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.86683988571167
+[1658690838124] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2b"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41224
+    }
+[1658690838125] INFO (349 on 45bb8dd1412a):
+    reqId: "req-2b"
+    thanks: [
+      {
+        "callsign": "thewonderidiot"
+      },
+      {
+        "callsign": "CsabaT"
+      },
+      {
+        "callsign": "Chris (stygarfield)"
+      },
+      {
+        "callsign": "Deskin Miller"
+      },
+      {
+        "callsign": "The Greek"
+      },
+      {
+        "callsign": "LeonRunningMan"
+      },
+      {
+        "callsign": "Peter McMally"
+      },
+      {
+        "callsign": "GopalSapparapu"
+      },
+      {
+        "callsign": "kenton"
+      },
+      {
+        "callsign": "DaveM"
+      },
+      {
+        "callsign": "ArcadeEngineer"
+      }
+    ]
+[1658690838125] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2b"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.0351760387420654
+[1658690838127] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2c"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41226
+    }
+[1658690838128] INFO (349 on 45bb8dd1412a): Found 0 unscored TWSF guesses.
+    reqId: "req-2c"
+[1658690838128] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2c"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.082322120666504
+[1658690838174] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2d"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41228
+    }
+[1658690838183] INFO (349 on 45bb8dd1412a): Found 6 correct guesses for this episode.
+    reqId: "req-2d"
+[1658690838183] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2d"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 8.53902006149292
+[1658690838244] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2e"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41230
+    }
+[1658690838245] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2e"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 0.6926009654998779
+[1658690838254] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2f"
+    req: {
+      "method": "GET",
+      "url": "/icons/discord.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41232
+    }
+[1658690838257] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2g"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41234
+    }
+[1658690838260] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2h"
+    req: {
+      "method": "GET",
+      "url": "/icons/twitter.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41236
+    }
+[1658690838260] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2f"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 6.629853010177612
+[1658690838261] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2i"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41238
+    }
+[1658690838261] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2j"
+    req: {
+      "method": "GET",
+      "url": "/icons/award.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 41240
+    }
+[1658690838261] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2g"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 2.247750997543335
+[1658690838267] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2i"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 6.569183111190796
+[1658690838268] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2j"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 6.644757986068726
+[1658690838268] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2h"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 8.800745010375977
+[1658691647774] INFO (349 on 45bb8dd1412a): stygarfield used /title
+[1658691647774] INFO (349 on 45bb8dd1412a): Adding suggstion: David's meatball parm
+[1658691652457] INFO (349 on 45bb8dd1412a): Add vote from CsabaT for <68>.
+[1658691652479] INFO (349 on 45bb8dd1412a): Add vote from Felem for <68>.
+[1658691653070] INFO (349 on 45bb8dd1412a): Add vote from sciencepolice for <68>.
+[1658691780650] INFO (349 on 45bb8dd1412a): New connection to The Show
+    isTomCrew: true
+[1658691846493] INFO (349 on 45bb8dd1412a): LeonRunningMan used /twsf guess
+[1658692024309] INFO (349 on 45bb8dd1412a): LeonRunningMan used /title
+[1658692024309] INFO (349 on 45bb8dd1412a): Adding suggstion: we let just anybody listen
+[1658692040509] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2k"
+    req: {
+      "method": "POST",
+      "url": "/login",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 39756
+    }
+[1658692040528] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2k"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 19.126588106155396
+[1658692040580] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2l"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 39758
+    }
+[1658692040582] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2l"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 1.3740830421447754
+[1658692040622] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2m"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 39760
+    }
+[1658692040623] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2m"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.5486171245574951
+[1658692040870] INFO (349 on 45bb8dd1412a): incoming request
+    reqId: "req-2n"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 39762
+    }
+[1658692040873] INFO (349 on 45bb8dd1412a): Found 1 unscored TWSF guesses.
+    reqId: "req-2n"
+[1658692040878] INFO (349 on 45bb8dd1412a): request completed
+    reqId: "req-2n"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 8.708523035049438
+[1658709561118] INFO (154 on 94dfaee5777a): Opening public DB...
+[1658709561185] INFO (154 on 94dfaee5777a): Opening admin DB...
+[1658709563567] INFO (154 on 94dfaee5777a): Migrating public DB...
+[1658709563567] INFO (154 on 94dfaee5777a): Migrating admin...
+[1658709563569] INFO (154 on 94dfaee5777a): Server listening at http://127.0.0.1:3000
+[1658709563569] INFO (154 on 94dfaee5777a): Listening on http://127.0.0.1:3000
+[1658709563681] INFO (154 on 94dfaee5777a):
+    tables: "migrations, Episodes, Suggestions, Suggestion_Voters, sqlite_sequence, Guesses, Authors"
+[1658709563682] INFO (154 on 94dfaee5777a): Most recent TWSF guesses:
+    guesses: [
+      {
+        "type": "DISCORD",
+        "text": "2 Aug 1993 launch of Titan IVA mission K"
+      },
+      {
+        "type": "TWEET",
+        "text": "@orbitalpodcast #ThisWeekSF on July 28 1"
+      },
+      {
+        "type": "DISCORD",
+        "text": "July 28, 1961. NASA invites **12** compa"
+      },
+      {
+        "type": "TWEET",
+        "text": "#thisweeksf 28 July 1961, NASA invites 1"
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf NASA invited 12 companies to"
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf Here is my guess to some of "
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 28th, 1961. NASA invites *12* compa"
+      },
+      {
+        "type": "DISCORD",
+        "text": "The launch of Astrobee-1500 from LC-A at"
+      },
+      {
+        "type": "EMAIL",
+        "text": "This week's clue is referencing NASA sen"
+      },
+      {
+        "type": "DISCORD",
+        "text": "24 July 1992: launch of GEOTAIL, a joint"
+      }
+    ]
+[1658709563682] INFO (154 on 94dfaee5777a): Most recent suggestions:
+    suggestions: [
+      {
+        "username": "benetherington",
+        "text": "running on a server"
+      },
+      {
+        "username": "thewonderidiot",
+        "text": "up to no good"
+      },
+      {
+        "username": "colin",
+        "text": "Golden sample retriever"
+      },
+      {
+        "username": "benetherington",
+        "text": "wider than orion"
+      },
+      {
+        "username": "CsabaT",
+        "text": "Phat phairing"
+      },
+      {
+        "username": "sciencepolice",
+        "text": "Yeetage on Mars"
+      },
+      {
+        "username": "benetherington",
+        "text": "knot useless"
+      },
+      {
+        "username": "colin",
+        "text": "it's knot intuitive"
+      },
+      {
+        "username": "colin",
+        "text": "1 potato 2 potato..."
+      },
+      {
+        "username": "Uncwilly",
+        "text": "A damp dress rehersal."
+      }
+    ]
+[1658709563682] INFO (154 on 94dfaee5777a): There are 11 chat thank-yous.
+[1658709563689] INFO (154 on 94dfaee5777a): Tables: migrations, Administrators, Administrator_Tokens, sqlite_sequence
+[1658709563689] INFO (154 on 94dfaee5777a): No admin users exist yet.
+[1658709563819] INFO (154 on 94dfaee5777a): Ready! GUI commands output to: #ground_control.
+[1658718278974] INFO (450 on 94dfaee5777a): Opening public DB...
+[1658718279057] INFO (450 on 94dfaee5777a): Opening admin DB...
+[1658718281156] INFO (450 on 94dfaee5777a): Migrating public DB...
+[1658718281157] INFO (450 on 94dfaee5777a): Migrating admin...
+[1658718281159] INFO (450 on 94dfaee5777a): Server listening at http://127.0.0.1:3000
+[1658718281159] INFO (450 on 94dfaee5777a): Listening on http://127.0.0.1:3000
+[1658718281173] INFO (450 on 94dfaee5777a):
+    tables: "migrations, Episodes, Suggestions, Suggestion_Voters, sqlite_sequence, Guesses, Authors"
+[1658718281173] INFO (450 on 94dfaee5777a): Most recent TWSF guesses:
+    guesses: [
+      {
+        "type": "DISCORD",
+        "text": "2 Aug 1993 launch of Titan IVA mission K"
+      },
+      {
+        "type": "TWEET",
+        "text": "@orbitalpodcast #ThisWeekSF on July 28 1"
+      },
+      {
+        "type": "DISCORD",
+        "text": "July 28, 1961. NASA invites **12** compa"
+      },
+      {
+        "type": "TWEET",
+        "text": "#thisweeksf 28 July 1961, NASA invites 1"
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf NASA invited 12 companies to"
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf Here is my guess to some of "
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 28th, 1961. NASA invites *12* compa"
+      },
+      {
+        "type": "DISCORD",
+        "text": "The launch of Astrobee-1500 from LC-A at"
+      },
+      {
+        "type": "EMAIL",
+        "text": "This week's clue is referencing NASA sen"
+      },
+      {
+        "type": "DISCORD",
+        "text": "24 July 1992: launch of GEOTAIL, a joint"
+      }
+    ]
+[1658718281173] INFO (450 on 94dfaee5777a): Most recent suggestions:
+    suggestions: [
+      {
+        "username": "benetherington",
+        "text": "running on a server"
+      },
+      {
+        "username": "thewonderidiot",
+        "text": "up to no good"
+      },
+      {
+        "username": "colin",
+        "text": "Golden sample retriever"
+      },
+      {
+        "username": "benetherington",
+        "text": "wider than orion"
+      },
+      {
+        "username": "CsabaT",
+        "text": "Phat phairing"
+      },
+      {
+        "username": "sciencepolice",
+        "text": "Yeetage on Mars"
+      },
+      {
+        "username": "benetherington",
+        "text": "knot useless"
+      },
+      {
+        "username": "colin",
+        "text": "it's knot intuitive"
+      },
+      {
+        "username": "colin",
+        "text": "1 potato 2 potato..."
+      },
+      {
+        "username": "Uncwilly",
+        "text": "A damp dress rehersal."
+      }
+    ]
+[1658718281173] INFO (450 on 94dfaee5777a): There are 11 chat thank-yous.
+[1658718281173] INFO (450 on 94dfaee5777a): Tables: migrations, Administrators, Administrator_Tokens, sqlite_sequence
+[1658718281174] INFO (450 on 94dfaee5777a): No admin users exist yet.
+[1658718281403] INFO (450 on 94dfaee5777a): Ready! GUI commands output to: #ground_control.
+[1658718342373] INFO (644 on 94dfaee5777a): Opening public DB...
+[1658718342473] INFO (644 on 94dfaee5777a): Opening admin DB...
+[1658718344668] INFO (644 on 94dfaee5777a): Migrating public DB...
+[1658718344668] INFO (644 on 94dfaee5777a): Migrating admin...
+[1658718344669] INFO (644 on 94dfaee5777a): Server listening at http://127.0.0.1:3000
+[1658718344670] INFO (644 on 94dfaee5777a): Listening on http://127.0.0.1:3000
+[1658718344769] INFO (644 on 94dfaee5777a):
+    tables: "migrations, Episodes, Suggestions, Suggestion_Voters, sqlite_sequence, Guesses, Authors"
+[1658718344769] INFO (644 on 94dfaee5777a): Tables: migrations, Administrators, Administrator_Tokens, sqlite_sequence
+[1658718344770] INFO (644 on 94dfaee5777a): Most recent TWSF guesses:
+    guesses: [
+      {
+        "type": "DISCORD",
+        "text": "2 Aug 1993 launch of Titan IVA mission K"
+      },
+      {
+        "type": "TWEET",
+        "text": "@orbitalpodcast #ThisWeekSF on July 28 1"
+      },
+      {
+        "type": "DISCORD",
+        "text": "July 28, 1961. NASA invites **12** compa"
+      },
+      {
+        "type": "TWEET",
+        "text": "#thisweeksf 28 July 1961, NASA invites 1"
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf NASA invited 12 companies to"
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf Here is my guess to some of "
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 28th, 1961. NASA invites *12* compa"
+      },
+      {
+        "type": "DISCORD",
+        "text": "The launch of Astrobee-1500 from LC-A at"
+      },
+      {
+        "type": "EMAIL",
+        "text": "This week's clue is referencing NASA sen"
+      },
+      {
+        "type": "DISCORD",
+        "text": "24 July 1992: launch of GEOTAIL, a joint"
+      }
+    ]
+[1658718344770] INFO (644 on 94dfaee5777a): Most recent suggestions:
+    suggestions: [
+      {
+        "username": "benetherington",
+        "text": "running on a server"
+      },
+      {
+        "username": "thewonderidiot",
+        "text": "up to no good"
+      },
+      {
+        "username": "colin",
+        "text": "Golden sample retriever"
+      },
+      {
+        "username": "benetherington",
+        "text": "wider than orion"
+      },
+      {
+        "username": "CsabaT",
+        "text": "Phat phairing"
+      },
+      {
+        "username": "sciencepolice",
+        "text": "Yeetage on Mars"
+      },
+      {
+        "username": "benetherington",
+        "text": "knot useless"
+      },
+      {
+        "username": "colin",
+        "text": "it's knot intuitive"
+      },
+      {
+        "username": "colin",
+        "text": "1 potato 2 potato..."
+      },
+      {
+        "username": "Uncwilly",
+        "text": "A damp dress rehersal."
+      }
+    ]
+[1658718344770] INFO (644 on 94dfaee5777a): There are 11 chat thank-yous.
+[1658718344770] INFO (644 on 94dfaee5777a): No admin users exist yet.
+[1658718344996] INFO (644 on 94dfaee5777a): Ready! GUI commands output to: #ground_control.
+[1658718372559] INFO (808 on 94dfaee5777a): Opening public DB...
+[1658718372669] INFO (808 on 94dfaee5777a): Opening admin DB...
+[1658718374771] INFO (808 on 94dfaee5777a): Migrating public DB...
+[1658718374772] INFO (808 on 94dfaee5777a): Migrating admin...
+[1658718374774] INFO (808 on 94dfaee5777a): Server listening at http://127.0.0.1:3000
+[1658718374774] INFO (808 on 94dfaee5777a): Listening on http://127.0.0.1:3000
+[1658718374864] INFO (808 on 94dfaee5777a): Tables: migrations, Administrators, Administrator_Tokens, sqlite_sequence
+[1658718374865] INFO (808 on 94dfaee5777a):
+    tables: "migrations, Episodes, Suggestions, Suggestion_Voters, sqlite_sequence, Guesses, Authors"
+[1658718374865] INFO (808 on 94dfaee5777a): Most recent TWSF guesses:
+    guesses: [
+      {
+        "type": "DISCORD",
+        "text": "2 Aug 1993 launch of Titan IVA mission K"
+      },
+      {
+        "type": "TWEET",
+        "text": "@orbitalpodcast #ThisWeekSF on July 28 1"
+      },
+      {
+        "type": "DISCORD",
+        "text": "July 28, 1961. NASA invites **12** compa"
+      },
+      {
+        "type": "TWEET",
+        "text": "#thisweeksf 28 July 1961, NASA invites 1"
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf NASA invited 12 companies to"
+      },
+      {
+        "type": "TWITTER_DM",
+        "text": "#thisweeksf Here is my guess to some of "
+      },
+      {
+        "type": "EMAIL",
+        "text": "July 28th, 1961. NASA invites *12* compa"
+      },
+      {
+        "type": "DISCORD",
+        "text": "The launch of Astrobee-1500 from LC-A at"
+      },
+      {
+        "type": "EMAIL",
+        "text": "This week's clue is referencing NASA sen"
+      },
+      {
+        "type": "DISCORD",
+        "text": "24 July 1992: launch of GEOTAIL, a joint"
+      }
+    ]
+[1658718374865] INFO (808 on 94dfaee5777a): Most recent suggestions:
+    suggestions: [
+      {
+        "username": "benetherington",
+        "text": "running on a server"
+      },
+      {
+        "username": "thewonderidiot",
+        "text": "up to no good"
+      },
+      {
+        "username": "colin",
+        "text": "Golden sample retriever"
+      },
+      {
+        "username": "benetherington",
+        "text": "wider than orion"
+      },
+      {
+        "username": "CsabaT",
+        "text": "Phat phairing"
+      },
+      {
+        "username": "sciencepolice",
+        "text": "Yeetage on Mars"
+      },
+      {
+        "username": "benetherington",
+        "text": "knot useless"
+      },
+      {
+        "username": "colin",
+        "text": "it's knot intuitive"
+      },
+      {
+        "username": "colin",
+        "text": "1 potato 2 potato..."
+      },
+      {
+        "username": "Uncwilly",
+        "text": "A damp dress rehersal."
+      }
+    ]
+[1658718374865] INFO (808 on 94dfaee5777a): There are 11 chat thank-yous.
+[1658718374865] INFO (808 on 94dfaee5777a): No admin users exist yet.
+[1658718375113] INFO (808 on 94dfaee5777a): Ready! GUI commands output to: #ground_control.

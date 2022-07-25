@@ -2,7 +2,9 @@
   API
 \*---*/
 const LL2BaseTest = 'https://lldev.thespacedevs.com/2.2.0/';
-const LL2Base = 'https://ll.thespacedevs.com/2.2.0/';
+const LL2BaseProd = 'https://ll.thespacedevs.com/2.2.0/';
+const LL2Base = useLL2TestApi ? LL2BaseTest : LL2BaseProd;
+
 const getUpcomingLaunches = async () => {
     const url = new URL(LL2Base);
     url.pathname += 'launch/upcoming/';

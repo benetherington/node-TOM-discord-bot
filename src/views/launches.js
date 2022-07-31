@@ -55,6 +55,7 @@ const buildLaunchRow = (launchData) => {
     const rocketVariant = launchData.rocket.configuration.variant;
     const rocketImage = launchData.rocket.configuration.image_url;
 
+    if (!launchData.mission) launchData.mission = {};
     const missionName = launchData.mission.name;
     const missionDescription = launchData.mission.description;
     const missionOrbit = launchData.mission.orbit

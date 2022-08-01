@@ -112,7 +112,9 @@ const buildLaunchRow = (launchData) => {
     const heroLink = document.createElement('a');
     heroLink.classList.add('hero-link');
     heroLink.href = moreHref;
+    heroLink.dataset.href = moreHref;
     heroLink.style = `background-image: url(${heroImageUrl})`;
+    heroLink.addEventListener('click', openInNewWindow);
     rowContainer.append(heroLink);
 
     // Launch window -- times
@@ -152,7 +154,7 @@ const buildLaunchRow = (launchData) => {
         const updateLink = document.createElement('a');
         updateLink.href = update.href;
         updateLink.dataset.href = update.href;
-        updateLink.addEventListener('click', onUpdateClick);
+        updateLink.addEventListener('click', openInNewWindow);
         updateLink.innerText =
             update.date.toLocaleDateString('en-US', {
                 dateStyle: 'short',
@@ -337,7 +339,7 @@ const updateSearchWindow = () => {
 /*------------------*\
   GUI EVENT HANDLERS
 \*------------------*/
-const onUpdateClick = (event) => {
+const openInNewWindow = (event) => {
     window.open(event.target.dataset.href);
     event.preventDefault();
 };

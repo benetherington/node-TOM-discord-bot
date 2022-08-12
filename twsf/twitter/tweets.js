@@ -8,14 +8,13 @@ const client = {
     _base: 'https://api.twitter.com/1.1/',
     headers: {Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN},
     get: function (tweetId) {
-        return fetch(
-            this._base +
-                'statuses/show.json?tweet_mode=extended&id=' +
-                tweetId.toString(),
-            {
-                headers: this.headers,
-            },
-        ).then((r) => r.json());
+        const url = new URL(this._base + 'statuses/show.json');
+        url.searchParams.append('tweet_mode', 'extended');
+        url.searchParams.append('id', tweetId.toString());
+
+        return fetch(url, {
+            headers: this.headers,
+        }).then((r) => r.json());
     },
     search: async function (query) {
         const response = await fetch(

@@ -130,7 +130,7 @@ const guessAndAuthorFromEmail = ({parsedElements, parsingErrors}) => {
   HANDLER
 \*-------*/
 module.exports = (textContent) => {
-    logger.debug(textContent)
+    logger.info(textContent)
     try {
         // Parse the email
         const {parsedElements, parsingErrors} = parseTextContent(textContent);

@@ -3,6 +3,7 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const logger = require('../../logger');
 const {addNewGuess, guessTypes} = require('../../database/twsf');
+const fetchTweetChain = require('tweet-chain');
 
 const client = {
     _base: 'https://api.twitter.com/1.1/',
@@ -107,8 +108,10 @@ const guessAndAuthorFromTweet = async (status) => {
 
     return {guess, author};
 };
-const fetchTweets = () =>
-    client.search({query: '#thisweeksf'}).then((r) => r.all());
+const fetchTweets = async () => {
+    const results = client.search({query: '#thisweeksf'});
+    return await results.all();
+};
 
 module.exports = async () => {
     logger.info('Storing #ThisWeekSF tweets...');

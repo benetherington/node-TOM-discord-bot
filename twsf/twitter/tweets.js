@@ -3,7 +3,7 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const logger = require('../../logger');
 const {addNewGuess, guessTypes} = require('../../database/twsf');
-const fetchTweetChainText = require('tweet-chain');
+const fetchTweetChainText = require('./tweet-chain');
 
 const headers = {Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN};
 

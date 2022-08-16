@@ -9,7 +9,7 @@ const headers = {
 };
 
 const fetchConversationId = async (tweetId) => {
-    // Build URL and send request
+    // Build and send request
     const url = new URL('https://api.twitter.com/2/tweets');
     url.searchParams.append('ids', tweetId);
     url.searchParams.append('tweet.fields', 'conversation_id,author_id');
@@ -20,8 +20,7 @@ const fetchConversationId = async (tweetId) => {
 
     // Check returned data
     const jsn = await response.json();
-    if (!jsn.data || !jsn.data.length)
-        throw 'Fetching conversation_id returned no response';
+    if (!jsn.data || !jsn.data.length) return;
 
     // Return conversation ID
     const originalTweet = jsn.data[0];
@@ -66,13 +65,13 @@ const condenseTweetChain = (originalTweet, tweetChain) => {
 };
 
 module.exports = async (tweetId) => {
-    // TODO: escape fetch errors
-    // TODO: escape no tweets returned from /tweets?ids=
-    // TODO: escape no tweets returned from /tweets/search
     try {
         // Fetch conversation ID
-        const {originalTweet, conversationId, twitterUserId} =
-            await fetchConversationId(tweetId);
+        const fetchedId = await fetchConversationId(tweetId);
+
+        // Check that results were obtained
+        if (!fetchedId) return;
+        const {originalTweet, conversationId, twitterUserId} = fetchedId;
 
         // Fetch tweets in conversation from this user to this user
         const tweetChain = await fetchTweetChain(conversationId, twitterUserId);

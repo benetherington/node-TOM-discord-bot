@@ -5,58 +5,41 @@ const logger = require('../../logger');
 const {addNewGuess, guessTypes} = require('../../database/twsf');
 const fetchTweetChain = require('tweet-chain');
 
-const client = {
-    _base: 'https://api.twitter.com/1.1/',
-    headers: {Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN},
-    get: function (tweetId) {
-        const url = new URL(this._base + 'statuses/show.json');
-        url.searchParams.append('tweet_mode', 'extended');
-        url.searchParams.append('id', tweetId.toString());
+const headers = {Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN};
 
-        return fetch(url, {
-            headers: this.headers,
-        }).then((r) => r.json());
-    },
-    search: async function (query) {
-        const response = await fetch(
-            this._base + 'tweets/search/30day/prod.json',
-            {
-                method: 'POST',
-                headers: this.headers,
-                body: JSON.stringify(query),
-            },
-        );
-        const jsn = await response.json();
+const getSearchPage = async (params) => {
+    // Build and send request
+    const url = new URL(
+        'https://api.twitter.com/1.1/tweets/search/30day/prod.json',
+    );
+    const method = 'POST';
+    const body = JSON.stringify(params);
+    const response = await fetch(url, {method, headers, body});
+    if (!response.ok) throw response.statusText;
 
-        if (jsn.error) {
-            logger.error(error.message);
-            jsn.all = () => [];
-        } else {
-            jsn.all = () => this._next(jsn, query);
-        }
-        return jsn;
-    },
-    _next: async function (response, query) {
-        let searchResults = response.results;
-        while (response.next) {
-            query.next = response.next;
-            response = await this.search(query);
-            searchResults = searchResults.concat(response.results);
-        }
-        return searchResults;
-    },
+    // Check returned data
+    const thisPage = await response.json();
+    if (thisPage.error) throw error.message;
+
+    // Return the raw JSON response
+    return thisPage;
 };
-const getFullText = (status) =>
-    status.truncated ? status.extended_tweet.full_text : status.text;
-const fetchSelfReplies = async (status) => {
-    const twitterUsername = status.user.screen_name;
-    const tweetId = status.id_str;
+const getTwsfTweets = async () => {
+    // Fetch first page
+    const params = {query: '#thisweeksf'};
+    let thisPage = await getSearchPage(params);
+    const searchResults = thisPage.results;
 
-    // Fetch all self replies for this user
-    const response = await client.search({
-        query: `from:${twitterUsername} to:${twitterUsername}`,
-    });
-    const selfReplies = await response.all();
+    // Fetch additional pages
+    while (thisPage.next) {
+        params.next = thisPage.next;
+        thisPage = await getSearchPage(params);
+        searchResults.push(...thisPage.results);
+    }
+
+    // Return all fetched tweets
+    return searchResults;
+};
 
     // Assemble a chain of replies
     const replyTexts = [getFullText(status)];

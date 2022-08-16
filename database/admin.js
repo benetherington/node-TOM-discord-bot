@@ -45,7 +45,7 @@ const initDB = async () => {
     logger.info('Migrating admin...');
     await db.migrate({migrationsPath});
 };
-initDB().then(printDbSummary);
+initDB();
 
 /*-------*\
   EXPORTS

@@ -26,23 +26,45 @@ const getNextPage = async (next) => {
 const dateOptions = {
     dateStyle: 'full',
     timeStyle: 'long',
+    hour12: false,
     timeZone: 'utc',
 };
 const buildLaunchRow = (launchData) => {
-    // Assemble information to display
+    // Process data, extract the values we'll display
+    // Slug is the only required value
     const moreHref = `https://spacelaunchnow.me/launch/${launchData.slug}`;
-    const windowStart = new Date(launchData.window_start);
-    const windowStartStr = windowStart.toLocaleString('en-US', dateOptions);
-    const windowEnd = new Date(launchData.window_end);
-    const windowEndStr = windowEnd.toLocaleString('en-US', dateOptions);
+
+    // Launch dates
+    let windowStartStr;
+    if (launchData.window_start) {
+        const windowStart = new Date(launchData.window_start);
+        windowStartStr = windowStart.toLocaleString('en-US', dateOptions);
+    } else {
+        windowStartStr = 'Unknown';
+    }
+    let windowEndStr;
+    if (launchData.window_end) {
+        const windowEnd = new Date(launchData.window_end);
+        windowEndStr = windowEnd.toLocaleString('en-US', dateOptions);
+    } else {
+        windowEndStr = 'Unknown';
+    }
+
+    // Status
+    launchData.status ||= {};
     const statusName = launchData.status.name;
     const statusDescription = launchData.status.description;
+
+    // Updates
+    launchData.updates ||= [];
     const updates = launchData.updates.map((update) => ({
         text: update.comment,
         href: update.info_url,
         date: new Date(update.created_on),
     }));
 
+    // Provider
+    launchData.launch_service_provider ||= {};
     const companyName = launchData.launch_service_provider.name;
     const totalLaunchCount =
         launchData.launch_service_provider.total_launch_count;
@@ -51,19 +73,27 @@ const buildLaunchRow = (launchData) => {
     const companyLogoImage = launchData.launch_service_provider.logo_url;
     const companyImage = launchData.launch_service_provider.image_url;
 
+    // Rocket
+    launchData.rocket ||= {};
+    launchData.rocket.configuration ||= {};
     const rocketName = launchData.rocket.configuration.full_name;
     const rocketVariant = launchData.rocket.configuration.variant;
     const rocketImage = launchData.rocket.configuration.image_url;
 
+    // Mission
+    launchData.mission ||= {};
+    launchData.mission.orbit ||= {};
+    launchData.mission_patches ||= [];
     const missionName = launchData.mission.name;
     const missionDescription = launchData.mission.description;
-    const missionOrbit = launchData.mission.orbit
-        ? launchData.mission.orbit.name
-        : '';
+    const missionOrbit = launchData.mission.orbit.name;
     const missionPatchImage = launchData.mission_patches.length
         ? launchData.mission_patches[0].image_url
         : null;
 
+    // Launch site
+    launchData.pad ||= {};
+    launchData.pad.location ||= {};
     const launchPadName = launchData.pad.name;
     const launchPadCount = launchData.pad.total_launch_count;
     const launchLocation = launchData.pad.location.name;
@@ -72,20 +102,20 @@ const buildLaunchRow = (launchData) => {
     const heroImageUrl =
         missionPatchImage || companyLogoImage || companyImage || rocketImage;
 
-    // Build HTML elements
+    // HTML ELEMENTS
+    // Container
     const rowContainer = document.createElement('div');
     rowContainer.classList.add('row-container');
     rowContainer.classList.add('card');
 
+    // Patch/link
     const heroLink = document.createElement('a');
     heroLink.classList.add('hero-link');
     heroLink.href = moreHref;
+    heroLink.dataset.href = moreHref;
     heroLink.style = `background-image: url(${heroImageUrl})`;
+    heroLink.addEventListener('click', openInNewWindow);
     rowContainer.append(heroLink);
-
-    // const heroImage = document.createElement('img');
-    // heroImage.src = heroImageUrl;
-    // heroLink.append(heroImage);
 
     // Launch window -- times
     const timesSection = document.createElement('div');
@@ -99,16 +129,6 @@ const buildLaunchRow = (launchData) => {
         startTime.innerText += ` --to-- ${windowEndStr}`;
     }
     timesSection.append(startTime);
-
-    // const toSeparator = document.createElement('p');
-    // toSeparator.classList.add('to-separator');
-    // toSeparator.innerText = '---to---';
-    // timesSection.append(toSeparator);
-
-    // const endTime = document.createElement('p');
-    // endTime.classList.add('end');
-    // endTime.innerText = windowEndStr;
-    // timesSection.append(endTime);
 
     // Launch window -- status
     const statusBadge = document.createElement('div');
@@ -134,7 +154,7 @@ const buildLaunchRow = (launchData) => {
         const updateLink = document.createElement('a');
         updateLink.href = update.href;
         updateLink.dataset.href = update.href;
-        updateLink.addEventListener('click', onUpdateClick);
+        updateLink.addEventListener('click', openInNewWindow);
         updateLink.innerText =
             update.date.toLocaleDateString('en-US', {
                 dateStyle: 'short',
@@ -319,7 +339,7 @@ const updateSearchWindow = () => {
 /*------------------*\
   GUI EVENT HANDLERS
 \*------------------*/
-const onUpdateClick = (event) => {
+const openInNewWindow = (event) => {
     window.open(event.target.dataset.href);
     event.preventDefault();
 };

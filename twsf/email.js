@@ -60,8 +60,35 @@ const shiftBodyLines = (textLines) => {
         doneLooking = /\S/.test(textLines[0]);
     }
 
-    // Join the rest of the email
-    body = textLines.join('');
+    // Capture body lines until we reach block-quoted text
+    let foundBlockquote = false;
+    const bodyLines = [];
+    doneLooking = false;
+    while (!doneLooking) {
+        const thisLine = textLines.shift();
+        foundBlockquote = /^>+ /.test(thisLine);
+        if (!foundBlockquote) bodyLines.push(thisLine);
+        else doneLooking = true;
+    }
+
+    // If block-quoted text was found, rewind and discard gmail's forward "header."
+    // "On Wed, Aug 3, 2022 at 12:02 PM Name <email> wrote:" (possible line breaks!)
+    let foundHeader = false;
+    let lineToDrop;
+    for (
+        lineToDrop = bodyLines.length;
+        lineToDrop > 0 && !foundHeader;
+        lineToDrop -= !foundHeader // Don't increment past the header
+    ) {
+        const thisLine = bodyLines[lineToDrop];
+        foundHeader = /^On (Sun|Mon|Tue|Wed|Thu|Fri), /.test(thisLine);
+    }
+
+    // Discard forward "header."
+    if (foundHeader) bodyLines = bodyLines.slice(0, lineToDrop);
+
+    // Join the lines we saved.
+    body = bodyLines.join('');
 
     // Done!
     return body;
@@ -129,7 +156,7 @@ const guessAndAuthorFromEmail = ({parsedElements, parsingErrors}) => {
 /*-------*\
   HANDLER
 \*-------*/
-module.exports = (textContent) => {
+module.exports = async (textContent) => {
     try {
         // Parse the email
         const {parsedElements, parsingErrors} = parseTextContent(textContent);
@@ -151,7 +178,7 @@ module.exports = (textContent) => {
             };
 
         // Store email
-        const successfullyStored = addNewGuess(guessAndAuthor);
+        const successfullyStored = await addNewGuess(guessAndAuthor);
         if (!successfullyStored)
             throw {
                 msg: 'Something went wrong while storing TWSF email...',

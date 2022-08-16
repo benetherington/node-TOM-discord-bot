@@ -36,7 +36,7 @@ const printDbSummary = async () => {
 const initDB = async () => {
     db = await require('./public');
 };
-initDB().then(printDbSummary);
+initDB();
 
 /*--------*\
   TYPE DEF

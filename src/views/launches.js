@@ -27,6 +27,7 @@ const dateOptions = {
     dateStyle: 'full',
     timeStyle: 'long',
     hour12: false,
+    hour12: false,
     timeZone: 'utc',
 };
 const buildLaunchRow = (launchData) => {

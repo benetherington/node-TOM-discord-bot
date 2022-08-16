@@ -156,7 +156,7 @@ const guessAndAuthorFromEmail = ({parsedElements, parsingErrors}) => {
 /*-------*\
   HANDLER
 \*-------*/
-module.exports = (textContent) => {
+module.exports = async (textContent) => {
     try {
         // Parse the email
         const {parsedElements, parsingErrors} = parseTextContent(textContent);
@@ -178,7 +178,7 @@ module.exports = (textContent) => {
             };
 
         // Store email
-        const successfullyStored = addNewGuess(guessAndAuthor);
+        const successfullyStored = await addNewGuess(guessAndAuthor);
         if (!successfullyStored)
             throw {
                 msg: 'Something went wrong while storing TWSF email...',

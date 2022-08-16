@@ -34,7 +34,7 @@ const initDB = async () => {
     const public = require('./public');
     db = await public;
 };
-initDB().then(printSuggestionsSummary);
+initDB();
 
 /*-------*\
   EPISODE

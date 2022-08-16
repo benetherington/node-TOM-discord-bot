@@ -27,7 +27,7 @@ const initDB = async () => {
     const public = require('./public');
     db = await public;
 };
-initDB().then(printThankYouSummary);
+initDB();
 
 module.exports.updateAuthorThank = (author, chatThank = true) => {
     db.run(

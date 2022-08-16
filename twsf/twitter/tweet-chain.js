@@ -42,14 +42,13 @@ const fetchTweetChain = async (conversationId, twitterUserId) => {
 
     // Check returned data
     const jsn = await response.json();
-    if (!jsn.data || !jsn.data.length)
-        throw 'Fetching conversation_id returned no response';
+    if (!jsn.data || !jsn.data.length) return;
 
     // Return tweets in conversation
     return jsn.data;
 };
 
-const condenseTweetChain = (originalTweet, tweetChain) => {
+const condenseTweetChain = (originalTweet, tweetChain = []) => {
     // Add original tweet to tweetChain if it was missing
     const coversationContainsOriginal = tweetChain.some(
         (tweet) => tweet.id === originalTweet.id,

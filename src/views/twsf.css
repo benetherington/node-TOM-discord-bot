@@ -158,7 +158,7 @@
 }
 
 #guesses .toggle-option[value="bonus"] + label { /* stylelint-disable-line no-descending-specificity */
-    background-image: url("/icons/award.svg");
+    background-image: url("/icons/trophy.svg");
 }
 
 /* GUESS TEXT */

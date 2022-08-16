@@ -3,90 +3,60 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const logger = require('../../logger');
 const {addNewGuess, guessTypes} = require('../../database/twsf');
+const fetchTweetChainText = require('./tweet-chain');
 
-const client = {
-    _base: 'https://api.twitter.com/1.1/',
-    headers: {Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN},
-    get: function (tweetId) {
-        return fetch(
-            this._base +
-                'statuses/show.json?tweet_mode=extended&id=' +
-                tweetId.toString(),
-            {
-                headers: this.headers,
-            },
-        ).then((r) => r.json());
-    },
-    search: async function (query) {
-        const response = await fetch(
-            this._base + 'tweets/search/30day/prod.json',
-            {
-                method: 'POST',
-                headers: this.headers,
-                body: JSON.stringify(query),
-            },
-        );
-        const jsn = await response.json();
+const headers = {Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN};
 
-        if (jsn.error) {
-            logger.error(error.message);
-            jsn.all = () => [];
-        } else {
-            jsn.all = () => this._next(jsn, query);
-        }
-        return jsn;
-    },
-    _next: async function (response, query) {
-        let searchResults = response.results;
-        while (response.next) {
-            query.next = response.next;
-            response = await this.search(query);
-            searchResults = searchResults.concat(response.results);
-        }
-        return searchResults;
-    },
+const getSearchPage = async (params) => {
+    // Build and send request
+    const url = new URL(
+        'https://api.twitter.com/1.1/tweets/search/30day/prod.json',
+    );
+    const method = 'POST';
+    const body = JSON.stringify(params);
+    const response = await fetch(url, {method, headers, body});
+    if (!response.ok) throw response.statusText;
+
+    // Check returned data
+    const thisPage = await response.json();
+    if (thisPage.error) throw error.message;
+
+    // Return the raw JSON response
+    return thisPage;
 };
-const getFullText = (status) =>
-    status.truncated ? status.extended_tweet.full_text : status.text;
-const fetchSelfReplies = async (status) => {
-    const twitterUsername = status.user.screen_name;
-    const tweetId = status.id_str;
+const getTwsfTweets = async () => {
+    // Fetch first page
+    const params = {query: '#thisweeksf'};
+    let thisPage = await getSearchPage(params);
+    const searchResults = thisPage.results;
 
-    // Fetch all self replies for this user
-    const response = await client.search({
-        query: `from:${twitterUsername} to:${twitterUsername}`,
-    });
-    const selfReplies = await response.all();
-
-    // Assemble a chain of replies
-    const replyTexts = [getFullText(status)];
-    let stillSearching = selfReplies.length; // Don't start if no replies!
-    while (stillSearching) {
-        // Find a tweet replying to the starting tweet
-        const reply = selfReplies.find(
-            (s) => s.in_reply_to_status_id === tweetId,
-        );
-        if (reply) {
-            // Prepend the text, and look for a reply to the reply
-            replyTexts.unshift(getFullText(reply));
-            tweetId = reply.id;
-        } else {
-            stillSearching = false;
-        }
+    // Fetch additional pages
+    while (thisPage.next) {
+        params.next = thisPage.next;
+        thisPage = await getSearchPage(params);
+        searchResults.push(...thisPage.results);
     }
 
-    // Done! Return an array.
-    return replyTexts;
+    // Return all fetched tweets
+    return searchResults;
 };
+
+const getFullText = async (status) => {
+    // Use API 2.0 to check whether the user replied to themselves
+    const chainText = await fetchTweetChainText(status.id_str);
+    if (chainText) return chainText;
+
+    // Fall back to just this tweet's full text
+    return status.truncated ? status.extended_tweet.full_text : status.text;
+};
+
 const guessAndAuthorFromTweet = async (status) => {
     const tweetId = status.id_str;
-    const textInitial = status.extended_tweet
-        ? status.extended_tweet.full_text
-        : status.full_text;
     const twitterId = status.user.id_str;
     const twitterDisplayName = status.user.name;
     const twitterUsername = status.user.screen_name;
     const callsign = twitterDisplayName;
+    const text = await getFullText(status);
 
     // Construct author for DB
     const author = {
@@ -97,9 +67,6 @@ const guessAndAuthorFromTweet = async (status) => {
     };
 
     // Construct guess for DB
-    // Start by checking for self-replies to this tweet
-    const textReplies = await fetchSelfReplies(status);
-    const text = [textInitial, ...textReplies].join(' ');
     const guess = {
         type: guessTypes.TWEET,
         tweetId,
@@ -108,14 +75,12 @@ const guessAndAuthorFromTweet = async (status) => {
 
     return {guess, author};
 };
-const fetchTweets = () =>
-    client.search({query: '#thisweeksf'}).then((r) => r.all());
 
 module.exports = async () => {
     logger.info('Storing #ThisWeekSF tweets...');
 
     // Get new tweets
-    const twsfTweets = await fetchTweets();
+    const twsfTweets = await getTwsfTweets();
 
     // Don't continue if there weren't any tweets
     if (!twsfTweets.length) {
@@ -129,13 +94,10 @@ module.exports = async () => {
     );
 
     // Store new tweets
-    const newGuessesCount = await guessesAndAuthors.reduce(
-        async (prevPromise, guessAndAuthor) => {
-            const prevCount = await prevPromise;
-            const changedRowCount = await addNewGuess(guessAndAuthor);
-            return prevCount + changedRowCount;
-        },
-        0,
+    let newGuessesCount = 0;
+    const dbPromises = guessesAndAuthors.map((guessAndAuthor) =>
+        addNewGuess(guessAndAuthor),
     );
+    await Promise.all(dbPromises);
     logger.info(`Done storing ${newGuessesCount} new #ThisWeekSF tweets!`);
 };

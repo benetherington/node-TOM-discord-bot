@@ -7,3 +7,4 @@ node_modules/
 app.log
 app-log.txt
 .sqlite_history
+ll2.json

@@ -23,7 +23,6 @@ module.exports = new Promise(async (resolve) => {
 
     logger.info('Migrating public DB...');
     await db.migrate({migrationsPath});
-    printDbSummary(db);
 
     resolve(db);
 });

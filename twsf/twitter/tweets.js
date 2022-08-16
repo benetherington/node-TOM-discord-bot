@@ -3,7 +3,7 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const logger = require('../../logger');
 const {addNewGuess, guessTypes} = require('../../database/twsf');
-const fetchTweetChain = require('tweet-chain');
+const fetchTweetChainText = require('tweet-chain');
 
 const headers = {Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN};
 
@@ -41,35 +41,22 @@ const getTwsfTweets = async () => {
     return searchResults;
 };
 
-    // Assemble a chain of replies
-    const replyTexts = [getFullText(status)];
-    let stillSearching = selfReplies.length; // Don't start if no replies!
-    while (stillSearching) {
-        // Find a tweet replying to the starting tweet
-        const reply = selfReplies.find(
-            (s) => s.in_reply_to_status_id === tweetId,
-        );
-        if (reply) {
-            // Prepend the text, and look for a reply to the reply
-            replyTexts.unshift(getFullText(reply));
-            tweetId = reply.id;
-        } else {
-            stillSearching = false;
-        }
-    }
+const getFullText = async (status) => {
+    // Use API 2.0 to check whether the user replied to themselves
+    const chainText = await fetchTweetChainText(status.id_str);
+    if (chainText) return chainText;
 
-    // Done! Return an array.
-    return replyTexts;
+    // Fall back to just this tweet's full text
+    return status.truncated ? status.extended_tweet.full_text : status.text;
 };
+
 const guessAndAuthorFromTweet = async (status) => {
     const tweetId = status.id_str;
-    const textInitial = status.extended_tweet
-        ? status.extended_tweet.full_text
-        : status.full_text;
     const twitterId = status.user.id_str;
     const twitterDisplayName = status.user.name;
     const twitterUsername = status.user.screen_name;
     const callsign = twitterDisplayName;
+    const text = await getFullText(status);
 
     // Construct author for DB
     const author = {
@@ -80,9 +67,6 @@ const guessAndAuthorFromTweet = async (status) => {
     };
 
     // Construct guess for DB
-    // Start by checking for self-replies to this tweet
-    const textReplies = await fetchSelfReplies(status);
-    const text = [textInitial, ...textReplies].join(' ');
     const guess = {
         type: guessTypes.TWEET,
         tweetId,
@@ -91,16 +75,12 @@ const guessAndAuthorFromTweet = async (status) => {
 
     return {guess, author};
 };
-const fetchTweets = async () => {
-    const results = client.search({query: '#thisweeksf'});
-    return await results.all();
-};
 
 module.exports = async () => {
     logger.info('Storing #ThisWeekSF tweets...');
 
     // Get new tweets
-    const twsfTweets = await fetchTweets();
+    const twsfTweets = await getTwsfTweets();
 
     // Don't continue if there weren't any tweets
     if (!twsfTweets.length) {

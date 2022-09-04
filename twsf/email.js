@@ -158,7 +158,7 @@ const guessAndAuthorFromEmail = ({parsedElements, parsingErrors}) => {
 \*-------*/
 module.exports = async (textContent) => {
     try {
-        // Parse the email
+        logger.info("// Parse the email")
         const {parsedElements, parsingErrors} = parseTextContent(textContent);
         if (!parsedElements)
             throw {
@@ -166,7 +166,7 @@ module.exports = async (textContent) => {
                 parsingErrors,
             };
 
-        // Prepare database data
+        logger.info("// Prepare database data")
         const guessAndAuthor = guessAndAuthorFromEmail({
             parsedElements,
             parsingErrors,
@@ -177,7 +177,7 @@ module.exports = async (textContent) => {
                 parsingErrors,
             };
 
-        // Store email
+        logger.info("// Store email")
         const successfullyStored = await addNewGuess(guessAndAuthor);
         if (!successfullyStored)
             throw {

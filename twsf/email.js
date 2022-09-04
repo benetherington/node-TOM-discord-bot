@@ -109,6 +109,7 @@ const parseTextContent = (textContent) => {
   // The components we're looking for are separated by line breaks
   const textLines = textContent.split(/(\r|\n|\r\n)/);
   logger.info({ textLines });
+  return;
 
   // From: Damonjalis <fake_greek_email@gmail.com>
   try {
@@ -164,6 +165,8 @@ module.exports = async (textContent) => {
   try {
     logger.info("// Parse the email");
     const { parsedElements, parsingErrors } = parseTextContent(textContent);
+    return;
+    
     if (!parsedElements)
       throw {
         msg: "Something went wrong while parsing TWSF email...",

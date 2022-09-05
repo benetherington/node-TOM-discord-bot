@@ -56,8 +56,8 @@ const shiftBodyLines = (textLines) => {
     // Shift out whitespace-only lines
     doneLooking = false;
     while (!doneLooking) {
-        textLines.shift();
         doneLooking = /\S/.test(textLines[0]);
+        if (!doneLooking) textLines.shift();
     }
 
     // Capture body lines until we reach block-quoted text
@@ -67,7 +67,7 @@ const shiftBodyLines = (textLines) => {
     while (!doneLooking) {
         const thisLine = textLines.shift();
         foundBlockquote = /^>+ /.test(thisLine);
-        if (!foundBlockquote) bodyLines.push(thisLine);
+        if (!foundBlockquote && textLines.length) bodyLines.push(thisLine);
         else doneLooking = true;
     }
 

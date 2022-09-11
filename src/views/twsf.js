@@ -162,11 +162,10 @@ const getNextWeekStrings = () => {
     eMonth = end.getMonth();
 
     return (
-        `Next week is the ${sDate}${ordinals[sDate]} of ${months[sMonth]} to ` +
-        `the ${eDate}${ordinals[eMonth]} of ${months[eMonth]}. Do you have a clue` +
-        ` for us?\r\nNext week (${sMonth + 1}/${sDate} - ${
-            eMonth + 1
-        }/${eDate}) in`
+        `Next week is the ${sDate}${ordinals[sDate]}` +
+        (sMonth === eMonth ? '' : ` of ${months[sMonth]}`) +
+        ` to the ${eDate}${ordinals[eMonth]} of ${months[eMonth]}. Do you have a clue for us?` +
+        `\r\nNext week (${sMonth + 1}/${sDate} - ${eMonth + 1}/${eDate}) in`
     );
 };
 const setWinnersBox = () => {

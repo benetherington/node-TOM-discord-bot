@@ -3,6 +3,7 @@ node_modules/
 .data/*
 .vscode/*
 *.code-workspace
+app-log.txt
 
 app.log
 .sqlite_history

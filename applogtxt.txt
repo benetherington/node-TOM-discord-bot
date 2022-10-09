@@ -73199,3 +73199,743 @@ The Greek
       "statusCode": 200
     }
     responseTime: 0.5572061538696289
+[1665320807073] INFO (782 on 6c67950a1702): Opening public DB...
+[1665320807177] INFO (782 on 6c67950a1702): Opening admin DB...
+[1665320809557] INFO (782 on 6c67950a1702): Migrating public DB...
+[1665320809558] INFO (782 on 6c67950a1702): Migrating admin...
+[1665320809559] INFO (782 on 6c67950a1702): Server listening at http://127.0.0.1:3000
+[1665320809559] INFO (782 on 6c67950a1702): Listening on http://127.0.0.1:3000
+[1665320809905] INFO (782 on 6c67950a1702): Ready! GUI commands output to: #ground_control.
+[1665320857256] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-1"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52868
+    }
+[1665320857650] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-1"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 394.00061988830566
+[1665322070392] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-2"
+    req: {
+      "method": "POST",
+      "url": "/login",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57796
+    }
+[1665322070461] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-2"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 68.57257080078125
+[1665322070517] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-3"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57884
+    }
+[1665322070519] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-3"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 2.0008811950683594
+[1665322070566] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-4"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 57938
+    }
+[1665322070856] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-4"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 290.7251558303833
+[1665322071011] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-5"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 58234
+    }
+[1665322071013] INFO (782 on 6c67950a1702): Found 4 unscored TWSF guesses.
+    reqId: "req-5"
+[1665322071013] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-5"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.390350341796875
+[1665324998615] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-6"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 55632
+    }
+[1665324998616] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-6"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 0.9917688369750977
+[1665324998895] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-7"
+    req: {
+      "method": "GET",
+      "url": "/favicon.ico",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 55806
+    }
+[1665324998895] INFO (782 on 6c67950a1702): Route GET:/favicon.ico not found
+    reqId: "req-7"
+[1665324998896] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-7"
+    res: {
+      "statusCode": 404
+    }
+    responseTime: 0.5481977462768555
+[1665325025541] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-8"
+    req: {
+      "method": "POST",
+      "url": "/login",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 42806
+    }
+[1665325025578] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-8"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 36.86472702026367
+[1665325025697] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-9"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 42930
+    }
+[1665325025698] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-9"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 0.8496904373168945
+[1665325025813] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-a"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 42970
+    }
+[1665325025815] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-a"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.2994451522827148
+[1665325026162] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-c"
+    req: {
+      "method": "GET",
+      "url": "/icons/x-circle.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 43248
+    }
+[1665325026169] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-c"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 7.002710342407227
+[1665325028131] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-d"
+    req: {
+      "method": "GET",
+      "url": "/launches?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 44150
+    }
+[1665325028293] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-d"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 161.5355339050293
+[1665326754114] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-e"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 47576
+    }
+[1665326754114] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-e"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 0.4261894226074219
+[1665329275411] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-f"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 48636
+    }
+[1665329275412] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-f"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 0.5052661895751953
+[1665329275602] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-g"
+    req: {
+      "method": "GET",
+      "url": "/favicon.ico",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 48640
+    }
+[1665329275602] INFO (782 on 6c67950a1702): Route GET:/favicon.ico not found
+    reqId: "req-g"
+[1665329275603] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-g"
+    res: {
+      "statusCode": 404
+    }
+    responseTime: 0.5013236999511719
+[1665329278253] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-h"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 48654
+    }
+[1665329278253] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-h"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 0.517298698425293
+[1665329278282] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-i"
+    req: {
+      "method": "GET",
+      "url": "/favicon.ico",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 48660
+    }
+[1665329278282] INFO (782 on 6c67950a1702): Route GET:/favicon.ico not found
+    reqId: "req-i"
+[1665329278282] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-i"
+    res: {
+      "statusCode": 404
+    }
+    responseTime: 0.43351078033447266
+[1665329279369] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-j"
+    req: {
+      "method": "POST",
+      "url": "/login",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 48664
+    }
+[1665329279387] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-j"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 17.80190086364746
+[1665329279450] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-k"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 48672
+    }
+[1665329279452] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-k"
+    res: {
+      "statusCode": 302
+    }
+    responseTime: 1.216740608215332
+[1665329279506] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-l"
+    req: {
+      "method": "GET",
+      "url": "/titles",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 48678
+    }
+[1665329279507] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-l"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.1570320129394531
+[1665329279661] INFO (782 on 6c67950a1702): incoming request
+    reqId: "req-n"
+    req: {
+      "method": "GET",
+      "url": "/icons/x-circle.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 48682
+    }
+[1665329279663] INFO (782 on 6c67950a1702): request completed
+    reqId: "req-n"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.976017951965332
+[1665329355967] INFO (158 on 6e391afb1e78): Opening public DB...
+[1665329356172] INFO (158 on 6e391afb1e78): Opening admin DB...
+[1665329358555] INFO (158 on 6e391afb1e78): Migrating public DB...
+[1665329358556] INFO (158 on 6e391afb1e78): Migrating admin...
+[1665329358566] INFO (158 on 6e391afb1e78): Server listening at http://127.0.0.1:3000
+[1665329358566] INFO (158 on 6e391afb1e78): Listening on http://127.0.0.1:3000
+[1665329358833] INFO (158 on 6e391afb1e78): Ready! GUI commands output to: #ground_control.
+[1665329417416] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-1"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52128
+    }
+[1665329417749] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-1"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 332.1999635696411
+[1665329417812] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-2"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52132
+    }
+[1665329417846] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-3"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52134
+    }
+[1665329417849] INFO (158 on 6e391afb1e78):
+    reqId: "req-3"
+    thanks: [
+      {
+        "callsign": "Mike"
+      },
+      {
+        "callsign": "CsabaT"
+      },
+      {
+        "callsign": "Chris AKA Stygarfield"
+      },
+      {
+        "callsign": "Deathkin"
+      },
+      {
+        "callsign": "The Greek"
+      },
+      {
+        "callsign": "kenton"
+      },
+      {
+        "callsign": "VT (formally FireryDawn)"
+      }
+    ]
+[1665329417850] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-3"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 3.87418270111084
+[1665329417851] INFO (158 on 6e391afb1e78): Found 4 unscored TWSF guesses.
+    reqId: "req-2"
+[1665329417854] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-2"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 41.9992790222168
+[1665329417900] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-4"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52136
+    }
+[1665329417901] INFO (158 on 6e391afb1e78): Found 10 correct guesses for this episode.
+    reqId: "req-4"
+[1665329417901] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-4"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.6743431091308594
+[1665329417916] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-5"
+    req: {
+      "method": "GET",
+      "url": "/icons/discord.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52138
+    }
+[1665329417950] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-6"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52140
+    }
+[1665329417954] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-5"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 38.065890312194824
+[1665329417957] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-6"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 6.349124908447266
+[1665329417959] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-7"
+    req: {
+      "method": "GET",
+      "url": "/icons/trophy.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52142
+    }
+[1665329418048] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-7"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 89.16672229766846
+[1665329418051] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-8"
+    req: {
+      "method": "GET",
+      "url": "/icons/twitter.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52144
+    }
+[1665329418051] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-9"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52146
+    }
+[1665329418053] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-a"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52148
+    }
+[1665329418054] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-8"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.860858917236328
+[1665329418054] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-9"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.970065116882324
+[1665329418055] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-a"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.567483901977539
+[1665329419451] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-b"
+    req: {
+      "method": "GET",
+      "url": "/titles?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52180
+    }
+[1665329419759] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-b"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 307.96831607818604
+[1665329419913] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-d"
+    req: {
+      "method": "GET",
+      "url": "/icons/x-circle.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52184
+    }
+[1665329419914] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-d"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.0135059356689453
+[1665329422947] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-e"
+    req: {
+      "method": "GET",
+      "url": "/twsf?",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52208
+    }
+[1665329422954] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-e"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 6.488836288452148
+[1665329423017] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-f"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/thankyou",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52210
+    }
+[1665329423019] INFO (158 on 6e391afb1e78):
+    reqId: "req-f"
+    thanks: [
+      {
+        "callsign": "Mike"
+      },
+      {
+        "callsign": "CsabaT"
+      },
+      {
+        "callsign": "Chris AKA Stygarfield"
+      },
+      {
+        "callsign": "Deathkin"
+      },
+      {
+        "callsign": "The Greek"
+      },
+      {
+        "callsign": "kenton"
+      },
+      {
+        "callsign": "VT (formally FireryDawn)"
+      }
+    ]
+[1665329423019] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-f"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2.1939516067504883
+[1665329423028] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-g"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/unscored",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52212
+    }
+[1665329423030] INFO (158 on 6e391afb1e78): Found 4 unscored TWSF guesses.
+    reqId: "req-g"
+[1665329423030] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-g"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1.9908294677734375
+[1665329423086] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-h"
+    req: {
+      "method": "GET",
+      "url": "/icons/discord.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52214
+    }
+[1665329423086] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-i"
+    req: {
+      "method": "GET",
+      "url": "/api/twsf/correct",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52216
+    }
+[1665329423087] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-h"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 1.2605924606323242
+[1665329423167] INFO (158 on 6e391afb1e78): Found 10 correct guesses for this episode.
+    reqId: "req-i"
+[1665329423168] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-i"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 81.19581985473633
+[1665329423173] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-j"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-down.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52218
+    }
+[1665329423174] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-k"
+    req: {
+      "method": "GET",
+      "url": "/icons/trophy.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52220
+    }
+[1665329423174] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-l"
+    req: {
+      "method": "GET",
+      "url": "/icons/hand-thumbs-up.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52222
+    }
+[1665329423175] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-m"
+    req: {
+      "method": "GET",
+      "url": "/icons/twitter.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52224
+    }
+[1665329423176] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-n"
+    req: {
+      "method": "GET",
+      "url": "/icons/envelope-paper.svg",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52226
+    }
+[1665329423177] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-j"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 3.5608835220336914
+[1665329423177] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-k"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 3.5304126739501953
+[1665329423178] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-l"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 3.3982725143432617
+[1665329423178] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-m"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 3.207204818725586
+[1665329423179] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-n"
+    res: {
+      "statusCode": 304
+    }
+    responseTime: 3.145275115966797
+[1665329447948] INFO (158 on 6e391afb1e78): incoming request
+    reqId: "req-o"
+    req: {
+      "method": "GET",
+      "url": "/",
+      "hostname": "tom-title-suggestion-monitor.glitch.me",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52976
+    }
+[1665329448559] INFO (158 on 6e391afb1e78): request completed
+    reqId: "req-o"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 610.1457853317261

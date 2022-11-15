@@ -49,7 +49,7 @@ const shiftBodyLines = (textLines) => {
 
     // Shift out lines until we find one starting with "To:"
     while (!doneLooking) {
-        const thisLine = textLines.shift();
+        thisLine = textLines.shift();
         doneLooking = thisLine.startsWith('To:');
     }
 
@@ -62,10 +62,10 @@ const shiftBodyLines = (textLines) => {
 
     // Capture body lines until we reach block-quoted text
     let foundBlockquote = false;
-    const bodyLines = [];
+    let bodyLines = [];
     doneLooking = false;
     while (!doneLooking) {
-        const thisLine = textLines.shift();
+        thisLine = textLines.shift();
         foundBlockquote = /^>+ /.test(thisLine);
         if (!foundBlockquote && textLines.length) bodyLines.push(thisLine);
         else doneLooking = true;
@@ -80,7 +80,7 @@ const shiftBodyLines = (textLines) => {
         lineToDrop > 0 && !foundHeader;
         lineToDrop -= !foundHeader // Don't increment past the header
     ) {
-        const thisLine = bodyLines[lineToDrop];
+        thisLine = bodyLines[lineToDrop];
         foundHeader = /^On (Sun|Mon|Tue|Wed|Thu|Fri), /.test(thisLine);
     }
 

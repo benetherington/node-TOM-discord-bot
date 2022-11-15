@@ -146,9 +146,13 @@
 
 /* main item */
 #launch-table :is(.rocket, .mission, .location, .pad) :nth-child(1) {
-    font-weight: bold;
     text-align: center;
     padding: 2px 0;
+}
+
+#launch-table :is(.mission, .location, .pad) :nth-child(1) {
+    /* NOTE: not selecting .rocket, which applies bold on its own */
+    font-weight: bold;
 }
 
 /* descriptive item */

@@ -170,9 +170,9 @@ const buildLaunchRow = (launchData) => {
     rocketSection.classList.add('rocket', 'card', 'has-header');
     rowContainer.append(rocketSection);
 
-    const rocketNameEl = document.createElement('p');
+    const rocketNameEl = document.createElement('div');
     rocketNameEl.classList.add('name');
-    rocketNameEl.innerText = rocketName + ' ' + rocketVariant;
+    rocketNameEl.innerHTML = `<b>${rocketName}</b> ${rocketVariant}`;
     rocketSection.append(rocketNameEl);
 
     const companyNameEl = document.createElement('p');

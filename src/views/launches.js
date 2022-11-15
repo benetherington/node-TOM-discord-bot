@@ -77,7 +77,7 @@ const buildLaunchRow = (launchData) => {
     // Rocket
     launchData.rocket ||= {};
     launchData.rocket.configuration ||= {};
-    const rocketName = launchData.rocket.configuration.full_name;
+    const rocketName = launchData.rocket.configuration.name;
     const rocketVariant = launchData.rocket.configuration.variant;
     const rocketImage = launchData.rocket.configuration.image_url;
 

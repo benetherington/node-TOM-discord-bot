@@ -62,7 +62,7 @@ const shiftBodyLines = (textLines) => {
 
     // Capture body lines until we reach block-quoted text
     let foundBlockquote = false;
-    const bodyLines = [];
+    let bodyLines = [];
     doneLooking = false;
     while (!doneLooking) {
         const thisLine = textLines.shift();

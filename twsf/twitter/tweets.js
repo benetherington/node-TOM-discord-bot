@@ -94,10 +94,11 @@ module.exports = async () => {
     );
 
     // Store new tweets
-    let newGuessesCount = 0;
     const dbPromises = guessesAndAuthors.map((guessAndAuthor) =>
         addNewGuess(guessAndAuthor),
     );
-    await Promise.all(dbPromises);
+    const changeCounts = await Promise.all(dbPromises);
+    const newGuessesCount = changeCounts.reduce((a, b) => a + b);
+
     logger.info(`Done storing ${newGuessesCount} new #ThisWeekSF tweets!`);
 };

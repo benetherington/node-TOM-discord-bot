@@ -30,7 +30,7 @@ fastify.listen(3000, (err, address) => {
     logger.info(`Listening on ${address}`);
     if (err) {
         logger.error(err);
-        twitterJob.gracefulShutdown();
+        TootTweetJob.gracefulShutdown();
         process.exit(1);
     }
 });
@@ -49,15 +49,20 @@ const schedule = require('node-schedule');
 const storeNewTwsfTweets = require('./twsf/twitter/tweets');
 const storeNewTwsfDirectMessages = require('./twsf/twitter/direct-messages');
 
+// Mastodon
+const storeNewTwsfToots = require('./twsf/mastodon/toots');
+
 // Schedule twitter checks Sunday at 12pm EST. The intention is to schedule this
 // at the start of the show. Twitter allows us to search the last thirty days of
 // tweets, so we don't need to check more than once a week, but we want guesses
 // available before the crew begins finalizing the show notes Sunday morning,
 // then we should check again just before the show begins. Glitch server is in
 // UTC.
-const twitterJob = schedule.scheduleJob('0 13,16 * * 0', () => {
-    storeNewTwsfTweets();
-    storeNewTwsfDirectMessages();
+const TootTweetJob = schedule.scheduleJob('0 13,16 * * 0', () => {
+    storeNewTwsfTweets().catch(logger.error);
+    storeNewTwsfDirectMessages().catch(logger.error);
+
+    storeNewTwsfToots().catch(logger.error);
 });
 
 // Increment episode

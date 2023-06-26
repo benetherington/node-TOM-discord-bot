@@ -56,46 +56,48 @@ PRAGMA foreign_keys=on;
 -- UNIQUE constraints can't be added using ALTER TABLE
 PRAGMA foreign_keys=off;
 CREATE TABLE AuthorsAddMastodon (
-    authorId        INTEGER PRIMARY KEY,
+    authorId            INTEGER PRIMARY KEY,
     
-    discordId       INTEGER UNIQUE,
-    username        TEXT,
-    displayName     TEXT,
+    callsign            TEXT,
+    chatThank           BOOLEAN DEFAULT FALSE,
+    notes               TEXT,
     
-    twitterId            TEXT UNIQUE,
-    twitterUsername      TEXT UNIQUE,
-    twitterDisplayName   TEXT,
+    discordId           INTEGER UNIQUE,
+    username            TEXT,
+    displayName         TEXT,
     
-    emailAddress         TEXT UNIQUE,
-    emailName            TEXT,
+    twitterId           TEXT UNIQUE,
+    twitterUsername     TEXT UNIQUE,
+    twitterDisplayName  TEXT,
     
-    mastodonId           TEXT,
-    mastodonUsername     TEXT UNIQUE,
-    mastodonDisplayName  TEXT,
+    emailAddress        TEXT UNIQUE,
+    emailName           TEXT,
     
-    callsign             TEXT,
-    notes                TEXT,
+    mastodonId          TEXT,
+    mastodonUsername    TEXT UNIQUE,
+    mastodonDisplayName TEXT,
     
     created_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime')),
     updated_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime'))
 );
 
-INSERT INTO AuthorsAddMastodon (authorId, discordId, username,
+INSERT INTO AuthorsAddMastodon (authorId, callsign, chatThank,
+                                notes, discordId, username,
                                 displayName, twitterId, twitterUsername,
-                                twitterDisplayName, emailAddress, emailName,
-                                callsign, notes, created_at, updated_at)
-    SELECT authorId, discordId, username,
+                                twitterDisplayName, emailAddress,
+                                emailName, mastodonId, mastodonUsername,
+                                mastodonDisplayName, created_at, updated_at)
+    SELECT authorId, callsign, chatThank,
+           notes, discordId, username,
            displayName, twitterId, twitterUsername,
-           twitterDisplayName, emailAddress, emailName,
-           callsign, notes, created_at, updated_at
+           twitterDisplayName, emailAddress,
+           emailName, mastodonId, mastodonUsername,
+           mastodonDisplayName, created_at, updated_at
     FROM Authors;
 DROP TABLE Authors;
 ALTER TABLE AuthorsAddMastodon RENAME TO Authors;
 -- There's no trigger for updating authors, so we'll add that in a following migration.
 PRAGMA foreign_keys=on;
-
-
-
 
 
 --------------------------------------------------------------------------
@@ -131,9 +133,9 @@ CREATE TABLE GuessesDeleteMastodon (
         ON DELETE SET NULL
 );
 INSERT INTO GuessesDeleteMastodon (guessId, authorId, episodeId,
-                                type, text, correct,
-                                bonusPoint, tweetId, discordReplyId,
-                                created_at, updated_at)
+                                   type, text, correct,
+                                   bonusPoint, tweetId, discordReplyId,
+                                   created_at, updated_at)
     SELECT guessId, authorId, episodeId,
            type, text, correct,
            bonusPoint, tweetId, discordReplyId,
@@ -148,6 +150,10 @@ PRAGMA foreign_keys=off;
 CREATE TABLE AuthorsRemoveMastodon (
     authorId        INTEGER PRIMARY KEY,
     
+    callsign            TEXT,
+    chatThank           BOOLEAN DEFAULT FALSE,
+    notes               TEXT,
+    
     discordId       INTEGER UNIQUE,
     username        TEXT,
     displayName     TEXT,
@@ -161,21 +167,22 @@ CREATE TABLE AuthorsRemoveMastodon (
     
     -- Here would have been the three Mastodon columns
     
-    callsign             TEXT,
-    notes                TEXT,
-    
     created_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime')),
     updated_at      TEXT    NOT NULL    DEFAULT (DATETIME('now', 'localtime'))
 );
 
-INSERT INTO AuthorsRemoveMastodon (authorId, discordId, username,
+INSERT INTO AuthorsRemoveMastodon (authorId, callsign, chatThank,
+                                   notes, discordId, username,
                                    displayName, twitterId, twitterUsername,
-                                   twitterDisplayName, emailAddress, emailName,
-                                   callsign, notes, created_at, updated_at)
-    SELECT authorId, discordId, username,
+                                   twitterDisplayName, emailAddress,
+                                   emailName, mastodonId, mastodonUsername,
+                                   mastodonDisplayName, created_at, updated_at)
+    SELECT authorId, callsign, chatThank,
+           notes, discordId, username,
            displayName, twitterId, twitterUsername,
-           twitterDisplayName, emailAddress, emailName,
-           callsign, notes, created_at, updated_at
+           twitterDisplayName, emailAddress,
+           emailName, mastodonId, mastodonUsername,
+           mastodonDisplayName, created_at, updated_at
     FROM Authors;
 DROP TABLE Authors;
 ALTER TABLE AuthorsRemoveMastodon RENAME TO Authors;

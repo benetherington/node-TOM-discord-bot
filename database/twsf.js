@@ -47,6 +47,7 @@ const types = {
     TWITTER_DM: 1,
     EMAIL: 2,
     DISCORD: 3,
+    TOOT: 4,
 };
 module.exports.guessTypes = types;
 
@@ -71,6 +72,29 @@ const upsertAuthorByGuessType = (guessType, author) => {
             author.twitterId,
             author.twitterUsername,
             author.twitterDisplayName,
+            author.callsign,
+        );
+    } else if (guessType == types.TOOT) {
+        // Notice that the unique identifier here is username, NOT id. Username
+        // will always be formatted as remote names, ie account@instance. Id is
+        // retained for easy lookups, but the correct instance must be
+        // specified.
+        return db.get(
+            `INSERT INTO Authors
+                (mastodonId, mastodonUsername, mastodonDisplayName, callsign)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT (mastodonUsername)
+                DO UPDATE SET
+                    mastodonDisplayName = excluded.mastodonDisplayName,
+                    callsign = COALESCE(callsign, excluded.callsign)
+            ON CONFLICT (mastodonUsername)
+                DO UPDATE SET
+                    mastodonDisplayName = excluded.mastodonDisplayName,
+                    callsign = COALESCE(callsign, excluded.callsign)
+            RETURNING authorId;`,
+            author.mastodonId,
+            author.mastodonUsername,
+            author.mastodonDisplayName,
             author.callsign,
         );
     } else if (guessType === types.EMAIL) {
@@ -143,6 +167,16 @@ const insertOrIgnoreGuessByType = (authorId, guess) => {
             guess.type,
             guess.text,
             guess.tweetId,
+        );
+    } else if (guess.type === types.TOOT) {
+        return db.run(
+            `INSERT OR IGNORE INTO Guesses
+                (authorId, type, text, tootId)
+            VALUES (?, ?, ?, ?);`,
+            authorId,
+            guess.type,
+            guess.text,
+            guess.tootId,
         );
     } else if (guess.type === types.EMAIL) {
         return db.run(

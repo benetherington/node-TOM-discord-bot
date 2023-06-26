@@ -60,3 +60,37 @@ block content
         div#winners.card(title="Click: copy to clipboard")
         div#next-week.card(title="Click: copy to clipboard")
         div#thank-you.card(title="Click: copy to clipboard")
+        
+block templates
+    template#row-container
+        .row-container
+            .info.card
+                .link
+                h3.callsign
+                .points.slide-radio.three
+                    input( class="toggle-option"
+                           id="none-id"
+                           type="radio"
+                           name="points-id"
+                           value="none"
+                           required )
+                    label(for="none-id")
+                    
+                    input( class="toggle-option"
+                           id="correct-id"
+                           type="radio"
+                           name="points-id"
+                           value="correct"
+                           required )
+                    label(for="correct-id")
+                    
+                    input( class="toggle-option"
+                           id="bonus-id"
+                           type="radio"
+                           name="points-id"
+                           value="bonus"
+                           required )
+                    label(for="bonus-id")
+                    
+                    .slider
+            .text

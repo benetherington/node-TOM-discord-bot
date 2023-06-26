@@ -24,7 +24,7 @@ module.exports = (fastify, opts, done) => {
             return reply.setCookie('auth', authCookie).redirect('/');
         } else {
             // Bad credentials, redirect
-            reply.view('src/views/login', {
+            return reply.view('src/views/login', {
                 errorMessage: 'Wrong username or password.',
             });
         }

@@ -204,7 +204,7 @@ module.exports.getUnscoredGuesses = () =>
     db.all(
         `SELECT
             guessId, type, text, correct, bonusPoint,
-            tweetId, discordReplyId,
+            tweetId, discordReplyId, mastodonUsername, tootId,
             callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
@@ -214,7 +214,7 @@ module.exports.getCorrectGuesses = () =>
     db.all(
         `SELECT
             guessId, type, text, correct, bonusPoint,
-            tweetId, discordReplyId,
+            tweetId, discordReplyId, mastodonUsername, tootId,
             callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
@@ -228,7 +228,7 @@ module.exports.getAllGuesses = (limit = 40, offset = 0) =>
     db.all(
         `SELECT
             guessId, type, text, correct, bonusPoint
-            tweetId, discordReplyId,
+            tweetId, discordReplyId, mastodonUsername, tootId,
             Guesses.authorId, callsign,
             Guesses.created_at
         FROM Guesses

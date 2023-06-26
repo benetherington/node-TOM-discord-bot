@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const {getAdminById, getAdminByUsername} = require('../../database/admin');
 const config = require('../../config/website.json');
+const logger = require('../../logger');
 
 // const hashPassword = async (admin) => {
 //     // Takes an admin object, removes the password property, and adds/updates
@@ -53,7 +54,7 @@ module.exports.getAdminByCredentials = async (username, password) => {
     // Look up username
     const admin = await getAdminByUsername(username);
     if (!admin) {
-        request.log.info(`Non-existent admin ${username}.`);
+        logger.log.info(`Non-existent admin ${username}.`);
         return false;
     }
 
@@ -61,7 +62,7 @@ module.exports.getAdminByCredentials = async (username, password) => {
     const passwordValid = await bcrypt.compare(password, admin.hashedPassword);
     if (passwordValid) return admin;
     else {
-        request.log.info(`Bad password for ${username}.`);
+        logger.log.info(`Bad password for ${username}.`);
         return false;
     }
 };

@@ -4,6 +4,10 @@ const fetch = require('node-fetch');
 const logger = require('../../logger');
 const {addNewGuess, guessTypes} = require('../../database/twsf');
 
+// const headers = {
+//     Authorization: `Bearer ${process.env.MASTODON_TOKEN}`,
+// };
+
 /*
 const fetchTwsfTootHistory = async (instance) => {
     const path = '/api/v2/search';
@@ -85,7 +89,9 @@ const getTootReplies = async (status) => {
     const replies = jsn.descendants;
 
     const selfReplies = replies.filter(
-        (reply) => reply.account.id === status.account.id,
+        (reply) =>
+            reply.account.id === status.account.id &&
+            reply.in_reply_to_account_id === status.account.id,
     );
     const replyTexts = Promise.all(selfReplies.map(getFullText));
 
@@ -139,7 +145,10 @@ module.exports = async () => {
     logger.info('Storing #thisWeekSF toots...');
 
     // Get new toots
-    const twsfToots = await fetchTwsfToots('http://spacey.space');
+    const twsfToots = [
+        ...(await fetchTwsfToots('http://spacey.space')),
+        ...(await fetchTwsfToots('http://botsin.space')),
+    ];
 
     // Don't continue if there weren't any toots
     if (!twsfToots.length) {

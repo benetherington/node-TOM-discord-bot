@@ -227,7 +227,7 @@ module.exports.getCorrectGuesses = () =>
 module.exports.getAllGuesses = (limit = 40, offset = 0) =>
     db.all(
         `SELECT
-            guessId, type, text, correct, bonusPoint
+            guessId, type, text, correct, bonusPoint,
             tweetId, discordReplyId, mastodonUsername, tootId,
             Guesses.authorId, callsign,
             Guesses.created_at

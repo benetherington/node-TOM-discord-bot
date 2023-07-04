@@ -2,16 +2,21 @@ extends layout.pug
 
 append style
     include manage.css
+    include manage-author.css
+    include cards/guess.css
 
 block script
+    != "const guessTypes = " + guessTypes + ";"
+    include app.js
     include manage.js
     include manage-author.js
     include manage-guesses.js
+    include cards/guess.js
 
 block title-bar
     +titleBar("Manage Database")
     div#controls
-        //- div#table-selector.slide-radio.three
+        div#table-selector.slide-radio.two
             input#authors.toggle-option(
                 type='radio'
                 name='table'
@@ -29,13 +34,13 @@ block title-bar
             )
             label(for='guesses') TWSF Guesses
             
-            input#suggestions.toggle-option(
-                type='radio'
-                name='table'
-                value='suggestions'
-                onchange='changeTable()'
-            )
-            label(for='suggestions') Title Suggestions
+            //- input#suggestions.toggle-option(
+            //-     type='radio'
+            //-     name='table'
+            //-     value='suggestions'
+            //-     onchange='changeTable()'
+            //- )
+            //- label(for='suggestions') Title Suggestions
             
             div.slider
 
@@ -75,50 +80,8 @@ block title-bar
                 path(d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm5 10v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2v5a2 2 0 0 1-2 2H5zm6-8V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2V6a2 2 0 0 1 2-2h5z")
 
 block content
-    div.center-container
-        div#data-table.card
-            //- div(data-author-id="20").rolodex
-            //-     div.callsign
-            //-         p.authorId 20
-            //-         p(contenteditable)
-            //--            The Greek
-            //-         span.edit-icon
-            //-     div.socials
-            //-         div.discord
-            //-             div.icon
-            //-             div.username The Greek
-            //-             div.display-name The Greek
-            //-         div.twitter
-            //-             div.icon
-            //-             div.username Damonjalis
-            //-             div.display-name The Greek
-            //-         div.social-divider
-            //-         div.email
-            //-             div.icon
-            //-             div.username mrdcarras@gmail.com
-            //-             div.display-name Damonjalis
-            //-     textarea(placeholder="No listener notes yet...").notes You know this guy...
-            
-            //- div(data-author-id).row-container
-                    div.info.card
-                        div.link.discord //- Link goes first so that others can select off its class
-                        h3.callsign Ben Etherington
-                        div.points.slide-radio.three
-                            input#none-2.toggle-option(
-                                type='radio' name='points-2' value='none' required
-                            )
-                            label(for="none-2")
-                            input#correct-2.toggle-option(
-                                type='radio' name='points-2' value='correct' required
-                            )
-                            label(for="correct-2")
-                            input#bonus-2.toggle-option(
-                                type='radio' name='points-2' value='bonus' required
-                            )
-                            label(for="bonus-2")
-                            div.slider
-                    div.text
-                        | A potato maybe?
+    div.center-container.card
+        div#data-table
 
     div#pagination
         button#page-first(onclick="loadFirstPage()").pagination-button
@@ -192,7 +155,7 @@ block content
 
 
 block templates
-    template#rolodex
+    template#rolodex-author
         .rolodex
             .callsign-container
                 p.author-id
@@ -222,3 +185,39 @@ block templates
             textarea.notes(
                 placeholder="No listener notes yet..."
             )
+
+    template#guess-row
+            .guess-row
+                .info.card
+                    .link
+                    h3.callsign
+                    .points.slide-radio.three
+                        input( class="toggle-option"
+                            id="none-id"
+                            type="radio"
+                            name="points-id"
+                            value="none"
+                            required )
+                        label(for="none-id")
+                        
+                        input( class="toggle-option"
+                            id="correct-id"
+                            type="radio"
+                            name="points-id"
+                            value="correct"
+                            required )
+                        label(for="correct-id")
+                        
+                        input( class="toggle-option"
+                            id="bonus-id"
+                            type="radio"
+                            name="points-id"
+                            value="bonus"
+                            required )
+                        label(for="bonus-id")
+                        
+                        .slider
+                .text
+                .addenda
+                    .epNum
+                    .date

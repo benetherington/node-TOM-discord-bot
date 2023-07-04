@@ -63,7 +63,7 @@ const buildAuthorRow = (data, editable = true) => {
 
     // Row container
     const rolodex = document
-        .getElementById('rolodex')
+        .getElementById('rolodex-author')
         .content.firstElementChild.cloneNode(true);
     rolodex.dataset.authorId = authorId;
 

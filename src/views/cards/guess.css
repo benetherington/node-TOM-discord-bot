@@ -1,0 +1,190 @@
+.guess-row {
+    display: grid;
+    grid-template-columns:
+        [info] min-content
+        /*  */
+        [text] minmax(1fr, 300px)
+        /*  */
+        [addenda] 125px;
+
+    align-items: center;
+    max-width: 90vw;
+}
+
+.guess-row:not(:last-of-type) {
+    /* Apply a card-like inset shadow to each row */
+    box-shadow:
+        inset 0 -3px 3px -3px rgb(0 0 0 / 12%),
+        inset 0 -3px 2px -3px rgb(0 0 0 / 24%);
+}
+
+.guess-row:hover {
+    background-color: aliceblue;
+}
+
+/* -------- *\
+   INFO BOX
+\* -------- */
+.guess-row .info {
+    grid-area: info;
+    position: relative;
+    left: -10px;
+    height: 60px;
+    width: min-content;
+    border: 1px solid var(--primary-light);
+    background-color: white;
+    display: grid;
+    grid-template:
+        "call   link" auto
+        "points link" auto
+        / min-content 60px;
+}
+
+/* INFO BOX -- Link buttons */
+.guess-row .link {
+    grid-area: link;
+    background-repeat: no-repeat;
+    background-size: 80%, 40%;
+    background-position: center;
+    border-radius: 0 2px 2px 0;
+    /* Round right corners */
+
+    /* Most of these will be akchul links and will blend with points */
+    transition: 0.2s;
+    background-color: var(--primary-light);
+    cursor: pointer;
+}
+
+.guess-row .link:hover {
+    background-color: var(--primary-dark);
+}
+
+.guess-row .link.tweet {
+    background-image: url("/icons/twitter.svg");
+}
+
+.guess-row .link.twitter-dm {
+    background-image: url("/icons/envelope-paper.svg"), url("/icons/twitter.svg");
+    background-position: center, 50% 22%;
+}
+
+.guess-row .link.toot {
+    background-image: url("/icons/mastodon.svg");
+}
+
+.guess-row .link.discord {
+    background-image: url("/icons/discord.svg");
+}
+
+.guess-row .link.email {
+    /* Not linked: blend with callsign */
+    background-image: url("/icons/envelope-paper.svg");
+    background-color: white;
+    cursor: default;
+}
+
+.guess-row .link.email:hover {
+    background-color: white;
+}
+
+/* Don't hover-highlight */
+
+/* INFO BOX -- callsign */
+.guess-row .callsign {
+    grid-area: call;
+    margin: 0;
+    text-align: center;
+
+    /* If link is clickable, we'll cast a shadow from points and link.
+    This is a weird invert from the .card styling: a negative spread allows us
+    to push the top and right sides out of view. First, X and Y are inverted so
+    that the shadow is upside-down, then -1px is added to X, Y and spread.
+    Originally, these were "0 1 3 (0)" and "0 1 2 (0)". */
+    box-shadow:
+        inset -1px -2px 3px -1px rgb(0 0 0 / 12%),
+        inset -1px -2px 2px -1px rgb(0 0 0 / 24%);
+}
+
+.guess-row .link.email~.callsign {
+    /* If link is not clickable, points will cast shadow on us and link */
+    box-shadow: none;
+}
+
+/* INFO BOX -- scoring slider */
+.guess-row .points {
+    grid-area: points;
+    width: 150px;
+    justify-self: center;
+    align-self: end;
+    box-shadow: none;
+}
+
+.guess-row .link.email~.points {
+    /* if link is not clickable, we will cast a shawow on link and callsign */
+    box-shadow:
+        0 0 1px 1px rgb(0 0 0 / 12%),
+        2px 0 3px 0 rgb(0 0 0 / 24%);
+}
+
+.guess-row .toggle-option+label {
+    aspect-ratio: 1/1;
+    height: 25px;
+    background-size: contain;
+}
+
+.guess-row .toggle-option:not(:checked)+label:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Slider colors for each score
+// None */
+.guess-row .points.none .slider {
+    background-color: var(--secondary-light);
+}
+
+.guess-row .toggle-option[value="none"]+label {
+    /* stylelint-disable-line no-descending-specificity */
+    background-image: url("/icons/hand-thumbs-down.svg");
+}
+
+/* Correct */
+.guess-row .toggle-option[value="correct"]+label {
+    /* stylelint-disable-line no-descending-specificity */
+    background-image: url("/icons/hand-thumbs-up.svg");
+}
+
+/* Bonus */
+.guess-row .points.bonus .slider {
+    background:
+        linear-gradient(114deg,
+            rgb(221 192 36 / 100%) 0%,
+            rgb(252 255 78 / 100%) 28%,
+            rgb(221 192 36 / 100%) 37%,
+            rgb(252 255 78 / 100%) 100%);
+}
+
+.guess-row .toggle-option[value="bonus"]+label {
+    /* stylelint-disable-line no-descending-specificity */
+    background-image: url("/icons/trophy.svg");
+}
+
+/* -------- *\
+   TEXT BOX
+\* -------- */
+.guess-row .text {
+    grid-area: text;
+    align-self: center;
+    border-left: 3px solid #626262;
+    padding: 0 11px;
+    margin: 8px 0;
+}
+
+/* ----------- *\
+   ADDENDA BOX
+\* ----------- */
+.guess-row .addenda {
+    grid-area: addenda;
+    border-left: 3px solid #626262;
+    padding: 0 11px;
+    padding: 10px 11px;
+}

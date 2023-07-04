@@ -7,7 +7,11 @@ const {
     getMergedAuthor,
     executeAuthorMerge,
 } = require('../../database/author');
-const {getAllGuesses, getGuessesCount} = require('../../database/twsf');
+const {
+    getAllGuesses,
+    getGuessesCount,
+    guessTypes,
+} = require('../../database/twsf');
 const {adminPreHandler} = require('./loginUtilities');
 
 module.exports = (fastify, opts, done) => {
@@ -18,6 +22,7 @@ module.exports = (fastify, opts, done) => {
         async (request, reply) => {
             return reply.view('src/views/manage', {
                 username: request.admin.username,
+                guessTypes: JSON.stringify(guessTypes),
             });
         },
     );

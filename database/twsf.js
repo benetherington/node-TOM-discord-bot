@@ -201,7 +201,7 @@ const insertOrIgnoreGuessByType = (authorId, guess) => {
 };
 /**
  * Fetches guesses with no episodeId (correct or not).
- * @returns {Guess}
+ * @returns {Guess[]}
  */
 module.exports.getUnscoredGuesses = () =>
     db.all(
@@ -216,7 +216,7 @@ module.exports.getUnscoredGuesses = () =>
     );
 /**
  * Fetches guesses for this episode that are correct.
- * @returns {Guess}
+ * @returns {Guess[]}
  */
 module.exports.getCorrectGuesses = () =>
     db.all(
@@ -235,7 +235,7 @@ module.exports.getCorrectGuesses = () =>
     );
 /**
  * Fetches guesses for this episode, correct or not.
- * @returns {Guess}
+ * @returns {Guess[]}
  */
 module.exports.getAllCurrentGuesses = () =>
     db.all(
@@ -251,6 +251,33 @@ module.exports.getAllCurrentGuesses = () =>
             )
         ORDER BY Guesses.created_at DESC;`,
     );
+
+/**
+ * Fetches all guesses in the db, sorted by creation date, newest first.
+ * @param {Number} [limit=40]
+ * @param {Number} [offset=0]
+ * @returns {Guess[]}
+ */
+module.exports.getAllGuesses = (limit = 40, offset = 0) =>
+    db.all(
+        `SELECT
+            guessId, type, text, correct, bonusPoint, epNum,
+            tweetId, discordReplyId, mastodonUsername, tootId,
+            Guesses.authorId, callsign, Guesses.created_at
+        FROM Guesses
+        LEFT JOIN Authors USING(authorId)
+        LEFT JOIN Episodes USING(episodeId)
+        ORDER BY Guesses.created_at DESC
+        LIMIT ?
+        OFFSET ?;`,
+        limit,
+        offset,
+    );
+
+/**
+ * Counts all the guesses in the DB.
+ * @returns Number
+ */
 module.exports.getGuessesCount = () =>
     db.get(
         `SELECT

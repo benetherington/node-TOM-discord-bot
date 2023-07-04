@@ -60,58 +60,6 @@ const updateEpNum = (epNum) => {
     document.getElementById('episode-number').innerText = epNum;
 };
 
-// Guess rows
-const sanitizeContent = (text) =>
-    text.replaceAll(
-        /<\/?(p|span|br|a|del|pre|code|em|strong|b|i|u|ul|ol|li|blockquote)( [^>]*)?>/gi,
-        '',
-    );
-const safeParseContent = (text) => {
-    const elements = [];
-
-    while (text.length) {
-        const hrefRe =
-            /(?<before>.*?)(<a href="(?<href>[^"]*?)".*?>(?<link>.*?)<\/a>)/gi;
-        const hrefMatch = hrefRe.exec(text);
-        text = text.slice(hrefRe.lastIndex);
-
-        if (hrefMatch) {
-            const {before, href, link} = hrefMatch.groups;
-
-            const span = document.createElement('span');
-            span.innerText = sanitizeContent(before);
-            elements.push(span);
-
-            const anchor = document.createElement('a');
-            anchor.href = href;
-            anchor.innerText = sanitizeContent(link);
-            elements.push(anchor);
-        } else {
-            const span = document.createElement('span');
-            span.innerText = sanitizeContent(text);
-            elements.push(span);
-            break;
-        }
-    }
-
-    return elements;
-};
-const getLinkHref = (guess) => {
-    if (guess.type === guessTypes.TWEET) {
-        return 'https://www.twitter.com/twitter/status/' + guess.tweetId;
-    } else if (guess.type === guessTypes.TWITTER_DM) {
-        return 'https://twitter.com/messages/2827032970-' + guess.tweetId;
-    } else if (guess.type === guessTypes.TOOT) {
-        const [_, userName, instanceName] =
-            guess.mastodonUsername.match(/(.*)@(.*)/);
-        return `https://${instanceName}/@${userName}/${guess.tootId}`;
-    } else if (guess.type === guessTypes.DISCORD && guess.discordReplyId) {
-        return (
-            'https://discord.com/channels/137948573605036033/934901291644256366/' +
-            guess.discordReplyId
-        );
-    } else return '';
-};
 const createGuessRow = (guess) => {
     // Assemble and sanitize variables to display
     const type = guessTypeNames[guess.type];
@@ -149,40 +97,6 @@ const createGuessRow = (guess) => {
     rowContainer.querySelector('#bonus-id').name = `points-${guess.guessId}`;
     rowContainer.querySelector('#bonus-id').id = `bonus-${guess.guessId}`;
     rowContainer.querySelector('[for=bonus-id]').for = `bonus-${guess.guessId}`;
-
-    // rowContainer.innerHTML = `
-    //     <div class="info card">
-    //         <div class="link ${type}"></div>
-    //         <h3 class="callsign" title="${authorName}">${authorName}</h3>
-    //         <div class="points slide-radio three">
-    //             <input
-    //                 class="toggle-option"
-    //                 id="none-${guess.guessId}"
-    //                 type="radio"
-    //                 name="points-${guess.guessId}"
-    //                 value="none"
-    //                 required>
-    //             <label for="none-${guess.guessId}"></label>
-    //             <input
-    //                 class="toggle-option"
-    //                 id="correct-${guess.guessId}"
-    //                 type="radio"
-    //                 name="points-${guess.guessId}"
-    //                 value="correct"
-    //                 required>
-    //             <label for="correct-${guess.guessId}"></label>
-    //             <input
-    //                 class="toggle-option"
-    //                 id="bonus-${guess.guessId}"
-    //                 type="radio"
-    //                 name="points-${guess.guessId}"
-    //                 value="bonus"
-    //                 required>
-    //             <label for="bonus-${guess.guessId}"></label>
-    //             <div class="slider"></div>
-    //         </div>
-    //     </div>
-    //     <div class="text">${guessText}</div>`;
 
     // Add events
     rowContainer

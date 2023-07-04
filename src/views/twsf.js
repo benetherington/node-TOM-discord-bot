@@ -15,6 +15,13 @@ const getCorrect = async () => {
     updateEpNum(jsn.epNum);
     return jsn.guesses;
 };
+const getCurrent = async () => {
+    const resp = await fetch('/api/twsf/current');
+    const jsn = await resp.json();
+
+    updateEpNum(jsn.epNum);
+    return jsn.guesses;
+};
 const getThankYous = () => fetch('/api/twsf/thankyou').then((r) => r.json());
 const postScore = (guess) =>
     fetch('/api/twsf/score', {

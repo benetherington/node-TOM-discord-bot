@@ -199,7 +199,10 @@ const insertOrIgnoreGuessByType = (authorId, guess) => {
         );
     }
 };
-
+/**
+ * Fetches guesses with no episodeId (correct or not).
+ * @returns {Guess}
+ */
 module.exports.getUnscoredGuesses = () =>
     db.all(
         `SELECT
@@ -208,8 +211,13 @@ module.exports.getUnscoredGuesses = () =>
             callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
-        WHERE episodeId IS NULL;`,
+        WHERE episodeId IS NULL
+        ORDER BY Guesses.created_at DESC;`,
     );
+/**
+ * Fetches guesses for this episode that are correct.
+ * @returns {Guess}
+ */
 module.exports.getCorrectGuesses = () =>
     db.all(
         `SELECT
@@ -222,35 +230,40 @@ module.exports.getCorrectGuesses = () =>
             AND episodeId = (
                 SELECT episodeId FROM Episodes
                 ORDER BY created_at DESC LIMIT 1
-            );`,
+            )
+        ORDER BY Guesses.created_at DESC;`,
     );
-module.exports.getAllGuesses = (limit = 40, offset = 0) =>
+/**
+ * Fetches guesses for this episode, correct or not.
+ * @returns {Guess}
+ */
+module.exports.getAllCurrentGuesses = () =>
     db.all(
         `SELECT
             guessId, type, text, correct, bonusPoint,
             tweetId, discordReplyId, mastodonUsername, tootId,
-            Guesses.authorId, callsign,
-            Guesses.created_at
+            callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
-        ORDER BY Guesses.created_at DESC
-        LIMIT ?
-        OFFSET ?`,
-        limit,
-        offset,
+        WHERE episodeId = (
+                SELECT episodeId FROM Episodes
+                ORDER BY created_at DESC LIMIT 1
+            )
+        ORDER BY Guesses.created_at DESC;`,
     );
 module.exports.getGuessesCount = () =>
     db.get(
         `SELECT
             COUNT(*) AS count
-        FROM Guesses`,
+        FROM Guesses;`,
     );
 
+/**
+ * Inserts or updates Author, then inserts Guess and associates it to Author.
+ * @param {*} param0
+ * @returns {(1|0)} Whether a guess was added to the DB (ie not a duplicate.)
+ */
 module.exports.addNewGuess = async ({guess, author}) => {
-    // Inserts or updates Author, then inserts Guess and associates it to
-    // Author. Returns 1 or 0, indicating whether the guess was a duplicate or
-    // not.
-
     // UPSERT Author with incoming values.
     const {authorId} = await upsertAuthorByGuessType(guess.type, author);
 

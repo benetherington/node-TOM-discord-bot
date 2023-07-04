@@ -18,7 +18,7 @@ CREATE TABLE GuessesAddMastodon (
     type            INTEGER NOT NULL CHECK(type BETWEEN 0 AND 4),
     text            TEXT    NOT NULL,
     
-    correct         BOOLEAN NOT NULL DEFAULT FALSE,
+    correct         BOOLEAN NOT NULL DEFAULT FALSE, -- Boy, this really shold also check for episode ID, huh?
     bonusPoint      BOOLEAN NOT NULL DEFAULT FALSE CHECK(CASE WHEN bonusPoint THEN correct END),
     
     tweetId         TEXT    UNIQUE CHECK(CASE WHEN tweetId NOT NULL THEN type IN (0, 1) END),

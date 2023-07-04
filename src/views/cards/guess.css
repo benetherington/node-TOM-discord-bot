@@ -181,7 +181,17 @@
 .guess-row .addenda {
     width: 100px;
     flex-shrink: 0;
+
     border-left: 3px solid #626262;
-    padding: 0 11px;
     padding: 10px 11px;
+
+    white-space: pre-line;
+}
+
+.guess-row .epNum::before {
+    content: "Ep "
+}
+
+.guess-row .epNum.unscored::before {
+    content: "No episode!"
 }

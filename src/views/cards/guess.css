@@ -1,11 +1,6 @@
 .guess-row {
-    display: grid;
-    grid-template-columns:
-        [info] min-content
-        /*  */
-        [text] minmax(1fr, 300px)
-        /*  */
-        [addenda] 125px;
+    display: flex;
+    flex-direction: row;
 
     align-items: center;
     max-width: 90vw;
@@ -26,7 +21,6 @@
    INFO BOX
 \* -------- */
 .guess-row .info {
-    grid-area: info;
     position: relative;
     left: -10px;
     height: 60px;
@@ -172,8 +166,10 @@
    TEXT BOX
 \* -------- */
 .guess-row .text {
-    grid-area: text;
-    align-self: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 1px;
+
     border-left: 3px solid #626262;
     padding: 0 11px;
     margin: 8px 0;
@@ -183,7 +179,8 @@
    ADDENDA BOX
 \* ----------- */
 .guess-row .addenda {
-    grid-area: addenda;
+    width: 100px;
+    flex-shrink: 0;
     border-left: 3px solid #626262;
     padding: 0 11px;
     padding: 10px 11px;

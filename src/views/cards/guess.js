@@ -41,7 +41,8 @@ buildGuessRow = (guess) => {
     row.querySelector('.callsign').title = authorName;
     row.querySelector('.callsign').innerText = authorName;
     row.querySelector('.text').append(...guessElements);
-    row.querySelector('.epNum').innerText = guess.epNum;
+    if (guess.epNum) row.querySelector('.epNum').innerText = guess.epNum;
+    else row.querySelector('.epNum').classList.add('unscored');
     row.querySelector('.date').innerText = createdString;
 
     // Set form input properties
@@ -66,8 +67,10 @@ buildGuessRow = (guess) => {
     );
 
     // Set points slider
-    setGuessPoints({row, guess});
-    setPointsStyle({row});
+    if (guess.epNum) {
+        setGuessPoints({row, guess});
+        setPointsStyle({row});
+    }
 
     return row;
 };

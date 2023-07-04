@@ -61,14 +61,41 @@ const updateEpNum = (epNum) => {
 };
 
 // Guess rows
-const sanitizeInput = (text) =>
-    text
-        .replaceAll('javascript', '')
-        .replaceAll(
-            /<\/?(p|span|br|a|del|pre|code|em|strong|b|i|u|ul|ol|li|blockquote)( [^>]*)?>/g,
-            '',
-        )
-        .replaceAll('<', '[');
+const sanitizeContent = (text) =>
+    text.replaceAll(
+        /<\/?(p|span|br|a|del|pre|code|em|strong|b|i|u|ul|ol|li|blockquote)( [^>]*)?>/gi,
+        '',
+    );
+const safeParseContent = (text) => {
+    const elements = [];
+
+    while (text.length) {
+        const hrefRe =
+            /(?<before>.*?)(<a href="(?<href>[^"]*?)".*?>(?<link>.*?)<\/a>)/gi;
+        const hrefMatch = hrefRe.exec(text);
+        text = text.slice(hrefRe.lastIndex);
+
+        if (hrefMatch) {
+            const {before, href, link} = hrefMatch.groups;
+
+            const span = document.createElement('span');
+            span.innerText = sanitizeContent(before);
+            elements.push(span);
+
+            const anchor = document.createElement('a');
+            anchor.href = href;
+            anchor.innerText = sanitizeContent(link);
+            elements.push(anchor);
+        } else {
+            const span = document.createElement('span');
+            span.innerText = sanitizeContent(text);
+            elements.push(span);
+            break;
+        }
+    }
+
+    return elements;
+};
 const getLinkHref = (guess) => {
     if (guess.type === guessTypes.TWEET) {
         return 'https://www.twitter.com/twitter/status/' + guess.tweetId;
@@ -93,8 +120,8 @@ const createGuessRow = (guess) => {
         guess.displayName ||
         guess.twitterDisplayName ||
         guess.emailName;
-    const authorName = sanitizeInput(unsanitizedName);
-    const guessText = sanitizeInput(guess.text);
+    const authorName = sanitizeContent(unsanitizedName);
+    const guessElements = safeParseContent(guess.text);
     const linkHref = getLinkHref(guess);
 
     // Clone row container
@@ -106,7 +133,7 @@ const createGuessRow = (guess) => {
     rowContainer.querySelector('.link').classList.add(type);
     rowContainer.querySelector('.callsign').title = authorName;
     rowContainer.querySelector('.callsign').innerText = authorName;
-    rowContainer.querySelector('.text').innerText = guessText;
+    rowContainer.querySelector('.text').append(...guessElements);
 
     // Set form input properties
     rowContainer.querySelector('#none-id').name = `points-${guess.guessId}`;

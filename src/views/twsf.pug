@@ -10,23 +10,28 @@ block script
 block title-bar
     +titleBar("This Week in Spaceflight History")
     div#controls
-        div#filter.slide-radio.two
+        div#filter.slide-radio.three
             input#week.toggle-option(
                 type='radio'
                 name='filter'
                 value='week'
-                onchange="updateGuessList()"
                 checked
             )
-            label(for="week") Show All
+            label(for="week") Default
             
             input#unscored.toggle-option(
                 type='radio'
                 name='filter'
                 value='unscored'
-                onchange="updateGuessList()"
             )
             label(for="unscored") Show New
+            
+            input#all.toggle-option(
+                type='radio'
+                name='filter'
+                value='all'
+            )
+            label(for="all") Show All
             
             div.slider
 

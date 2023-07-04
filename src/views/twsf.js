@@ -166,11 +166,9 @@ const createGuessRow = (guess) => {
         .forEach((input) => input.addEventListener('change', newScore));
     return rowContainer;
 };
-const setGuessPoints = (row, guess) => {
-    if (guess.bonusPoint) value = 'bonus';
-    else if (guess.correct) value = 'correct';
-    else value = 'none';
-    row.querySelector(`input[value=${value}]`).checked = true;
+const setGuessPoints = ({row, guess}) => {
+    const val = guess.bonusPoint ? 'bonus' : guess.correct ? 'correct' : 'none';
+    row.querySelector(`input[value=${val}]`).checked = true;
 };
 const setPointsStyle = ({row, input, override}) => {
     if (!input) input = row.querySelector('input:checked');
@@ -280,7 +278,16 @@ const addCorrectGuesses = async () => {
     const guesses = await getCorrect();
     for (guess of guesses) {
         const row = createGuessRow(guess);
-        setGuessPoints(row, guess);
+        setGuessPoints({row, guess});
+        setPointsStyle({row});
+        guessCard.append(row);
+    }
+};
+const addAllGuesses = async () => {
+    const guesses = await getCurrent();
+    for (guess of guesses) {
+        const row = createGuessRow(guess);
+        setGuessPoints({row, guess});
         setPointsStyle({row});
         guessCard.append(row);
     }
@@ -291,8 +298,11 @@ const addCorrectGuesses = async () => {
 \*------------------*/
 const updateGuessList = async () => {
     clearGuesses();
+
     await addUnscoredGuesses();
-    if (currentMode() === 'week') await addCorrectGuesses();
+    if (currentMode() === 'all') await addAllGuesses();
+    if (currentMode() == 'week') await addCorrectGuesses();
+
     setWinnersBox();
 };
 const newScore = async (event) => {
@@ -336,6 +346,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document
         .getElementById('thank-you')
         .addEventListener('click', copyElementTextContent);
+
+    document
+        .getElementById('filter')
+        .querySelectorAll('input')
+        .forEach((input) => input.addEventListener('change', updateGuessList));
 });
 
 const months = [

@@ -7,38 +7,6 @@ const clearDataRows = () => {
     while (dataTable.lastChild) dataTable.lastChild.remove();
 };
 
-// Search things
-const getMatchingRolodae = (searchString) => {
-    const rolodae = Array.from(document.querySelectorAll('.rolodex'));
-    if (searchString.length === 0) {
-        return [[], rolodae];
-    }
-    const passAndFail = rolodae.reduce(
-        ([pass, fail], rolo) =>
-            rolo.innerText.toLowerCase().includes(searchString)
-                ? [[...pass, rolo], fail] // add rolodex to pass list
-                : [pass, [...fail, rolo]], // add rolodex to fail list
-        [[], []], // start with empty pass/fail arrays
-    );
-    return passAndFail;
-};
-const hiddenWrap = (toWrap) => {
-    // Check that this element is not yet wrapped
-    if (toWrap.parentElement.classList.contains('hidden-wrapper')) return;
-    // Create wrapper
-    const hiddenWrapper = document.createElement('span');
-    hiddenWrapper.classList.add('hidden', 'hidden-wrapper');
-    // Wrap element
-    toWrap.replaceWith(hiddenWrapper);
-    hiddenWrapper.appendChild(toWrap);
-};
-const hiddenUnwrap = (toUnwrap) => {
-    // Check this element is actually wrapped
-    if (!toUnwrap.parentElement.classList.contains('hidden-wrapper')) return;
-    // Unwrap element
-    toUnwrap.parentElement.replaceWith(toUnwrap);
-};
-
 // Pagination things
 const getCurrentPage = () => {
     const userInput = pageCurrElement.textContent;
@@ -124,19 +92,10 @@ const performSearch = () => {
     const searchString = searchEl.value.trim().toLowerCase();
     console.log({searchString});
 
-    const [yesMatch, notMatch] = getMatchingRolodae(searchString);
-    if (yesMatch.length) {
-        // Hide/show not/matching elements
-        yesMatch.forEach(hiddenUnwrap);
-        notMatch.forEach(hiddenWrap);
-        // Update search button
-        document.getElementById('search-button').classList.add('active');
-    } else {
-        // Show all elements
-        notMatch.forEach(hiddenUnwrap);
-        // Update search button
-        document.getElementById('search-button').classList.remove('active');
-    }
+    const activeTable = getActiveTable();
+    if (activeTable === 'authors') performAuthorSearch(searchString);
+    if (activeTable === 'guesses') performGuessSearch(searchString);
+    // if (activeTable === 'suggestions') loadSuggestions(searchString);
 };
 
 // Pagination text

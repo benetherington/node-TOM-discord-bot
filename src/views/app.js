@@ -15,18 +15,14 @@ const safeParseContent = (text) => {
         if (hrefMatch) {
             const {before, href, link} = hrefMatch.groups;
 
-            const span = document.createElement('span');
-            span.innerText = sanitizeContent(before);
-            elements.push(span);
+            elements.push(sanitizeContent(before));
 
             const anchor = document.createElement('a');
             anchor.href = href;
             anchor.innerText = sanitizeContent(link);
             elements.push(anchor);
         } else {
-            const span = document.createElement('span');
-            span.innerText = sanitizeContent(text);
-            elements.push(span);
+            elements.push(sanitizeContent(text));
             break;
         }
     }

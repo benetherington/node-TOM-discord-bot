@@ -173,14 +173,12 @@ INSERT INTO AuthorsRemoveMastodon (authorId, callsign, chatThank,
                                    notes, discordId, username,
                                    displayName, twitterId, twitterUsername,
                                    twitterDisplayName, emailAddress,
-                                   emailName, mastodonId, mastodonUsername,
-                                   mastodonDisplayName, created_at, updated_at)
+                                   emailName, created_at, updated_at)
     SELECT authorId, callsign, chatThank,
            notes, discordId, username,
            displayName, twitterId, twitterUsername,
            twitterDisplayName, emailAddress,
-           emailName, mastodonId, mastodonUsername,
-           mastodonDisplayName, created_at, updated_at
+           emailName, created_at, updated_at
     FROM Authors;
 DROP TABLE Authors;
 ALTER TABLE AuthorsRemoveMastodon RENAME TO Authors;

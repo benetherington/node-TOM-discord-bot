@@ -138,17 +138,21 @@ const createGuessRow = (guess) => {
     // Set form input properties
     rowContainer.querySelector('#none-id').name = `points-${guess.guessId}`;
     rowContainer.querySelector('#none-id').id = `none-${guess.guessId}`;
-    rowContainer.querySelector('[for=none-id]').for = `none-${guess.guessId}`;
+    rowContainer
+        .querySelector('[for=none-id]')
+        .setAttribute('for', `none-${guess.guessId}`);
 
     rowContainer.querySelector('#correct-id').name = `points-${guess.guessId}`;
     rowContainer.querySelector('#correct-id').id = `correct-${guess.guessId}`;
-    rowContainer.querySelector(
-        '[for=correct-id]',
-    ).for = `correct-${guess.guessId}`;
+    rowContainer
+        .querySelector('[for=correct-id]')
+        .setAttribute('for', `correct-${guess.guessId}`);
 
     rowContainer.querySelector('#bonus-id').name = `points-${guess.guessId}`;
     rowContainer.querySelector('#bonus-id').id = `bonus-${guess.guessId}`;
-    rowContainer.querySelector('[for=bonus-id]').for = `bonus-${guess.guessId}`;
+    rowContainer
+        .querySelector('[for=bonus-id]')
+        .setAttribute('for', `bonus-${guess.guessId}`);
 
     // rowContainer.innerHTML = `
     //     <div class="info card">

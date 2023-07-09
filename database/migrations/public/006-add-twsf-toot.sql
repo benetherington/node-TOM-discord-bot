@@ -84,15 +84,13 @@ CREATE TABLE AuthorsAddMastodon (
 INSERT INTO AuthorsAddMastodon (authorId, callsign, chatThank,
                                 notes, discordId, username,
                                 displayName, twitterId, twitterUsername,
-                                twitterDisplayName, emailAddress,
-                                emailName, mastodonId, mastodonUsername,
-                                mastodonDisplayName, created_at, updated_at)
+                                twitterDisplayName, emailAddress, emailName,
+                                created_at, updated_at)
     SELECT authorId, callsign, chatThank,
            notes, discordId, username,
            displayName, twitterId, twitterUsername,
-           twitterDisplayName, emailAddress,
-           emailName, mastodonId, mastodonUsername,
-           mastodonDisplayName, created_at, updated_at
+           twitterDisplayName, emailAddress, emailName,
+           created_at, updated_at
     FROM Authors;
 DROP TABLE Authors;
 ALTER TABLE AuthorsAddMastodon RENAME TO Authors;

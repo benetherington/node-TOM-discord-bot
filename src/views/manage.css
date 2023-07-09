@@ -186,10 +186,10 @@ body {
 /* Each record row */
 /* stylelint-disable no-descending-specificity */
 .rolodex {
-    min-height: calc(var(--row-height) * 3);
+    min-height: calc(var(--row-height) * 4);
     display: grid;
     grid-template-columns: 180px 3fr 1fr;
-    grid-auto-rows: calc(var(--row-height) * 3);
+    grid-auto-rows: calc(var(--row-height) * 4);
     align-items: center;
     transition: background-color 0.1s;
 }
@@ -198,12 +198,12 @@ body {
 /* stylelint-enable no-descending-specificity */
 
 /* Callsign box */
-.rolodex .callsign {
+.rolodex .callsign-container {
     /* Allow absolute positioning of edit icon */
     position: relative;
 }
 
-.rolodex .callsign > p {
+.rolodex .callsign-container > p {
     text-align: center;
     align-self: center;
     margin: 1px 3px;
@@ -211,11 +211,11 @@ body {
     transition: 0.1s;
 }
 
-.rolodex:hover .callsign [contenteditable] {
+.rolodex:hover .callsign-container [contenteditable] {
     background-color: white;
 }
 
-.rolodex .callsign .edit-icon {
+.rolodex .callsign-container .edit-icon {
     visibility: hidden;
     position: absolute;
     height: var(--row-height);
@@ -226,8 +226,8 @@ body {
     background-repeat: no-repeat;
     background-size: contain;
 }
-.rolodex .callsign .edit-icon:hover { background-color: var(--primary-dark); }
-.rolodex:hover .callsign .edit-icon { visibility: visible; }
+.rolodex .callsign-container .edit-icon:hover { background-color: var(--primary-dark); }
+.rolodex:hover .callsign-container .edit-icon { visibility: visible; }
 
 /* Socials box */
 .rolodex .socials {
@@ -242,7 +242,7 @@ body {
 }
 
 /* Each social */
-.rolodex .socials :is(.discord, .twitter, .email) {
+.rolodex .socials .social-container {
     border-left: 2px solid black;
     border-right: 2px solid black;
     display: grid;
@@ -253,7 +253,7 @@ body {
     align-items: center;
 }
 
-.rolodex .socials :is(.discord, .twitter, .email):not(:last-of-type) {
+.rolodex .socials .social-container:not(:last-of-type) {
     /* Add dividers between username and screenname */
     border-bottom: 1px dotted black;
 }
@@ -269,6 +269,7 @@ body {
 }
 .rolodex .discord .icon { background-image: url("/icons/discord.svg"); }
 .rolodex .twitter .icon { background-image: url("/icons/twitter.svg"); }
+.rolodex .mastodon .icon { background-image: url("/icons/mastodon.svg"); }
 .rolodex .email .icon { background-image: url("/icons/envelope-paper.svg"); }
 
 /* Socials -- text */

@@ -1,20 +1,27 @@
 /*---*\
   API
 \*---*/
-const getUnscored = () =>
-    fetch('/api/twsf/unscored')
-        .then((r) => r.json())
-        .then((jsn) => {
-            updateEpNum(jsn.epNum);
-            return jsn.guesses;
-        });
-const getCorrect = () =>
-    fetch('/api/twsf/correct')
-        .then((r) => r.json())
-        .then((jsn) => {
-            updateEpNum(jsn.epNum);
-            return jsn.guesses;
-        });
+const getUnscored = async () => {
+    const resp = await fetch('/api/twsf/unscored');
+    const jsn = await resp.json();
+
+    updateEpNum(jsn.epNum);
+    return jsn.guesses;
+};
+const getCorrect = async () => {
+    const resp = await fetch('/api/twsf/correct');
+    const jsn = await resp.json();
+
+    updateEpNum(jsn.epNum);
+    return jsn.guesses;
+};
+const getCurrent = async () => {
+    const resp = await fetch('/api/twsf/current');
+    const jsn = await resp.json();
+
+    updateEpNum(jsn.epNum);
+    return jsn.guesses;
+};
 const getThankYous = () => fetch('/api/twsf/thankyou').then((r) => r.json());
 const postScore = (guess) =>
     fetch('/api/twsf/score', {
@@ -54,13 +61,50 @@ const updateEpNum = (epNum) => {
 };
 
 // Guess rows
-const sanitizeInput = (text) =>
-    text.replace('javascript', '').replace('<', '[');
+const sanitizeContent = (text) =>
+    text.replaceAll(
+        /<\/?(p|span|br|a|del|pre|code|em|strong|b|i|u|ul|ol|li|blockquote)( [^>]*)?>/gi,
+        '',
+    );
+const safeParseContent = (text) => {
+    const elements = [];
+
+    while (text.length) {
+        const hrefRe =
+            /(?<before>.*?)(<a href="(?<href>[^"]*?)".*?>(?<link>.*?)<\/a>)/gi;
+        const hrefMatch = hrefRe.exec(text);
+        text = text.slice(hrefRe.lastIndex);
+
+        if (hrefMatch) {
+            const {before, href, link} = hrefMatch.groups;
+
+            const span = document.createElement('span');
+            span.innerText = sanitizeContent(before);
+            elements.push(span);
+
+            const anchor = document.createElement('a');
+            anchor.href = href;
+            anchor.innerText = sanitizeContent(link);
+            elements.push(anchor);
+        } else {
+            const span = document.createElement('span');
+            span.innerText = sanitizeContent(text);
+            elements.push(span);
+            break;
+        }
+    }
+
+    return elements;
+};
 const getLinkHref = (guess) => {
     if (guess.type === guessTypes.TWEET) {
         return 'https://www.twitter.com/twitter/status/' + guess.tweetId;
     } else if (guess.type === guessTypes.TWITTER_DM) {
         return 'https://twitter.com/messages/2827032970-' + guess.tweetId;
+    } else if (guess.type === guessTypes.TOOT) {
+        const [_, userName, instanceName] =
+            guess.mastodonUsername.match(/(.*)@(.*)/);
+        return `https://${instanceName}/@${userName}/${guess.tootId}`;
     } else if (guess.type === guessTypes.DISCORD && guess.discordReplyId) {
         return (
             'https://discord.com/channels/137948573605036033/934901291644256366/' +
@@ -76,47 +120,71 @@ const createGuessRow = (guess) => {
         guess.displayName ||
         guess.twitterDisplayName ||
         guess.emailName;
-    const authorName = sanitizeInput(unsanitizedName);
-    const guessText = sanitizeInput(guess.text);
+    const authorName = sanitizeContent(unsanitizedName);
+    const guessElements = safeParseContent(guess.text);
     const linkHref = getLinkHref(guess);
 
-    // Build element to put on the page
-    const rowContainer = document.createElement('div');
-    rowContainer.classList.add('row-container');
-    rowContainer.innerHTML = `
-        <div class="info card">
-            <div class="link ${type}"></div>
-            <h3 class="callsign" title="${authorName}">${authorName}</h3>
-            <div class="points slide-radio three">
-                <input
-                    class="toggle-option"
-                    id="none-${guess.guessId}"
-                    type="radio"
-                    name="points-${guess.guessId}"
-                    value="none"
-                    required>
-                <label for="none-${guess.guessId}"></label>
-                <input
-                    class="toggle-option"
-                    id="correct-${guess.guessId}"
-                    type="radio"
-                    name="points-${guess.guessId}"
-                    value="correct"
-                    required>
-                <label for="correct-${guess.guessId}"></label>
-                <input
-                    class="toggle-option"
-                    id="bonus-${guess.guessId}"
-                    type="radio"
-                    name="points-${guess.guessId}"
-                    value="bonus"
-                    required>
-                <label for="bonus-${guess.guessId}"></label>
-                <div class="slider"></div>
-            </div>
-        </div>
-        <div class="text">${guessText}</div>`;
+    // Clone row container
+    const rowContainer = document
+        .getElementById('row-container')
+        .content.firstElementChild.cloneNode(true);
 
+    // Set easy properties
+    rowContainer.querySelector('.link').classList.add(type);
+    rowContainer.querySelector('.callsign').title = authorName;
+    rowContainer.querySelector('.callsign').innerText = authorName;
+    rowContainer.querySelector('.text').append(...guessElements);
+
+    // Set form input properties
+    rowContainer.querySelector('#none-id').name = `points-${guess.guessId}`;
+    rowContainer.querySelector('#none-id').id = `none-${guess.guessId}`;
+    rowContainer.querySelector('[for=none-id]').for = `none-${guess.guessId}`;
+
+    rowContainer.querySelector('#correct-id').name = `points-${guess.guessId}`;
+    rowContainer.querySelector('#correct-id').id = `correct-${guess.guessId}`;
+    rowContainer.querySelector(
+        '[for=correct-id]',
+    ).for = `correct-${guess.guessId}`;
+
+    rowContainer.querySelector('#bonus-id').name = `points-${guess.guessId}`;
+    rowContainer.querySelector('#bonus-id').id = `bonus-${guess.guessId}`;
+    rowContainer.querySelector('[for=bonus-id]').for = `bonus-${guess.guessId}`;
+
+    // rowContainer.innerHTML = `
+    //     <div class="info card">
+    //         <div class="link ${type}"></div>
+    //         <h3 class="callsign" title="${authorName}">${authorName}</h3>
+    //         <div class="points slide-radio three">
+    //             <input
+    //                 class="toggle-option"
+    //                 id="none-${guess.guessId}"
+    //                 type="radio"
+    //                 name="points-${guess.guessId}"
+    //                 value="none"
+    //                 required>
+    //             <label for="none-${guess.guessId}"></label>
+    //             <input
+    //                 class="toggle-option"
+    //                 id="correct-${guess.guessId}"
+    //                 type="radio"
+    //                 name="points-${guess.guessId}"
+    //                 value="correct"
+    //                 required>
+    //             <label for="correct-${guess.guessId}"></label>
+    //             <input
+    //                 class="toggle-option"
+    //                 id="bonus-${guess.guessId}"
+    //                 type="radio"
+    //                 name="points-${guess.guessId}"
+    //                 value="bonus"
+    //                 required>
+    //             <label for="bonus-${guess.guessId}"></label>
+    //             <div class="slider"></div>
+    //         </div>
+    //     </div>
+    //     <div class="text">${guessText}</div>`;
+
+    // Add events
     rowContainer
         .querySelector('.link')
         .addEventListener('click', () => window.open(linkHref));
@@ -125,11 +193,9 @@ const createGuessRow = (guess) => {
         .forEach((input) => input.addEventListener('change', newScore));
     return rowContainer;
 };
-const setGuessPoints = (row, guess) => {
-    if (guess.bonusPoint) value = 'bonus';
-    else if (guess.correct) value = 'correct';
-    else value = 'none';
-    row.querySelector(`input[value=${value}]`).checked = true;
+const setGuessPoints = ({row, guess}) => {
+    const val = guess.bonusPoint ? 'bonus' : guess.correct ? 'correct' : 'none';
+    row.querySelector(`input[value=${val}]`).checked = true;
 };
 const setPointsStyle = ({row, input, override}) => {
     if (!input) input = row.querySelector('input:checked');
@@ -239,7 +305,16 @@ const addCorrectGuesses = async () => {
     const guesses = await getCorrect();
     for (guess of guesses) {
         const row = createGuessRow(guess);
-        setGuessPoints(row, guess);
+        setGuessPoints({row, guess});
+        setPointsStyle({row});
+        guessCard.append(row);
+    }
+};
+const addAllGuesses = async () => {
+    const guesses = await getCurrent();
+    for (guess of guesses) {
+        const row = createGuessRow(guess);
+        setGuessPoints({row, guess});
         setPointsStyle({row});
         guessCard.append(row);
     }
@@ -250,8 +325,11 @@ const addCorrectGuesses = async () => {
 \*------------------*/
 const updateGuessList = async () => {
     clearGuesses();
+
     await addUnscoredGuesses();
-    if (currentMode() === 'week') await addCorrectGuesses();
+    if (currentMode() === 'all') await addAllGuesses();
+    if (currentMode() == 'week') await addCorrectGuesses();
+
     setWinnersBox();
 };
 const newScore = async (event) => {
@@ -295,6 +373,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document
         .getElementById('thank-you')
         .addEventListener('click', copyElementTextContent);
+
+    document
+        .getElementById('filter')
+        .querySelectorAll('input')
+        .forEach((input) => input.addEventListener('change', updateGuessList));
 });
 
 const months = [

@@ -75,6 +75,8 @@
     background-position: center, 50% 22%;
 }
 
+#guesses .link.toot { background-image: url("/icons/mastodon.svg"); }
+
 #guesses .link.discord { background-image: url("/icons/discord.svg"); }
 
 #guesses .link.email {

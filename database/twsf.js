@@ -47,6 +47,7 @@ const types = {
     TWITTER_DM: 1,
     EMAIL: 2,
     DISCORD: 3,
+    TOOT: 4,
 };
 module.exports.guessTypes = types;
 
@@ -71,6 +72,29 @@ const upsertAuthorByGuessType = (guessType, author) => {
             author.twitterId,
             author.twitterUsername,
             author.twitterDisplayName,
+            author.callsign,
+        );
+    } else if (guessType == types.TOOT) {
+        // Notice that the unique identifier here is username, NOT id. Username
+        // will always be formatted as remote names, ie account@instance. Id is
+        // retained for easy lookups, but the correct instance must be
+        // specified.
+        return db.get(
+            `INSERT INTO Authors
+                (mastodonId, mastodonUsername, mastodonDisplayName, callsign)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT (mastodonUsername)
+                DO UPDATE SET
+                    mastodonDisplayName = excluded.mastodonDisplayName,
+                    callsign = COALESCE(callsign, excluded.callsign)
+            ON CONFLICT (mastodonUsername)
+                DO UPDATE SET
+                    mastodonDisplayName = excluded.mastodonDisplayName,
+                    callsign = COALESCE(callsign, excluded.callsign)
+            RETURNING authorId;`,
+            author.mastodonId,
+            author.mastodonUsername,
+            author.mastodonDisplayName,
             author.callsign,
         );
     } else if (guessType === types.EMAIL) {
@@ -144,6 +168,16 @@ const insertOrIgnoreGuessByType = (authorId, guess) => {
             guess.text,
             guess.tweetId,
         );
+    } else if (guess.type === types.TOOT) {
+        return db.run(
+            `INSERT OR IGNORE INTO Guesses
+                (authorId, type, text, tootId)
+            VALUES (?, ?, ?, ?);`,
+            authorId,
+            guess.type,
+            guess.text,
+            guess.tootId,
+        );
     } else if (guess.type === types.EMAIL) {
         return db.run(
             `INSERT OR IGNORE INTO Guesses
@@ -165,22 +199,30 @@ const insertOrIgnoreGuessByType = (authorId, guess) => {
         );
     }
 };
-
+/**
+ * Fetches guesses with no episodeId (correct or not).
+ * @returns {Guess}
+ */
 module.exports.getUnscoredGuesses = () =>
     db.all(
         `SELECT
             guessId, type, text, correct, bonusPoint,
-            tweetId, discordReplyId,
+            tweetId, discordReplyId, mastodonUsername, tootId,
             callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
-        WHERE episodeId IS NULL;`,
+        WHERE episodeId IS NULL
+        ORDER BY Guesses.created_at DESC;`,
     );
+/**
+ * Fetches guesses for this episode that are correct.
+ * @returns {Guess}
+ */
 module.exports.getCorrectGuesses = () =>
     db.all(
         `SELECT
             guessId, type, text, correct, bonusPoint,
-            tweetId, discordReplyId,
+            tweetId, discordReplyId, mastodonUsername, tootId,
             callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
@@ -188,35 +230,40 @@ module.exports.getCorrectGuesses = () =>
             AND episodeId = (
                 SELECT episodeId FROM Episodes
                 ORDER BY created_at DESC LIMIT 1
-            );`,
+            )
+        ORDER BY Guesses.created_at DESC;`,
     );
-module.exports.getAllGuesses = (limit = 40, offset = 0) =>
+/**
+ * Fetches guesses for this episode, correct or not.
+ * @returns {Guess}
+ */
+module.exports.getAllCurrentGuesses = () =>
     db.all(
         `SELECT
-            guessId, type, text, correct, bonusPoint
-            tweetId, discordReplyId,
-            Guesses.authorId, callsign,
-            Guesses.created_at
+            guessId, type, text, correct, bonusPoint,
+            tweetId, discordReplyId, mastodonUsername, tootId,
+            callsign
         FROM Guesses
         LEFT JOIN Authors USING(authorId)
-        ORDER BY Guesses.created_at DESC
-        LIMIT ?
-        OFFSET ?`,
-        limit,
-        offset,
+        WHERE episodeId = (
+                SELECT episodeId FROM Episodes
+                ORDER BY created_at DESC LIMIT 1
+            )
+        ORDER BY Guesses.created_at DESC;`,
     );
 module.exports.getGuessesCount = () =>
     db.get(
         `SELECT
             COUNT(*) AS count
-        FROM Guesses`,
+        FROM Guesses;`,
     );
 
+/**
+ * Inserts or updates Author, then inserts Guess and associates it to Author.
+ * @param {*} param0
+ * @returns {(1|0)} Whether a guess was added to the DB (ie not a duplicate.)
+ */
 module.exports.addNewGuess = async ({guess, author}) => {
-    // Inserts or updates Author, then inserts Guess and associates it to
-    // Author. Returns 1 or 0, indicating whether the guess was a duplicate or
-    // not.
-
     // UPSERT Author with incoming values.
     const {authorId} = await upsertAuthorByGuessType(guess.type, author);
 

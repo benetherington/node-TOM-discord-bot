@@ -44,58 +44,33 @@ const executeMerge = (authorKeep, authorDelete) =>
 /*------------*\
   GUI BUILDERS
 \*------------*/
-const buildSocialElement = (username, displayName) => {
-    const socialElement = document.createElement('div');
+const buildAuthorRow = (data, editable = true) => {
+    if (data.callsign.toLowerCase().startsWith('ben')) console.log(data);
 
-    const iconEl = document.createElement('div');
-    iconEl.classList.add('icon');
-    socialElement.append(iconEl);
-
-    const usernameEl = document.createElement('div');
-    usernameEl.classList.add('username');
-    usernameEl.textContent = username ? '@' + username : '';
-    socialElement.append(usernameEl);
-
-    const dividerElement = document.createElement('div');
-    dividerElement.classList.add('social-divider');
-    socialElement.append(dividerElement);
-
-    const displayNameEl = document.createElement('div');
-    displayNameEl.classList.add('display-name');
-    displayNameEl.textContent = displayName;
-    socialElement.append(displayNameEl);
-
-    return socialElement;
-};
-const buildAuthorRow = (
-    {
+    const {
         authorId,
         callsign,
         username,
         displayName,
         twitterUsername,
         twitterDisplayName,
+        mastodonUsername,
+        mastodonDisplayName,
         emailAddress,
         emailName,
         notes,
-    },
-    editable = true,
-) => {
+    } = data;
+
     // Row container
-    const rolodex = document.createElement('div');
-    rolodex.classList.add('rolodex');
+    const rolodex = document
+        .getElementById('rolodex')
+        .content.firstElementChild.cloneNode(true);
     rolodex.dataset.authorId = authorId;
 
     // Callsign box
-    const callsignContainerEl = document.createElement('div');
-    callsignContainerEl.classList.add('callsign');
-    rolodex.append(callsignContainerEl);
+    rolodex.querySelector('.author-id').textContent = '#' + authorId;
 
-    const idElement = document.createElement('p');
-    idElement.textContent = '#' + authorId;
-    callsignContainerEl.append(idElement);
-
-    const callsignEl = document.createElement('p');
+    const callsignEl = rolodex.querySelector('.callsign');
     callsignEl.dataset.authorId = authorId;
     callsignEl.textContent = callsign;
     if (editable) {
@@ -103,29 +78,31 @@ const buildAuthorRow = (
         callsignEl.addEventListener('focus', createUndoDraft);
         callsignEl.addEventListener('blur', callsignBlur);
     }
-    callsignContainerEl.append(callsignEl);
 
     // Socials box
-    const socialsElement = document.createElement('div');
-    socialsElement.classList.add('socials');
-    rolodex.append(socialsElement);
+    rolodex.querySelector('.socials .discord .username').textContent = username
+        ? '@' + username
+        : '';
+    rolodex.querySelector('.socials .discord .display-name').textContent =
+        displayName;
 
-    const discordEl = buildSocialElement(username, displayName);
-    discordEl.classList.add('discord');
-    socialsElement.append(discordEl);
+    rolodex.querySelector('.socials .twitter .username').textContent =
+        twitterUsername ? '@' + twitterUsername : '';
+    rolodex.querySelector('.socials .twitter .display-name').textContent =
+        twitterDisplayName;
 
-    const twitterEl = buildSocialElement(twitterUsername, twitterDisplayName);
-    twitterEl.classList.add('twitter');
-    socialsElement.append(twitterEl);
+    rolodex.querySelector('.socials .mastodon .username').textContent =
+        mastodonUsername ? '@' + mastodonUsername : '';
+    rolodex.querySelector('.socials .mastodon .display-name').textContent =
+        mastodonDisplayName;
 
-    const emailEl = buildSocialElement(emailAddress, emailName);
-    emailEl.classList.add('email');
-    socialsElement.append(emailEl);
+    rolodex.querySelector('.socials .email .username').textContent =
+        emailAddress ? '@' + emailAddress : '';
+    rolodex.querySelector('.socials .email .display-name').textContent =
+        emailName;
 
     // Notes box
-    const notesEl = document.createElement('textarea');
-    notesEl.classList.add('notes');
-    notesEl.placeholder = 'No listener notes yet...';
+    const notesEl = rolodex.querySelector('.notes');
     notesEl.value = notes;
     if (editable) {
         notesEl.addEventListener('focus', createUndoDraft);
@@ -133,7 +110,6 @@ const buildAuthorRow = (
     } else {
         notesEl.disabled = true;
     }
-    rolodex.append(notesEl);
 
     return rolodex;
 };

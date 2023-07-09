@@ -10,23 +10,28 @@ block script
 block title-bar
     +titleBar("This Week in Spaceflight History")
     div#controls
-        div#filter.slide-radio.two
+        div#filter.slide-radio.three
             input#week.toggle-option(
                 type='radio'
                 name='filter'
                 value='week'
-                onchange="updateGuessList()"
                 checked
             )
-            label(for="week") Show All
+            label(for="week") Default
             
             input#unscored.toggle-option(
                 type='radio'
                 name='filter'
                 value='unscored'
-                onchange="updateGuessList()"
             )
             label(for="unscored") Show New
+            
+            input#all.toggle-option(
+                type='radio'
+                name='filter'
+                value='all'
+            )
+            label(for="all") Show All
             
             div.slider
 
@@ -60,3 +65,37 @@ block content
         div#winners.card(title="Click: copy to clipboard")
         div#next-week.card(title="Click: copy to clipboard")
         div#thank-you.card(title="Click: copy to clipboard")
+        
+block templates
+    template#row-container
+        .row-container
+            .info.card
+                .link
+                h3.callsign
+                .points.slide-radio.three
+                    input( class="toggle-option"
+                           id="none-id"
+                           type="radio"
+                           name="points-id"
+                           value="none"
+                           required )
+                    label(for="none-id")
+                    
+                    input( class="toggle-option"
+                           id="correct-id"
+                           type="radio"
+                           name="points-id"
+                           value="correct"
+                           required )
+                    label(for="correct-id")
+                    
+                    input( class="toggle-option"
+                           id="bonus-id"
+                           type="radio"
+                           name="points-id"
+                           value="bonus"
+                           required )
+                    label(for="bonus-id")
+                    
+                    .slider
+            .text

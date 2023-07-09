@@ -18,6 +18,8 @@ module.exports.getAuthors = (limit = 40, offset = 0) =>
             displayName,
             twitterUsername,
             twitterDisplayName,
+            mastodonUsername,
+            mastodonDisplayName,
             emailAddress,
             emailName,
             notes
@@ -37,6 +39,8 @@ module.exports.getAuthor = (authorId) =>
             displayName,
             twitterUsername,
             twitterDisplayName,
+            mastodonUsername,
+            mastodonDisplayName,
             emailAddress,
             emailName,
             notes
@@ -75,6 +79,8 @@ module.exports.getMergedAuthor = (authorKeep, authorDelete) =>
                 COALESCE(author_keep.twitterId, author_delete.twitterId) AS twitterId,
                 COALESCE(author_keep.twitterUsername, author_delete.twitterUsername) AS twitterUsername,
                 COALESCE(author_keep.twitterDisplayName, author_delete.twitterDisplayName) AS twitterDisplayName,
+                COALESCE(author_keep.mastodonUsername, author_delete.mastodonUsername) AS mastodonUsername,
+                COALESCE(author_keep.mastodonDisplayName, author_delete.mastodonDisplayName) AS mastodonDisplayName,
                 COALESCE(author_keep.emailAddress, author_delete.emailAddress) AS emailAddress,
                 COALESCE(author_keep.emailName, author_delete.emailName) AS emailName,
                 author_keep.notes || "<merged>" || author_delete.notes AS notes
@@ -131,6 +137,8 @@ module.exports.executeAuthorMerge = async (authorKeep, authorDelete) => {
                 twitterId = ?,
                 twitterUsername = ?,
                 twitterDisplayName = ?,
+                mastodonUsername = ?,
+                mastodonDisplayName = ?,
                 emailAddress = ?,
                 emailName = ?,
                 notes = ?
@@ -142,6 +150,8 @@ module.exports.executeAuthorMerge = async (authorKeep, authorDelete) => {
             mergedAuthor.twitterId,
             mergedAuthor.twitterUsername,
             mergedAuthor.twitterDisplayName,
+            mergedAuthor.mastodonUsername,
+            mergedAuthor.mastodonDisplayName,
             mergedAuthor.emailAddress,
             mergedAuthor.emailName,
             mergedAuthor.notes,

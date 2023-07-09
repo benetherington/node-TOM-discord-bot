@@ -189,3 +189,36 @@ block content
         button(onclick="previewAuthorMerge()" disabled)#merge-preview Preview Merge
         button(onclick="doAuthorMerge()").hidden#merge-do Merge Authors
         div.notification.card
+
+
+block templates
+    template#rolodex
+        .rolodex
+            .callsign-container
+                p.author-id
+                p.callsign
+            .socials
+                .discord.social-container
+                    .icon
+                    .username
+                    .social-divider
+                    .display-name
+                
+                .twitter.social-container
+                    .icon
+                    .username
+                    .social-divider
+                    .display-name
+                .mastodon.social-container
+                    .icon
+                    .username
+                    .social-divider
+                    .display-name
+                .email.social-container
+                    .icon
+                    .username
+                    .social-divider
+                    .display-name
+            textarea.notes(
+                placeholder="No listener notes yet..."
+            )

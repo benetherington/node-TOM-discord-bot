@@ -4,6 +4,7 @@ const {
     scoreGuess,
     getUnscoredGuesses,
     getCorrectGuesses,
+    getAllCurrentGuesses,
     guessTypes,
 } = require('../../database/twsf');
 const {getCurrentEpNum} = require('../../database/suggestions');
@@ -44,6 +45,19 @@ module.exports = (fastify, opts, done) => {
             const epNum = await getCurrentEpNum();
             request.log.info(
                 `Found ${guesses.length} correct guesses for this episode.`,
+            );
+
+            reply.send({guesses, epNum});
+        },
+    );
+    fastify.get(
+        '/api/twsf/current',
+        {preHandler: adminPreHandler},
+        async (request, reply) => {
+            const guesses = await getAllCurrentGuesses();
+            const epNum = await getCurrentEpNum();
+            request.log.info(
+                `Found ${guesses.length} guesses for this episode.`,
             );
 
             reply.send({guesses, epNum});

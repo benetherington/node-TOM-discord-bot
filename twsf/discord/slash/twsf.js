@@ -15,7 +15,7 @@ const ID = require('../../../config/discord-id.json');
   Utilities
 \*---------*/
 const getTwsfChannelMessage = (interaction) => {
-    const messageOptions = responses.twsf.twsfChannelMessage;
+    const messageOptions = {...responses.twsf.twsfChannelMessage};
     messageOptions.content = messageOptions.content
         .replace('id', interaction.user.id)
         .replace('txt', interaction.options.getString('guess'));

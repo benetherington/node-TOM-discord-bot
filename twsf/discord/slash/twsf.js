@@ -18,7 +18,7 @@ const logger = require("../../../logger");
   Utilities
 \*---------*/
 const getTwsfChannelMessage = (interaction) => {
-    const messageOptions = responses.twsf.twsfChannelMessage;
+    const messageOptions = {...responses.twsf.twsfChannelMessage};
     messageOptions.content = messageOptions.content
         .replace('id', interaction.user.id)
         .replace('txt', interaction.options.getString('guess'));
@@ -38,8 +38,6 @@ const createGuessFromInteraction = (interaction) => {
   Subcommand handlers
 \*-------------------*/
 const handleNewGuess = async (interaction) => {
-    logger.info(`I got guess: ${interaction.options.getString('guess')}`)
-  
     // Format for the DB
     const guess = createGuessFromInteraction(interaction);
     const author = createAuthorFromInteraction(interaction);
@@ -71,11 +69,11 @@ const handleNewGuess = async (interaction) => {
     const hiddenOption = interaction.options.getBoolean('hidden');
     const postToTwsfChannel = hiddenOption || hiddenOption === null; // default True
     if (postToTwsfChannel) {
-        const messageOptions = getTwsfChannelMessage(interaction);
+        const responseOptions = getTwsfChannelMessage(interaction);
         const twsfChannel = await interaction.client.channels.fetch(
             ID.channel.thisweeksf,
         );
-        const postedMessage = await twsfChannel.send(messageOptions);
+        const postedMessage = await twsfChannel.send(responseOptions);
         updateGuessDiscordReply(guess, postedMessage.id);
     }
 };

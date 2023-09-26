@@ -11,6 +11,9 @@ const {
 const {responses} = require('../../../config/discord-interaction.json');
 const ID = require('../../../config/discord-id.json');
 
+
+const logger = require("../../../logger");
+
 /*---------*\
   Utilities
 \*---------*/
@@ -19,6 +22,8 @@ const getTwsfChannelMessage = (interaction) => {
     messageOptions.content = messageOptions.content
         .replace('id', interaction.user.id)
         .replace('txt', interaction.options.getString('guess'));
+  
+    logger.log("I constructed this message: ", messageOptions.content)
 
     return messageOptions;
 };

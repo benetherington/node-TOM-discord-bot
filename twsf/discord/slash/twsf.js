@@ -38,6 +38,8 @@ const createGuessFromInteraction = (interaction) => {
   Subcommand handlers
 \*-------------------*/
 const handleNewGuess = async (interaction) => {
+    logger.info(`I got guess: ${interaction.options.getString('guess')}`)
+  
     // Format for the DB
     const guess = createGuessFromInteraction(interaction);
     const author = createAuthorFromInteraction(interaction);

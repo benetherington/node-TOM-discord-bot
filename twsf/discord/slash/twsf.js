@@ -22,9 +22,6 @@ const getTwsfChannelMessage = (interaction) => {
     messageOptions.content = messageOptions.content
         .replace('id', interaction.user.id)
         .replace('txt', interaction.options.getString('guess'));
-  
-    logger.log("I constructed this message: ", messageOptions.content)
-
     return messageOptions;
 };
 const createGuessFromInteraction = (interaction) => {

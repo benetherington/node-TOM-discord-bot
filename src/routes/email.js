@@ -27,7 +27,7 @@ module.exports = (fastify, opts, done) => {
             // Check that it's from Ben. For now, we won't be collecting emails
             // directly from listeners. This isn't perfectly secure, but might
             // save a headache in the future.
-            if (from !== 'zoundspadang@gmail.com') {
+            if (!['zoundspadang@gmail.com', 'ben.etherington@hey.com'].includes(from)) {
                 request.log.info("Email didn't come from Ben");
                 return reply.status(401).send(); // 401: not authorized
             }

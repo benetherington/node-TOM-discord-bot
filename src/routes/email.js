@@ -4,7 +4,7 @@ const storeNewTwsfEmail = require("../../twsf/email");
 
 module.exports = (fastify, opts, done) => {
   fastify.post("/twsf-email", async (request, reply) => {
-    request.log.info("Incoming TWSF email!");
+    logger.info("Incoming TWSF email!");
 
     try {
       // Grab data from header
@@ -18,7 +18,7 @@ module.exports = (fastify, opts, done) => {
       const expectedAuth = `Basic ${btoa(credentials)}`;
       // Check that the request is valid
       if (authHeader !== expectedAuth) {
-        request.log.info("Bad auth provided to POST /twsf-email!");
+        logger.info("Bad auth provided to POST /twsf-email!");
         return reply.status(401).send(); // 401: not authorized
       }
 
@@ -35,7 +35,7 @@ module.exports = (fastify, opts, done) => {
           "dwjust@gmail.com",
         ].includes(from)
       ) {
-        request.log.info("Email didn't come from Ben");
+        logger.info("Email didn't come from Ben");
         return reply.status(401).send(); // 401: not authorized
       }
 
@@ -47,7 +47,7 @@ module.exports = (fastify, opts, done) => {
       // Return success
       return reply.send(1);
     } catch (error) {
-      request.log.error({
+      logger.error({
         msg: "Error encountered while processing TWSF email:",
         error,
       });

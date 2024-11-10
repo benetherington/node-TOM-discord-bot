@@ -18,7 +18,7 @@ intents.add(
     Intents.FLAGS.GUILD_VOICE_STATES,
 );
 const client = new Client({intents});
-client.logger = require('./logger');
+client.logger = console; //require('./logger');
 
 // Status events
 client.on('ready', () => {
@@ -114,5 +114,6 @@ client.on('voiceStateUpdate', onVoiceStateUpdate);
   await client.login(process.env.DISCORD_TOKEN);
   console.log("Login complete")
 })()
+
 
 module.exports = {client};

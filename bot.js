@@ -109,5 +109,10 @@ client.on('voiceStateUpdate', onVoiceStateUpdate);
 /*------*\
   FINISH
 \*------*/
-client.login(process.env.DISCORD_TOKEN);
+(async ()=>{
+  console.log("Starting Discord bot login...")
+  await client.login(process.env.DISCORD_TOKEN);
+  console.log("Login complete")
+})()
+
 module.exports = {client};

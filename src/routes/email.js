@@ -1,4 +1,6 @@
 require("dotenv").config();
+const logger = require("../../logger")
+
 
 const storeNewTwsfEmail = require("../../twsf/email");
 

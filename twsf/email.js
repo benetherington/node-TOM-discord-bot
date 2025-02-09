@@ -190,6 +190,6 @@ module.exports = async (textContent) => {
     } catch (error) {
         if (error.msg) logger.error({...error, textContent});
         else logger.error({error, textContent});
-        addTwsfError(JSON.stringify({error, textContent}));
+        addEmailParseError(JSON.stringify({error, textContent}));
     }
 };
